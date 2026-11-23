@@ -1,0 +1,96 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Welding workbook parity</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202a;--muted:#5a6672;--line:#d8dee5;--accent:#1d5c86;--code:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 64px}
+main{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px clamp(16px,4vw,44px)}
+nav.top{max-width:980px;margin:0 auto 12px;font-size:14px}nav.top a{color:var(--accent)}
+h1{font-size:30px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:34px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:18px;margin:24px 0 8px}h4{margin:18px 0 6px}
+a{color:var(--accent)}p,li{max-width:80ch}
+code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto}pre code{padding:0;background:none}
+table{border-collapse:collapse;margin:14px 0;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--code)}
+blockquote{margin:12px 0;padding:4px 14px;border-left:4px solid var(--accent);color:var(--muted)}
+[data-unlinked]{color:inherit;text-decoration:none}
+.toc{background:var(--code);border-radius:6px;padding:10px 16px;font-size:14px}.toc ul{margin:4px 0;padding-left:18px}
+@media print{body{background:#fff;padding:0}main{border:0;padding:0}nav.top{display:none}h2{break-after:avoid}table{display:table}}
+</style></head><body><nav class="top"><a href="index.html">← All HSE documents</a></nav><main><h1 id="welding-workbook-parity">Welding workbook parity</h1>
+<p>Official workbook SHA-256 verified against S01 <code>4c3e6f6a0fc1acd8038ab5ccd6e82cf65cd65e5d6bc69a7372b0a2a23dddaa93</code>.
+Pycel recalculated a single temporary workbook copy. Stages 1–4 used the same scenario inputs.
+The tolerance is relative 1e-9, with exact zero required. Absolute differences use each cell’s native unit.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th style="text-align: right;">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scenarios passed</td>
+<td style="text-align: right;">393/393</td>
+</tr>
+<tr>
+<td>cutting scenarios</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr>
+<td>edge scenarios</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td>guide scenarios</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>listed scenarios</td>
+<td style="text-align: right;">230</td>
+</tr>
+<tr>
+<td>method1 scenarios</td>
+<td style="text-align: right;">35</td>
+</tr>
+<tr>
+<td>method2 scenarios</td>
+<td style="text-align: right;">35</td>
+</tr>
+<tr>
+<td>routing scenarios</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td>spraying scenarios</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>Cell comparisons</td>
+<td style="text-align: right;">536,446</td>
+</tr>
+<tr>
+<td>Guide literal checks</td>
+<td style="text-align: right;">112</td>
+</tr>
+<tr>
+<td>Maximum absolute difference</td>
+<td style="text-align: right;">1e-11</td>
+</tr>
+<tr>
+<td>Maximum relative difference</td>
+<td style="text-align: right;">4.16630e-16</td>
+</tr>
+<tr>
+<td>Run time</td>
+<td style="text-align: right;">7.37 s</td>
+</tr>
+</tbody>
+</table>
+<h2 id="scope">Scope</h2>
+<p>The 74 workbook categories ran at five quantity profiles covering zero, small, typical, large and an interval with a 34-significant-digit center. Each scenario compares 1,357 release formulas across details, activity subtotals and annual summaries, plus eight activity-reference probes. The combined worked example adds a separate control-adjusted PM10 comparison from Instructions A63:A64.</p>
+<p>The parity adapter translates the sheet gates and selector into eligible typed facts and a reviewed method choice. The calculation and reconciliation stages produce the releases. Cutting Cr(VI) retains its <code>not_estimated_by_method</code> status alongside the workbook's numeric zero.</p>
+<h2 id="discrepancies-investigated">Discrepancies investigated</h2>
+<ul>
+<li><strong>FCAW nickel, Part 1 F181/G181.</strong> In a mixed FCAW and GMAW case, the engine used 210 kg across two E309 rows and produced 0.01953 kg. The workbook reads only Table A C50, which held 10 kg of FCAW E309 and produced 0.00093 kg. The engine now resolves the process as well as the label, including when a shared process fact has a per-row override.</li>
+<li><strong>Other Arc Welding Methods, Part 1 G77.</strong> At 1,000 kg, the parity adapter initially wrote the normalized class name to Table B and got 0 kg from the workbook versus 9 kg from the engine. Table B's Q14 formula matches the exact label <code>Other Arc Welding Methods</code>. With that workbook label the release was 9 kg on both sides.</li>
+</ul>
+<p>Coverage sign-off remains open while the importer manifest is <code>published_unreviewed</code> and applicable defaults await approval.</p></main></body></html>

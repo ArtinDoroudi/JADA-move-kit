@@ -1,0 +1,370 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Metal fabrication defaults review for S13</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202a;--muted:#5a6672;--line:#d8dee5;--accent:#1d5c86;--code:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 64px}
+main{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px clamp(16px,4vw,44px)}
+nav.top{max-width:980px;margin:0 auto 12px;font-size:14px}nav.top a{color:var(--accent)}
+h1{font-size:30px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:34px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:18px;margin:24px 0 8px}h4{margin:18px 0 6px}
+a{color:var(--accent)}p,li{max-width:80ch}
+code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto}pre code{padding:0;background:none}
+table{border-collapse:collapse;margin:14px 0;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--code)}
+blockquote{margin:12px 0;padding:4px 14px;border-left:4px solid var(--accent);color:var(--muted)}
+[data-unlinked]{color:inherit;text-decoration:none}
+.toc{background:var(--code);border-radius:6px;padding:10px 16px;font-size:14px}.toc ul{margin:4px 0;padding-left:18px}
+@media print{body{background:#fff;padding:0}main{border:0;padding:0}nav.top{display:none}h2{break-after:avoid}table{display:table}}
+</style></head><body><nav class="top"><a href="index.html">← All HSE documents</a></nav><main><h1 id="metal-fabrication-defaults-review-for-s13">Metal fabrication defaults review for S13</h1>
+<p><strong>Due 11 December 2026</strong>
+<strong>Practitioner</strong> <strong><em>_</em></strong><strong><em>_</em></strong><strong><em>_</em>_
+<strong>Signature and date</strong> </strong><strong><em>_</em></strong><strong><em>_</em></strong>____</p>
+<p>Every candidate in the <a data-unlinked="defaults.yaml">default library</a> is pending approval. Record Approve, Change or Reject for each row under policy <code>metal_fab-policy@1</code>. Attach the decision rationale and replacement evidence for any change. For an approval, record the practitioner’s name, date and the approved policy version in the pack.</p>
+<p><strong>S05</strong> is the ECCC welding workbook identified in the <a data-unlinked="import/eccc-welding-2022-10-26.manifest.yaml">import manifest</a>. <strong>G</strong> refers to its calculation guide. <strong>Plan 00</strong> is the automation-first plan. <strong>Spec 16</strong> covers workbook reproduction and activity derivation.</p>
+<p><strong>Part 4 PM</strong> facility-wide annual air release thresholds are TPM 20 t, PM10 0.5 t and PM2.5 0.3 t (Schedule 3, Table 2). Minimum releases from applicable individual stacks are TPM 25 t, PM10 0.5 t and PM2.5 0.25 t. Stack eligibility and reporting conditions are set out in Schedule 4, paragraph 20(1)(d), subsection 20(2), and Table 4. <strong>Part 1 MPO</strong> refers to the applicable substance-specific mass and concentration thresholds. <strong>Part 2 PAH</strong> refers to source coverage relevant to the 50 kg aggregate criterion and the conditional 5 kg individual reporting quantity. <a href="https://gazette.gc.ca/rp-pr/p1/2025/2025-03-08/html/sup1-eng.html">2025–2027 NPRI Notice</a>, <a href="https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/reporting-guide.html">NPRI Reporting Guide, Table 6</a></p>
+<p>The welding input, facility-wide method selection and source-screening entries can take effect after approval and only when the recorded facts satisfy their scope. Proposal rows document existing workbook factors, policy choices or deferred strategies. Approving a proposal leaves any pending rate, grade, eligibility evidence or implementation work outstanding. The derivation and classification work supplies the missing input handling. Logged runtime, documented stock change and billed energy data take precedence where available.</p>
+<table>
+<thead>
+<tr>
+<th>Default</th>
+<th>Target</th>
+<th>Proposed value, interval or method</th>
+<th>Source</th>
+<th>Thresholds or reporting affected</th>
+<th>Approve / Change / Reject</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>welding_arc.class_unknown.fcaw_method1</code></td>
+<td><code>P01-2.class</code></td>
+<td>Other FCAW</td>
+<td>S05 Instructions!A68:A86, Table A Other usage rows</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.class_unknown.gmaw_method1</code></td>
+<td><code>P01-2.class</code></td>
+<td>Other GMAW</td>
+<td>S05 Instructions!A68:A86, Table A Other usage rows</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.class_unknown.gtaw_method1</code></td>
+<td><code>P01-2.class</code></td>
+<td>Other GTAW</td>
+<td>S05 Instructions!A68:A86, Table A Other usage rows</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.class_unknown.paw_method1</code></td>
+<td><code>P01-2.class</code></td>
+<td>Other PAW</td>
+<td>S05 Instructions!A68:A86, Table A Other usage rows</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.class_unknown.saw_method1</code></td>
+<td><code>P01-2.class</code></td>
+<td>Other SAW</td>
+<td>S05 Instructions!A68:A86, Table A Other usage rows</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.class_unknown.smaw_method1</code></td>
+<td><code>P01-2.class</code></td>
+<td>Other SMAW</td>
+<td>S05 Instructions!A68:A86, Table A Other usage rows</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.class_unknown.other_method1</code></td>
+<td><code>P01-2.class</code></td>
+<td>Other Welding Methods, with accepted mass if both selectors are unresolved</td>
+<td>S05 Instructions!A68:A86, Table A Other Welding Methods row</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.process_unknown.method1</code></td>
+<td><code>P01-2.process</code></td>
+<td>Other Welding Methods, with accepted mass if both selectors are unresolved</td>
+<td>S05 Instructions!A68:A86, Table A Other Welding Methods row</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.other.method1</code></td>
+<td><code>other_welding_method</code></td>
+<td>Workbook Other Method 1 starting point, with practitioner review of threshold disagreements</td>
+<td>S05 Instructions!A79:A83</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.particulate.pm25</code></td>
+<td><code>welding.particulate.pm25_over_pm10</code></td>
+<td>0.75 × PM10</td>
+<td>S05 Instructions!A61, G §§5.2, 7.3</td>
+<td>Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.particulate.tpm</code></td>
+<td><code>welding.particulate.tpm_over_pm10</code></td>
+<td>Equal to PM10</td>
+<td>S05 Instructions!A60, G §§5.2, 7.3</td>
+<td>Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.stock_uncertainty</code></td>
+<td><code>stock_uncertainty</code></td>
+<td>±25% of recorded annual purchases, proposed</td>
+<td>plan-00 §6.3 annual use, spec 16 §6.2</td>
+<td>Part 1 MPO and metal releases, Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.annual_use.purchases</code></td>
+<td><code>P01-2.mass</code></td>
+<td>Documented packs × pack mass, adjusted for known stock change or the stock uncertainty proposal</td>
+<td>spec-16 §6.2</td>
+<td>Part 1 MPO and metal releases, Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.composition.sds_range</code></td>
+<td><code>P01-2.fraction</code></td>
+<td>Supplier range with a midpoint central estimate</td>
+<td>plan-00 §6.3 SDS ranges, spec 16 §7</td>
+<td>Metal air-release estimates and any applicable Part 1 MPO assessment</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.composition.unknown_bound</code></td>
+<td><code>P01-2.fraction</code></td>
+<td>Documented whole material mass as a single-substance upper bound</td>
+<td>plan-00 §§6.3–6.4, spec 16 §7</td>
+<td>Metal air-release estimates and any applicable Part 1 MPO assessment</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_spray.stock_uncertainty</code></td>
+<td><code>stock_uncertainty</code></td>
+<td>±25% of recorded annual purchases, proposed</td>
+<td>plan-00 §6.3 annual use, spec 16 §6.2</td>
+<td>Part 1 MPO and metal releases, Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_spray.annual_use.purchases</code></td>
+<td><code>P09-2.mass</code></td>
+<td>Documented packs × pack mass, adjusted for known stock change or the stock uncertainty proposal</td>
+<td>spec-16 §6.2</td>
+<td>Part 1 MPO and metal releases, Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_spray.composition.sds_range</code></td>
+<td><code>P09-3.fraction</code></td>
+<td>Supplier range with a midpoint central estimate</td>
+<td>plan-00 §6.3 SDS ranges, spec 16 §7</td>
+<td>Metal air-release estimates and any applicable Part 1 MPO assessment</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_spray.composition.unknown_bound</code></td>
+<td><code>P09-3.fraction</code></td>
+<td>Documented whole material mass as a single-substance upper bound</td>
+<td>plan-00 §§6.3–6.4, spec 16 §7</td>
+<td>Metal air-release estimates and any applicable Part 1 MPO assessment</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.capture.unknown</code></td>
+<td><code>activity.capture_or_control</code></td>
+<td>Uncontrolled factor with no control credit</td>
+<td>S05 Instructions!A63:A64, G §11.1</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.outlet.unknown</code></td>
+<td><code>activity.air_outlet</code></td>
+<td>General building exhaust, subject to separate assessment of evidenced stacks</td>
+<td>plan-00 §§6.3, 6.5</td>
+<td>Part 4 stack reporting where applicable</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.capture.unknown</code></td>
+<td><code>activity.capture_or_control</code></td>
+<td>Uncontrolled factor with no control credit</td>
+<td>S05 Instructions!A63:A64, G §11.1</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.outlet.unknown</code></td>
+<td><code>activity.air_outlet</code></td>
+<td>General building exhaust, subject to separate assessment of evidenced stacks</td>
+<td>plan-00 §§6.3, 6.5</td>
+<td>Part 4 stack reporting where applicable</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_spray.capture.unknown</code></td>
+<td><code>activity.capture_or_control</code></td>
+<td>Uncontrolled factor with no control credit</td>
+<td>S05 Instructions!A63:A64, G §11.1</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_spray.outlet.unknown</code></td>
+<td><code>activity.air_outlet</code></td>
+<td>General building exhaust, subject to separate assessment of evidenced stacks</td>
+<td>plan-00 §§6.3, 6.5</td>
+<td>Part 4 stack reporting where applicable</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.grinder</code></td>
+<td><code>P05-3.hours</code></td>
+<td>Disc count × approved active life by class. Source interval required</td>
+<td>spec-16 §6.2</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.plasma</code></td>
+<td><code>P05-3.hours</code></td>
+<td>Electrode count × approved arc-on life by class. Source interval required</td>
+<td>spec-16 §6.2</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.oxy_fuel</code></td>
+<td><code>P05-3.hours</code></td>
+<td>Recorded fuel gas volume × approved cutting share ÷ torch rate. Source intervals required</td>
+<td>spec-16 §6.2</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.gouging</code></td>
+<td><code>P05-3.hours</code></td>
+<td>Carbon count × approved burn life by diameter. Source interval required</td>
+<td>spec-16 §6.2</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.laser</code></td>
+<td><code>P05-3.hours</code></td>
+<td>Assist-gas volume ÷ approved flow rate. Source interval required</td>
+<td>spec-16 §6.2</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.arc_saw</code></td>
+<td><code>P05-3.hours</code></td>
+<td>Blade count × approved life by class. Source interval required</td>
+<td>spec-16 §6.2</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.reciprocating_saw</code></td>
+<td><code>P05-3.hours</code></td>
+<td>Blade count × approved life by class. Source interval required</td>
+<td>spec-16 §6.2</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.hours.grinder_125mm_disc_life</code></td>
+<td><code>grinding.disc_125mm</code></td>
+<td>15 / 25 / 40 min per 125 mm disc, illustrative only. Source interval required</td>
+<td>spec-16 §6.3, D13</td>
+<td>Metal air-release estimates and Part 4 PM</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.composition.grade</code></td>
+<td><code>P05-2.fraction</code></td>
+<td>Reviewed stock-grade interval. Grade standards and substance coverage required</td>
+<td>spec-16 §7, G §3.4</td>
+<td>Metal air-release estimates and any applicable Part 1 MPO assessment</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.composition.highest_alloy</code></td>
+<td><code>P05-2.fraction</code></td>
+<td>Highest alloy grade documented for the shop. Confirm relevance by substance</td>
+<td>spec-16 §7</td>
+<td>Metal air-release estimates and any applicable Part 1 MPO assessment</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.composition.stock_share</code></td>
+<td><code>cutting.base_metal_time_share</code></td>
+<td>Documented stock mass share as a proposed proxy for time share</td>
+<td>spec-16 §7, G §3.4</td>
+<td>Metal air-release estimates and any applicable Part 1 MPO assessment</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>welding_arc.pah_screen</code></td>
+<td><code>part2_pah</code></td>
+<td>Resolve only this documented source domain when both accepted scope flags are true</td>
+<td>notice_2025_2027 Schedule 1 Part 2, Schedule 3 §§8–9 and Schedule 4 §§12–13, module screening proposal</td>
+<td>Part 2 PAH</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_cutting.pah_screen</code></td>
+<td><code>part2_pah</code></td>
+<td>Resolve only this documented source domain when both accepted scope flags are true</td>
+<td>notice_2025_2027 Schedule 1 Part 2, Schedule 3 §§8–9 and Schedule 4 §§12–13, module screening proposal</td>
+<td>Part 2 PAH</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>thermal_spray.pah_screen</code></td>
+<td><code>part2_pah</code></td>
+<td>Resolve only this documented source domain when both accepted scope flags are true</td>
+<td>notice_2025_2027 Schedule 1 Part 2, Schedule 3 §§8–9 and Schedule 4 §§12–13, module screening proposal</td>
+<td>Part 2 PAH</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>metal_fab.employee_hours.headcount</code></td>
+<td><code>G05.employee_hours</code></td>
+<td>1,800 / 2,080 / 2,300 h per annual full-time equivalent, proposed</td>
+<td>plan-00 §6.3 employee hours from headcount</td>
+<td>20,000 h employee criterion where applicable</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+<tr>
+<td><code>metal_fab.natural_gas.hhv</code></td>
+<td><code>natural_gas.hhv</code></td>
+<td>Bill energy first, then proposed 950 / 1,020 / 1,050 Btu/scf with matched reference conditions</td>
+<td><a href="https://gaftp.epa.gov/ap42/ch01/s04/final/c1s4_10_2026.pdf">EPA AP-42 §1.4.1, October 2026</a></td>
+<td>Applicable Part 4 combustion air-release thresholds</td>
+<td><strong><em>_</em></strong>___</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pah-source-screening">PAH source screening</h2>
+<p>Review the three <code>*.pah_screen</code> candidates separately for arc welding, workbook-listed cutting and thermal spraying. Their scope is the documented activity and reporting period. The Notice Schedule 1 Part 2, Schedule 3 §§8–9 and Schedule 4 §§12–13 provide the regulatory context. The welding workbook’s outputs cover metals and particulate matter.</p>
+<p>An applicable candidate requires accepted evidence for both staff-reviewed facts. Review the uncoated inorganic feedstock and substrates together with any coatings, residues, oils, binders, fuel and other process materials. Affirm that the documented operation has no organic thermal decomposition. Unknown composition, unverified process fuel, a known organic component or conflicting evidence leaves screening unresolved. Retain separately evidenced PAH identities and independently assess other activities and facility-wide reporting obligations.</p></main></body></html>

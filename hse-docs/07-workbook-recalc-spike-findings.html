@@ -1,0 +1,178 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>S01 workbook recalculation spike</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202a;--muted:#5a6672;--line:#d8dee5;--accent:#1d5c86;--code:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 64px}
+main{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px clamp(16px,4vw,44px)}
+nav.top{max-width:980px;margin:0 auto 12px;font-size:14px}nav.top a{color:var(--accent)}
+h1{font-size:30px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:34px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:18px;margin:24px 0 8px}h4{margin:18px 0 6px}
+a{color:var(--accent)}p,li{max-width:80ch}
+code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto}pre code{padding:0;background:none}
+table{border-collapse:collapse;margin:14px 0;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--code)}
+blockquote{margin:12px 0;padding:4px 14px;border-left:4px solid var(--accent);color:var(--muted)}
+[data-unlinked]{color:inherit;text-decoration:none}
+.toc{background:var(--code);border-radius:6px;padding:10px 16px;font-size:14px}.toc ul{margin:4px 0;padding-left:18px}
+@media print{body{background:#fff;padding:0}main{border:0;padding:0}nav.top{display:none}h2{break-after:avoid}table{display:table}}
+</style></head><body><nav class="top"><a href="index.html">← All HSE documents</a></nav><main><h1 id="s01-workbook-recalculation-spike">S01 workbook recalculation spike</h1>
+<p>Status: bounded technical spike only. This does not import the full workbook, establish parity for every factor row, or approve any emissions method for production.</p>
+<h2 id="result">Result</h2>
+<p>Pycel 1.0b30 recalculates the official ECCC workbook on Python 3.13.3 from an input-modified temporary copy. The script reads the workbook's Part 1 substance summary and Part 4 particulate summaries after recalculation. It handles the Method 2 <code>SUMPRODUCT</code> array formulas in the tested branch.</p>
+<p>The workbook source is <code>../../../../JADA-SOLUTIONS/documents/guidelines/official/Electric Arc Welding, Cutting and Spraying Calculator_2022_10_26.xlsx</code>. SHA256 before the spike and after the 20-case run was:</p>
+<pre><code class="language-text">4c3e6f6a0fc1acd8038ab5ccd6e82cf65cd65e5d6bc69a7372b0a2a23dddaa93
+</code></pre>
+<p>Each case gets a new temporary copy. The source file is opened read-only for class labels and copied before any input changes. Inputs are written to the copy, Pycel recalculates from formulas, and output values are read from Pycel. The source hash is checked again before returning. The 20 distinct inputs are in <a data-unlinked="cases.json">cases.json</a>; literal factors and arithmetic notes are embedded there and exercised by <a data-unlinked="test_spike.py">test_spike.py</a>.</p>
+<h2 id="input-mapping">Input mapping</h2>
+<p>Inputs used by the spike are these workbook cells:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Workbook cells</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arc welding method questions</td>
+<td><code>Input Arc Welding Information!C4:C6</code></td>
+<td>Yes/No responses and Method 1 or Method 2 selection</td>
+</tr>
+<tr>
+<td>Named welding material usage</td>
+<td><code>Input Arc Welding Information!C11:C69</code></td>
+<td>Annual kg at the row selected by process family and exact material label</td>
+</tr>
+<tr>
+<td>Method 2 material and usage</td>
+<td><code>Input Arc Welding (Method 2)!A7</code>, <code>C7</code></td>
+<td>Method label and annual kg for the tested single Table B row</td>
+</tr>
+<tr>
+<td>Method 2 composition</td>
+<td><code>Input Arc Welding (Method 2)!D7:L7</code></td>
+<td>Chromium, cobalt, nickel, manganese, lead, zinc, copper, silver, antimony mass fractions, in that order</td>
+</tr>
+<tr>
+<td>Cutting method and active time</td>
+<td><code>Input Cutting Information!A6:A13</code>, <code>B6:B13</code></td>
+<td>Exact process label and annual active hours; the script does not convert kg to hours</td>
+</tr>
+<tr>
+<td>Cutting composition</td>
+<td><code>Input Cutting Information!C6:K13</code></td>
+<td>The nine element fractions in the order listed above</td>
+</tr>
+<tr>
+<td>Spraying method and material mass</td>
+<td><code>Input Spraying Information !A6:A11</code>, <code>B6:B11</code></td>
+<td>Exact process label and annual kg sprayed</td>
+</tr>
+<tr>
+<td>Spraying composition</td>
+<td><code>Input Spraying Information !C6:K11</code></td>
+<td>The nine element fractions in the order listed above</td>
+</tr>
+</tbody>
+</table>
+<p>The script clears or initializes these activity-input ranges before every case so a template value cannot leak into a result: <code>Input Arc Welding Information!C4:C6</code> is initialized to No/No/Method 1; <code>C11:C69</code> is set to numeric zero; Method 2 <code>A7:B106</code> is blanked and <code>C7:L106</code> set to numeric zero; cutting <code>B6:K13</code> and spraying <code>B6:K11</code> are set to numeric zero. The selected row is then overwritten with that case's explicit values. Every supplied composition must contain all nine element keys; missing or unknown values fail validation instead of becoming zero.</p>
+<p><code>process</code> selects one of welding, cutting, or spraying. <code>class</code> must exactly match a workbook row label. Welding additionally requires <code>welding_process</code> and an explicit <code>method</code>. <code>kg</code> is accepted for welding and spraying; cutting rejects it and requires <code>actual_time_hours</code> plus composition. Control efficiency is mandatory for every case.</p>
+<p>The corpus covers four concrete formula paths with literal independent factors: SMAW E308 Method 1, SMAW Other Method 2, Oxy1 cutting and Plasma Spray. In the cutting path, Part 1 releases use <code>S19</code>, <code>S28</code>, <code>S37</code>, <code>S46</code>, <code>S55</code>, <code>S64</code>, <code>S73</code>, <code>S82</code>, <code>S91</code> and <code>S100</code> for chromium through antimony. The workbook's CrVI cutting input is <code>NA</code>, and <code>S55</code> uses <code>IFERROR(...,0)</code>. The resulting zero reproduces this workbook fallback; it is not confirmation that chromium VI is absent or that zero is a valid regulatory conclusion.</p>
+<h2 id="output-mapping">Output mapping</h2>
+<p>The script returns all 13 numeric workbook summary outputs, including zeros. The first 10 are kilograms from <code>Part 1 Releases</code>; the last 3 are tonnes from <code>Part 4 Releases</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Sheet cell</th>
+<th>Workbook label</th>
+<th>Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Part 1 Releases!B5</code></td>
+<td>Chromium and its compounds</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B6</code></td>
+<td>Cobalt and its compounds</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B7</code></td>
+<td>Nickel and its compounds</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B8</code></td>
+<td>Manganese and its compounds</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B9</code></td>
+<td>Hexavalent Chromium compounds</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B10</code></td>
+<td>Lead and its compounds (except tetraethyl lead)</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B12</code></td>
+<td>Zinc and its compounds</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B13</code></td>
+<td>Copper (and its compounds)</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B14</code></td>
+<td>Silver (and its compounds)</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases!B15</code></td>
+<td>Antimony (and its compounds)</td>
+<td>kg</td>
+</tr>
+<tr>
+<td><code>Part 4 Releases!B5</code></td>
+<td>Particulate Matter less than or equal to 10 µm (PM10)</td>
+<td>tonnes</td>
+</tr>
+<tr>
+<td><code>Part 4 Releases!B6</code></td>
+<td>Total Particulate Matter (TPM)</td>
+<td>tonnes</td>
+</tr>
+<tr>
+<td><code>Part 4 Releases!B7</code></td>
+<td>Particulate Matter less than or equal to 2.5 µm (PM2.5)</td>
+<td>tonnes</td>
+</tr>
+</tbody>
+</table>
+<p>The script fails on an error, text, Boolean, or non-finite value in any summary output. It never converts a workbook error to zero.</p>
+<h2 id="control-efficiency">Control efficiency</h2>
+<p>The workbook says at <code>Instructions!A63:A64</code> that controlled emissions equal uncontrolled emissions multiplied by <code>(100 - control efficiency) / 100</code>. It has no control-efficiency input cells. The script returns raw workbook output and a separate controlled result after applying that documented multiplier. It does not write control values into an invented workbook cell. A 100% control case produces exact numeric zeros; a 0% case returns the raw value unchanged.</p>
+<h2 id="formula-engine-compatibility">Formula engine compatibility</h2>
+<p>The primary engine is pinned to <code>pycel==1.0b30</code>. A bounded Method 2 probe wrote one <code>Other SMAW</code> row (10 kg, 12% chromium) to a temporary copy. Pycel recalculated <code>Input Arc Welding (Method 2)!R8</code> to 0.12 and <code>Part 1 Releases!B5</code> to 0.006876 kg. The hand arithmetic is <code>D40 = 20 × 0.2865 × 0.12 = 0.6876 g/kg</code>, then <code>0.6876 × 10 / 1000 = 0.006876 kg</code>. <code>D284 = 20 × 0.2865 × 0.63 × 0.12 = 0.433188 g/kg</code>, yielding 0.00433188 kg of hexavalent chromium compounds. The Method 2 Part 4 factors are 20 g/kg for PM10 and TPM, with PM2.5 at 75% of PM10.</p>
+<p><code>formulas==1.3.2</code> was also probed. Its workbook calculation returned zero for Method 2 <code>R8</code> on the same composition input, so it is not the runtime engine. Pycel did recalculate that array formula correctly. The source formula functions observed on tested paths are <code>IF</code>, <code>SUMIF</code>, <code>OR</code>, <code>SUM</code>, <code>NOT</code>, <code>SUMPRODUCT</code>, <code>AND</code> and <code>IFERROR</code>; no unsupported function was observed in those paths. This is a bounded path result, not an exhaustive function-coverage claim for every workbook cell.</p>
+<p>Openpyxl emits a warning while saving the temporary copy: its reader does not preserve the workbook's conditional-formatting extension. The source workbook is untouched. This spike evaluates numeric workbook formulas only; it makes no claim that a saved copy preserves visual or non-calculation workbook features.</p>
+<h2 id="verification-and-boundaries">Verification and boundaries</h2>
+<ul>
+<li>Setup from <code>backend/</code>: <code>python3.13 -m venv spikes/s01_workbook_recalc/.venv</code>, then <code>spikes/s01_workbook_recalc/.venv/bin/python -m pip install -r spikes/s01_workbook_recalc/requirements.txt</code>.</li>
+<li>Reproduce the spike tests from <code>backend/</code> with <code>spikes/s01_workbook_recalc/.venv/bin/python -m unittest spikes/s01_workbook_recalc/test_spike.py -v</code>. The latest local run passed all 4 tests in 21.632 seconds.</li>
+<li>The independent test compared 260 raw outputs and 260 controlled outputs (20 cases × 13 values × 2) using relative tolerance <code>1e-9</code>; expected zero requires exact zero.</li>
+<li>The latest root-run recalculation-only run completed 20/20 cases and returned 13 numeric outputs per case in 17.323 seconds total (0.811–0.958 seconds per case; median 0.847 seconds). This measures copy creation, input writes, recalculation, and summary reads.</li>
+<li>The CLI accepts one process and case at a time; for example: <code>spikes/s01_workbook_recalc/.venv/bin/python spikes/s01_workbook_recalc/recalc.py --process welding --welding-process SMAW --class E7018 --kg 2 --method 1 --control-percent 50</code>.</li>
+<li>Numerical comparisons use relative tolerance <code>1e-9</code>; when the expected value is zero, the allowed absolute difference is zero.</li>
+<li>The pinned spike dependencies are isolated in this directory's <code>.venv</code>; no application dependencies were installed. LibreOffice was not installed or used.</li>
+<li>No database, application service, migration, or application test was run for S01.</li>
+<li>Tested factor labels are E308 Method 1, Other SMAW Method 2, Oxy1 cutting, and Plasma Spray. The remaining cases vary quantity, composition and control for those selected paths. This is not parity across all workbook rows and labels; it is not S12 parity acceptance.</li>
+</ul></main></body></html>

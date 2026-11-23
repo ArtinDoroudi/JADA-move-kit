@@ -1,0 +1,3480 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Electric arc welding, cutting and spraying calculator: complete calculation guide</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202a;--muted:#5a6672;--line:#d8dee5;--accent:#1d5c86;--code:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 64px}
+main{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px clamp(16px,4vw,44px)}
+nav.top{max-width:980px;margin:0 auto 12px;font-size:14px}nav.top a{color:var(--accent)}
+h1{font-size:30px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:34px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:18px;margin:24px 0 8px}h4{margin:18px 0 6px}
+a{color:var(--accent)}p,li{max-width:80ch}
+code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto}pre code{padding:0;background:none}
+table{border-collapse:collapse;margin:14px 0;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--code)}
+blockquote{margin:12px 0;padding:4px 14px;border-left:4px solid var(--accent);color:var(--muted)}
+[data-unlinked]{color:inherit;text-decoration:none}
+.toc{background:var(--code);border-radius:6px;padding:10px 16px;font-size:14px}.toc ul{margin:4px 0;padding-left:18px}
+@media print{body{background:#fff;padding:0}main{border:0;padding:0}nav.top{display:none}h2{break-after:avoid}table{display:table}}
+</style></head><body><nav class="top"><a href="index.html">← All HSE documents</a></nav><main><h1 id="electric-arc-welding-cutting-and-spraying-calculator-complete-calculation-guide">Electric arc welding, cutting and spraying calculator: complete calculation guide</h1>
+<p><strong>Document status:</strong> Internal reverse engineering of the supplied workbook. This Markdown file is not an ECCC publication, even though it is stored beside the source in <code>official/</code> at the user's request.</p>
+<p><strong>Source:</strong> <a href="source/Electric%20Arc%20Welding%2C%20Cutting%20and%20Spraying%20Calculator_2022_10_26.xlsx">Electric Arc Welding, Cutting and Spraying Calculator_2022_10_26.xlsx</a>. The filename identifies the October 26, 2022 version. Analysis completed November 12, 2026.</p>
+<p><strong>Source SHA-256:</strong> <code>4c3e6f6a0fc1acd8038ab5ccd6e82cf65cd65e5d6bc69a7372b0a2a23dddaa93</code>.</p>
+<p>This guide explains every calculation path, input category, default emission factor, method-dependent coefficient, output total, and material limitation found in that file. It distinguishes the equations from the workbook's actual cell references where those references are inconsistent. Reporting-part labels and instructions below describe this historical workbook; they do not establish current reporting requirements. The workbook was read without saving changes to it.</p>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#1-what-the-calculator-calculates">What the calculator calculates</a></li>
+<li><a href="#2-workbook-map-and-calculation-order">Workbook map and calculation order</a></li>
+<li><a href="#3-inputs-units-and-preparation">Inputs, units and preparation</a></li>
+<li><a href="#4-welding-method-selection">Welding method selection</a></li>
+<li><a href="#5-listed-electrode-welding-calculations">Listed-electrode welding calculations</a></li>
+<li><a href="#6-other-welding-method-1">Other welding: Method 1</a></li>
+<li><a href="#7-other-welding-method-2">Other welding: Method 2</a></li>
+<li><a href="#8-cutting-calculations">Cutting calculations</a></li>
+<li><a href="#9-spraying-calculations">Spraying calculations</a></li>
+<li><a href="#10-output-totals-and-exact-cell-map">Output totals and exact cell map</a></li>
+<li><a href="#11-controls-overrides-and-rounding">Controls, overrides and rounding</a></li>
+<li><a href="#12-workbook-defects-and-edge-cases">Workbook defects and edge cases</a></li>
+<li><a href="#13-worked-examples">Worked examples</a></li>
+<li><a href="#14-reimplementation-specification">Reimplementation specification</a></li>
+<li><a href="#15-verification-and-limits">Verification and limits</a></li>
+</ol>
+<p>Appendices: <a href="#appendix-a-listed-welding-electrodes-and-all-default-factors">A. Listed-electrode factors</a>, <a href="#appendix-b-other-welding-defaults-and-exact-factor-formulas">B. Other-welding factors and formulas</a>, <a href="#appendix-c-all-cutting-and-spraying-factors">C. Cutting and spraying factors</a>, <a href="#appendix-d-electrode-aliases-and-workbook-source-bibliography">D. Aliases and bibliography</a>.</p>
+<h2 id="1-what-the-calculator-calculates">1. What the calculator calculates</h2>
+<p>The workbook estimates annual <strong>uncontrolled air releases</strong> from three activity groups:</p>
+<table>
+<thead>
+<tr>
+<th>Activity</th>
+<th>Activity measure</th>
+<th>Metal calculation basis</th>
+<th>Particulate calculation basis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Electric arc welding, listed electrodes</td>
+<td>kg of electrode/filler used per year</td>
+<td>Electrode-specific substance factor × electrode usage</td>
+<td>Electrode-specific fume factor × electrode usage</td>
+</tr>
+<tr>
+<td>Electric arc welding, other types, Method 1</td>
+<td>kg of electrode/filler used per year</td>
+<td>Average substance factor × electrode usage</td>
+<td>Average fume factor × electrode usage</td>
+</tr>
+<tr>
+<td>Electric arc welding, other types, Method 2</td>
+<td>kg of electrode/filler used per year, grouped by process</td>
+<td>Process coefficient × mass-weighted element fraction × electrode usage</td>
+<td>Process fume factor × electrode usage</td>
+</tr>
+<tr>
+<td>Cutting</td>
+<td>Active cutting hours per year</td>
+<td>Cutting TPM × time-weighted element fraction</td>
+<td>Fume generation rate in g/min × active minutes</td>
+</tr>
+<tr>
+<td>Spraying</td>
+<td>kg of material sprayed per year</td>
+<td>Substance-specific factor × mass-weighted element fraction × sprayed mass</td>
+<td>Greater of base fume estimate and sum of nine element releases</td>
+</tr>
+</tbody>
+</table>
+<p>Part 1 calculates chromium (Cr), cobalt (Co), nickel (Ni), manganese (Mn), hexavalent chromium (Cr(VI)), lead (Pb), zinc (Zn), copper (Cu), silver (Ag), and antimony (Sb). “Chromium” in this guide means the workbook's <strong>chromium and its compounds</strong> output. Cr(VI) is a separate output calculated using chromium input where a composition-based method applies.</p>
+<p>Part 4 calculates only PM10, total particulate matter (TPM), and PM2.5. It does not calculate the other criteria air contaminants. Parts 2–3 and Part 5 have headings and a “No information available” message, with no formulas. Their absence is not a calculated zero release.</p>
+<p>The workbook does not calculate manufacture/process/otherwise-use quantities, reporting eligibility, facility-wide thresholds, water/land releases, waste transfers, capture efficiency, or controlled emissions. Its <code>Instructions!A13</code> says to combine these air estimates with other facility sources. This is an instruction to the operator, not an automatic calculation.</p>
+<h2 id="2-workbook-map-and-calculation-order">2. Workbook map and calculation order</h2>
+<h3 id="21-all-ten-sheets">2.1 All ten sheets</h3>
+<table>
+<thead>
+<tr>
+<th>Exact sheet name</th>
+<th>Visibility</th>
+<th>Role</th>
+<th style="text-align: right;">Formula cells</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Changelog</code></td>
+<td>Hidden</td>
+<td>Historical review notes</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><code>Instructions</code></td>
+<td>Visible</td>
+<td>Instructions, assumptions and bibliography</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><code>Input Arc Welding Information</code></td>
+<td>Visible</td>
+<td>Table A, method selectors and conditional labels</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr>
+<td><code>Input Arc Welding (Method 2)</code></td>
+<td>Visible</td>
+<td>Table B and automatic process aggregates</td>
+<td style="text-align: right;">70</td>
+</tr>
+<tr>
+<td><code>Input Cutting Information</code></td>
+<td>Visible</td>
+<td>Cutting hours and material fractions</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><code>Input Spraying Information</code></td>
+<td>Visible</td>
+<td>Sprayed mass and material fractions</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><code>Part 1 Releases</code></td>
+<td>Visible</td>
+<td>Welding, cutting and spraying metals; combined totals</td>
+<td style="text-align: right;">1,883</td>
+</tr>
+<tr>
+<td><code>Parts 2 - 3 Releases</code></td>
+<td>Visible</td>
+<td>No calculation implemented</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><code>Part 4 Releases</code></td>
+<td>Visible</td>
+<td>Welding, cutting and spraying particulate; combined totals</td>
+<td style="text-align: right;">375</td>
+</tr>
+<tr>
+<td><code>Part 5 Releases</code></td>
+<td>Visible</td>
+<td>No calculation implemented</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td></td>
+<td style="text-align: right;"><strong>2,351</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The spraying-input and Part 5 sheet names end with a space. Preserve that space in references or explicitly normalize it during import. Of the 70 Method 2 formulas, 63 are single-cell legacy array formulas for weighted fractions, and seven are <code>SUMIF</code> quantity totals.</p>
+<p>The file has no workbook-defined names, macros, external-workbook links, query connections, or separate factor lookup sheets. Factors are stored directly in the release sheets or embedded as constants in formulas. The release “summary charts” are cell tables, not chart-driven calculations. There are no cell comments supplying additional factor provenance.</p>
+<p>All visible sheets are protected. Input cells and many literal emission factors are unlocked; formulas and computed factors are generally locked. Protection is a user-interface guard, not an input-validity test.</p>
+<h3 id="22-dependency-order">2.2 Dependency order</h3>
+<pre><code class="language-text">Table A listed electrode usage ────────────► welding metals and PM10/TPM
+Table A other usage + Method 1 factors ────► other-welding metals and PM10/TPM
+Table B quantities/compositions
+  └─► process totals and weighted fractions
+      └─► Method 2 factors and activity ───► other-welding metals and PM10/TPM
+
+Cutting hours ─► cutting PM10 and TPM ─► cutting metals using composition
+
+Spraying mass + composition ─► spraying metals
+Spraying mass + base fume factor
+  └─► compare with sum of spraying metals ─► spraying PM10 and TPM
+
+Each activity's PM10 ─► PM2.5 = 0.75 × PM10
+Activity subtotals ─► Part 1 and Part 4 summary tables
+</code></pre>
+<p>Although Part 1 and Part 4 reference one another, there is no circular calculation: cutting flows from Part 4 to Part 1, whereas spraying flows from Part 1 to Part 4.</p>
+<h2 id="3-inputs-units-and-preparation">3. Inputs, units and preparation</h2>
+<h3 id="31-units-and-notation">3.1 Units and notation</h3>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Meaning</th>
+<th>Units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>U</code></td>
+<td>Annual electrode/filler usage</td>
+<td>kg/year</td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>Annual material sprayed</td>
+<td>kg/year</td>
+</tr>
+<tr>
+<td><code>H</code></td>
+<td>Annual active cutting time</td>
+<td>hours/year</td>
+</tr>
+<tr>
+<td><code>f_s</code></td>
+<td>Mass fraction of element <code>s</code> in material</td>
+<td>kg element/kg material, dimensionless</td>
+</tr>
+<tr>
+<td><code>EF_s</code></td>
+<td>Welding substance factor</td>
+<td>g substance/kg electrode</td>
+</tr>
+<tr>
+<td><code>K_s</code></td>
+<td>Method 2 coefficient before multiplying by composition</td>
+<td>g substance/kg electrode when <code>f_s = 1</code></td>
+</tr>
+<tr>
+<td><code>EF_PM</code></td>
+<td>Welding or spraying base fume factor</td>
+<td>g particulate/kg material</td>
+</tr>
+<tr>
+<td><code>R_PM</code></td>
+<td>Cutting fume rate</td>
+<td>g particulate/minute</td>
+</tr>
+<tr>
+<td><code>E_kg</code>, <code>E_t</code></td>
+<td>Annual substance or particulate release</td>
+<td>kg/year, tonnes/year</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>1 tonne = 1,000 kg = 1,000,000 g</code> and <code>1 hour = 60 minutes</code>. Output cells say “kg” or “tonnes”; the annual basis comes from the inputs.</p>
+<p><strong>Enter 1 wt% as <code>0.01</code>, not <code>1</code>.</strong> Enter 20 wt% as <code>0.20</code>. Fractions are numeric decimals; the workbook does not divide composition inputs by 100. An entered <code>1</code> means 100% and produces a result 100 times larger than a 1% input.</p>
+<h3 id="32-table-a-listed-and-other-welding-usage">3.2 Table A: listed and other welding usage</h3>
+<p>Sheet: <code>Input Arc Welding Information</code>. Enter annual usage in column C. A process is identified by both its welding family and electrode name; identical electrode names in different families are separate categories.</p>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Listed-electrode input rows</th>
+<th>Method 1 “other” input</th>
+<th style="text-align: right;">Listed count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMAW, shielded metal arc welding</td>
+<td><code>C11:C31</code></td>
+<td><code>C32</code></td>
+<td style="text-align: right;">21</td>
+</tr>
+<tr>
+<td>GMAW, gas metal arc welding, including MIG/MAG</td>
+<td><code>C34:C44</code></td>
+<td><code>C45</code></td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td>FCAW, flux cored arc welding</td>
+<td><code>C47:C53</code></td>
+<td><code>C54</code></td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>SAW, submerged arc welding</td>
+<td><code>C56:C58</code></td>
+<td><code>C59</code></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>GTAW, gas tungsten arc welding, including TIG</td>
+<td><code>C61:C62</code></td>
+<td><code>C63</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>PAW, plasma arc welding</td>
+<td><code>C65:C66</code></td>
+<td><code>C67</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>Other arc welding methods</td>
+<td>None</td>
+<td><code>C69</code></td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>There are 46 listed categories and seven “other” categories. Appendix A identifies every electrode and its input cell. Appendix D records the workbook's electrode aliases. The workbook's notes restrict other GTAW and other PAW to use with filler materials. The SCC information is descriptive; SCC digits are not used by any calculation.</p>
+<h3 id="33-table-b-method-2-detail-records">3.3 Table B: Method 2 detail records</h3>
+<p>Sheet: <code>Input Arc Welding (Method 2)</code>. Exactly <strong>100 records</strong>, rows <strong>7–106</strong>, are included in all helper formulas.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Entry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Process category from the dropdown</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Optional electrode/filler name; not used in calculations</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Annual electrode usage, kg/year</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Chromium mass fraction</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Cobalt mass fraction</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Nickel mass fraction</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Manganese mass fraction</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Lead mass fraction</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Zinc mass fraction</td>
+</tr>
+<tr>
+<td>J</td>
+<td>Copper mass fraction</td>
+</tr>
+<tr>
+<td>K</td>
+<td>Silver mass fraction</td>
+</tr>
+<tr>
+<td>L</td>
+<td>Antimony mass fraction</td>
+</tr>
+</tbody>
+</table>
+<p>Allowed category labels are <code>&lt;Empty Raw&gt;</code> (the source's spelling), <code>Other SMAW</code>, <code>Other GMAW</code>, <code>Other FCAW</code>, <code>Other SAW</code>, <code>Other GTAW</code>, <code>Other PAW</code>, and <code>Other Arc Welding Methods</code>. The validation list is <code>BM5:BM12</code>. All 100 source records initially use <code>&lt;Empty Raw&gt;</code>.</p>
+<p>A name typed in column B does not select an emission factor. Only column A chooses a process group. A blank, <code>&lt;Empty Raw&gt;</code>, or unrecognized category is excluded from the seven groups even when quantity and composition are populated. Rows below 106 are not included automatically.</p>
+<p>Excel's text comparisons in the selectors, <code>SUMIF</code> and category masks are case-insensitive. They do not explicitly trim leading/trailing spaces. Use the dropdown labels to avoid accidental unmatched categories.</p>
+<h3 id="34-cutting-inputs">3.4 Cutting inputs</h3>
+<p>Sheet: <code>Input Cutting Information</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Process</th>
+<th>Quantity input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td>Oxy, including oxyacetylene and Oxy-Mapp</td>
+<td><code>B6</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Air carbon arc cutting, CAC-A</td>
+<td><code>B7</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Plasma arc cutting, PAC</td>
+<td><code>B8</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Laser</td>
+<td><code>B9</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Arc saw</td>
+<td><code>B10</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Grinder</td>
+<td><code>B11</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Reciprocating saw</td>
+<td><code>B12</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Other cutting methods</td>
+<td><code>B13</code></td>
+</tr>
+</tbody>
+</table>
+<p>Column B contains active cutting hours/year, not material mass, shift length, or equipment availability. In each row, columns C–K contain Cr, Co, Ni, Mn, Pb, Zn, Cu, Ag, Sb fractions, in that order.</p>
+<p>The sheet requests a <strong>time-weighted average</strong> for each process. If material/job <code>i</code> uses that process for <code>h_i</code> active hours and has fraction <code>f_i,s</code>, prepare the input as:</p>
+<pre><code class="language-text">H_process = Σ h_i
+f_process,s = Σ(h_i × f_i,s) / Σ h_i
+</code></pre>
+<p>The workbook receives these totals and averages; it does not calculate them from individual cutting jobs. The equation above implements the sheet's averaging instruction. For a process with no activity, use zero hours. The workbook says “Other Cutting Methods” should not be used for unspecified mechanical/cold cutting methods such as press cutting; the explicitly listed grinder and saw categories remain available.</p>
+<h3 id="35-spraying-inputs">3.5 Spraying inputs</h3>
+<p>Sheet: <code>Input Spraying Information</code>, including the trailing space.</p>
+<table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Process</th>
+<th>Quantity input</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td>Plasma spray</td>
+<td><code>B6</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Flame spray, single wire</td>
+<td><code>B7</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Flame spray, other</td>
+<td><code>B8</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Electric arc spray, including twin wire</td>
+<td><code>B9</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>High velocity oxy-fuel coating spray, HVOF</td>
+<td><code>B10</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Other spraying methods</td>
+<td><code>B11</code></td>
+</tr>
+</tbody>
+</table>
+<p>Column B contains total material sprayed, kg/year. Columns C–K contain the same nine elements in the same order as cutting. The sheet requests a <strong>mass-weighted average</strong> for each process:</p>
+<pre><code class="language-text">M_process = Σ m_i
+f_process,s = Σ(m_i × f_i,s) / Σ m_i
+</code></pre>
+<p>These averages must be prepared outside the spraying sheet. There is no separate Cr(VI) input. The Cr(VI) emission factor is applied to total chromium content.</p>
+<h2 id="4-welding-method-selection">4. Welding method selection</h2>
+<h3 id="41-controls-and-intended-workflow">4.1 Controls and intended workflow</h3>
+<p>The controls are on <code>Input Arc Welding Information</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Meaning</th>
+<th>Source default</th>
+<th>Validation source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C4</code></td>
+<td>Do you know the type and name of all processes and electrodes/fillers?</td>
+<td><code>Yes</code></td>
+<td><code>BA3:BA4</code>: Yes/No</td>
+</tr>
+<tr>
+<td><code>C5</code></td>
+<td>Are all processes and electrodes/fillers listed in Table A?</td>
+<td><code>Yes</code></td>
+<td><code>BA3:BA4</code>: Yes/No</td>
+</tr>
+<tr>
+<td><code>C6</code></td>
+<td>Method for unknown/unlisted types</td>
+<td><code>Method 1</code></td>
+<td><code>BB3:BB4</code>: Method 1/Method 2</td>
+</tr>
+</tbody>
+</table>
+<p>Known, listed electrodes remain in Table A under either method. If there are unknown or unlisted items, answer No to the applicable question and select the method for those items. The workbook recommends Method 1 by default and Method 2 when Method 1 does not provide a reasonable estimate and composition is known (<code>Instructions!A79:A83</code>). Do not enter the same usage in both listed and other categories.</p>
+<h3 id="42-actual-release-gate">4.2 Actual release gate</h3>
+<p>For every “other” welding release row, the gate is:</p>
+<pre><code class="language-text">other_enabled = (C4 = &quot;No&quot;) OR (C5 = &quot;No&quot;)
+if NOT other_enabled:
+    other_release = 0
+else:
+    other_release = selected_factor × selected_quantity / conversion
+</code></pre>
+<p>The method branch is separately:</p>
+<pre><code class="language-text">if C6 = &quot;Method 1&quot;:
+    use Table A other-category quantity and Method 1 factor
+else:
+    use Table B process aggregate and Method 2 factor
+</code></pre>
+<p>Consequences:</p>
+<ul>
+<li>With both answers Yes, all “other” releases are zero, even if Table A other cells or Table B contain quantities.</li>
+<li>With either answer No, “other” releases can calculate. The gate does not require the other question to have a valid answer.</li>
+<li><strong>Any value other than <code>Method 1</code> follows the Method 2 branch</strong>, including a blank or invalid value. The formulas do not explicitly test for <code>Method 2</code>.</li>
+<li>Listed-electrode, cutting and spraying calculations are not gated by these answers.</li>
+<li>Table B aggregates calculate continuously. Its “active only if Method 2” note describes when downstream results use them, not whether helper formulas run.</li>
+<li>Changing the method does not erase quantities in the other table.</li>
+</ul>
+<h3 id="43-conditional-messages-and-labels">4.3 Conditional messages and labels</h3>
+<p><code>A5</code> shows the second question only when C4 is Yes. C5 still exists and is still used by the release gate when the question text is blank.</p>
+<p><code>A6</code> first checks whether C4 or C5 is empty and displays “Please answer both questions above.” Otherwise it directs the user to choose a method if either answer is No, or to Table A if both are Yes. <code>A7</code> directs Method 1 users to Table A and Method 2 users to Table A for known electrodes plus Table B for other electrodes. Both message formulas use <code>IFERROR</code> for a generic download-a-fresh-copy message. <strong>These messages do not stop release calculations.</strong></p>
+<p>The other-category labels in B32, B45, B54 and B59, the label in A69/B69, and the related unit/SCC cells are conditionally displayed only when an answer is No and C6 is Method 1. B63 and B67 retain their other-GTAW/PAW labels even when those rows are inactive. Visual label visibility is not the calculation rule; the gate above is.</p>
+<h2 id="5-listed-electrode-welding-calculations">5. Listed-electrode welding calculations</h2>
+<h3 id="51-metals">5.1 Metals</h3>
+<p>For each listed process/electrode and each of the seven implemented listed-electrode substances:</p>
+<pre><code class="language-text">E_kg = EF_s [g/kg] × U [kg/year] / 1,000
+E_t  = E_kg / 1,000
+</code></pre>
+<p>In <code>Part 1 Releases</code>, D holds the factor, E the rating, F the input quantity, G kg release, and I tonnes release. For example:</p>
+<pre><code class="language-excel">F21 = 'Input Arc Welding Information'!C13
+G21 = (D21*F21)/1000
+I21 = G21/1000
+</code></pre>
+<p>The example is SMAW E308 chromium: D21 is 0.59 g/kg. Ratings are metadata and do not alter the arithmetic. Zero factors are literal workbook defaults, not proof that an element is absent from the material.</p>
+<p>No composition is requested for listed-electrode calculations. Do not multiply these substance-specific factors by another mass fraction. Cr(VI) uses its own stored factor; the listed-electrode Cr(VI) result is not calculated by applying a universal ratio to total chromium.</p>
+<p>Copper, silver and antimony have no listed-electrode calculation rows. Their welding sections contain only the seven “other” process rows. With default Method 1 factors, those three welding totals are zero.</p>
+<p><strong>Reference exceptions:</strong> The normal process/electrode mapping is broken at <code>F181</code> and <code>F421:F427</code>. Section 12 lists the exact formulas required to reproduce the original workbook.</p>
+<h3 id="52-particulate">5.2 Particulate</h3>
+<p>For each listed electrode:</p>
+<pre><code class="language-text">PM10_t = EF_PM10 × U / 1,000,000
+TPM_t  = EF_TPM  × U / 1,000,000
+PM2.5_t = 0.75 × PM10_t
+</code></pre>
+<p>The stored PM10 and TPM factors are identical, but occupy separate literal cells for listed electrodes. PM2.5 references the PM10 release, not TPM. For SMAW E308:</p>
+<pre><code class="language-excel">'Part 4 Releases'!G14  = (F14*D14)/1000000
+'Part 4 Releases'!G75  = (F75*D75)/1000000
+'Part 4 Releases'!G136 = G14*0.75
+</code></pre>
+<p>D14 and D75 both contain 13.4 g/kg. Editing only one of these factors can make PM10 differ from TPM. There is no metal-sum floor for welding.</p>
+<h2 id="6-other-welding-method-1">6. Other welding: Method 1</h2>
+<p>Method 1 uses the seven other-category quantities in Table A and the average factors in Appendix B.1. Once the other-release gate is enabled:</p>
+<pre><code class="language-text">Metal_kg = Method1_EF_s × U_other / 1,000
+Metal_t  = Metal_kg / 1,000
+PM10_t   = Method1_EF_PM × U_other / 1,000,000
+TPM_t    = PM10_t                  [with unmodified linked factors]
+PM2.5_t  = 0.75 × PM10_t
+</code></pre>
+<p>Method 1 ignores Table B composition and quantities. Each process has fixed defaults; there is no averaging of the user's listed-electrode mix. For example, Other SMAW chromium always uses 0.46 g/kg and PM10 uses 20.6 g/kg under Method 1. This can produce a nonzero metal estimate even when the user's particular electrode contains none of that metal, which is the workbook's stated motivation for Method 2.</p>
+<h2 id="7-other-welding-method-2">7. Other welding: Method 2</h2>
+<h3 id="71-process-totals-and-weighted-fractions">7.1 Process totals and weighted fractions</h3>
+<p>On <code>Input Arc Welding (Method 2)</code>, the supporting table occupies P7:Z14:</p>
+<table>
+<thead>
+<tr>
+<th>Helper row</th>
+<th>Table B category</th>
+<th>Q: total usage</th>
+<th>R:Z fractions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>Other SMAW</td>
+<td><code>Q8</code></td>
+<td>Cr, Co, Ni, Mn, Pb, Zn, Cu, Ag, Sb</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Other GMAW</td>
+<td><code>Q9</code></td>
+<td>Same order</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Other FCAW</td>
+<td><code>Q10</code></td>
+<td>Same order</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Other SAW</td>
+<td><code>Q11</code></td>
+<td>Same order</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Other GTAW</td>
+<td><code>Q12</code></td>
+<td>Same order</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Other PAW</td>
+<td><code>Q13</code></td>
+<td>Same order</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Other Arc Welding Methods</td>
+<td><code>Q14</code></td>
+<td>Same order</td>
+</tr>
+</tbody>
+</table>
+<p>For process <code>p</code>, using only matching records within rows 7–106:</p>
+<pre><code class="language-text">U_p = Σ U_i
+if U_p = 0:
+    f̄_p,s = 0
+else:
+    f̄_p,s = Σ(U_i × f_i,s) / U_p
+</code></pre>
+<p>Exact SMAW examples:</p>
+<pre><code class="language-excel">Q8 = SUMIF(A$7:A$106,&quot;Other SMAW&quot;,C$7:C$106)
+
+R8 = IF(SUMIF($A$7:$A$106,&quot;Other SMAW&quot;,$C$7:$C$106)=0,0,
+        SUMPRODUCT(--(A$7:A$106=&quot;Other SMAW&quot;),$C$7:$C$106,D$7:D$106)
+        /SUMIF($A$7:$A$106,&quot;Other SMAW&quot;,$C$7:$C$106))
+</code></pre>
+<p>The other 62 fraction formulas use the corresponding category and composition column. They are legacy array formulas in the XLSX. The helper fraction display uses four decimals, but subsequent calculations use the unrounded value.</p>
+<h3 id="72-metal-factors">7.2 Metal factors</h3>
+<p>For each ordinary element, construct an effective factor from its weighted fraction:</p>
+<pre><code class="language-text">Effective_EF_p,s = K_p,s × f̄_p,s
+Metal_kg_p,s = Effective_EF_p,s × U_p / 1,000
+Metal_t_p,s = Metal_kg_p,s / 1,000
+</code></pre>
+<p>For Cr(VI), use the weighted <strong>total chromium</strong> fraction:</p>
+<pre><code class="language-text">Effective_EF_p,CrVI = K_p,CrVI × f̄_p,Cr
+CrVI_kg_p = Effective_EF_p,CrVI × U_p / 1,000
+</code></pre>
+<p>All coefficients embedded in the Method 2 formulas are:</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th style="text-align: right;">K for total Cr</th>
+<th style="text-align: right;">K for Co, Ni, Mn, Pb, Zn, Cu, Ag, Sb</th>
+<th style="text-align: right;">K for Cr(VI)</th>
+<th style="text-align: right;">PM10/TPM factor, g/kg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Other SMAW</td>
+<td style="text-align: right;"><code>20 × 0.2865 = 5.73</code></td>
+<td style="text-align: right;">5.73</td>
+<td style="text-align: right;"><code>20 × 0.2865 × 0.63 = 3.6099</code></td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Other GMAW</td>
+<td style="text-align: right;"><code>10 × 0.5464 = 5.464</code></td>
+<td style="text-align: right;">5.464</td>
+<td style="text-align: right;"><code>10 × 0.5464 × 0.05 = 0.2732</code></td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>Other FCAW</td>
+<td style="text-align: right;"><code>20 × 0.2865 = 5.73</code></td>
+<td style="text-align: right;">5.73</td>
+<td style="text-align: right;"><code>20 × 0.2865 × 0.63 = 3.6099</code></td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>Other SAW</td>
+<td style="text-align: right;"><code>0.0053 + 0.00902 = 0.01432</code></td>
+<td style="text-align: right;">0.0143</td>
+<td style="text-align: right;">0.00902</td>
+<td style="text-align: right;">0.05</td>
+</tr>
+<tr>
+<td>Other GTAW</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: right;"><code>2.9 × 0.1 = 0.29</code></td>
+<td style="text-align: right;">2.9</td>
+</tr>
+<tr>
+<td>Other PAW</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;"><code>0.4 × 0.1 = 0.04</code></td>
+<td style="text-align: right;">0.4</td>
+</tr>
+<tr>
+<td>Other Arc Welding Methods</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;"><code>50 × 0.1 = 5</code></td>
+<td style="text-align: right;">50</td>
+</tr>
+</tbody>
+</table>
+<p>The source does not explain the derivation of every embedded coefficient next to its formula. These are verified constants from the file, not newly derived physical parameters. In particular, preserve <strong>0.01432 for SAW total chromium versus 0.0143 for the other ordinary elements</strong> when reproducing the workbook.</p>
+<p>For valid records with positive total usage, an equivalent implementation avoids explicit averaging for the final metal total:</p>
+<pre><code class="language-text">Metal_kg_p,s = K_p,s × Σ(U_i × f_i,s) / 1,000
+</code></pre>
+<p>The weighted-average form is still needed to reproduce the displayed helper table. The simplified identity should not replace the workbook's zero-total branch for invalid inputs containing offsetting positive and negative quantities.</p>
+<h3 id="73-particulate-factors-and-activity-routing">7.3 Particulate factors and activity routing</h3>
+<p>Method 2 particulate depends on process and total usage, <strong>not composition</strong>:</p>
+<pre><code class="language-text">PM10_t_p = Method2_EF_PM,p × U_p / 1,000,000
+TPM_t_p  = PM10_t_p
+PM2.5_t_p = 0.75 × PM10_t_p
+</code></pre>
+<p>The first seven other-process activity formulas are <code>Part 1 Releases!F40,F53,F62,F67,F71,F75,F77</code>. They choose the corresponding Table A other quantity or Table B Q8:Q14. Later metal sections link to these activity cells. Part 4 makes the same selection in F33,F46,F55,F60,F64,F68,F70. Its other-process TPM factor and activity cells link back to the corresponding PM10 cells.</p>
+<p>For example:</p>
+<pre><code class="language-excel">'Part 1 Releases'!D40 = IF('Input Arc Welding Information'!$C$6=&quot;Method 1&quot;,
+                          0.46,20*0.2865*'Input Arc Welding (Method 2)'!R8)
+'Part 1 Releases'!F40 = IF('Input Arc Welding Information'!$C$6=&quot;Method 1&quot;,
+                          'Input Arc Welding Information'!C32,
+                          'Input Arc Welding (Method 2)'!Q8)
+'Part 1 Releases'!G40 = IF(NOT(OR('Input Arc Welding Information'!C$4=&quot;No&quot;,
+                                 'Input Arc Welding Information'!C$5=&quot;No&quot;)),
+                          0,(D40*F40)/1000)
+</code></pre>
+<h2 id="8-cutting-calculations">8. Cutting calculations</h2>
+<h3 id="81-particulate-from-active-hours">8.1 Particulate from active hours</h3>
+<p>For each of the eight cutting processes:</p>
+<pre><code class="language-text">PM10_t = H × 60 × R_PM10 / 1,000,000
+TPM_t  = H × 60 × R_TPM  / 1,000,000
+PM2.5_t = 0.75 × PM10_t
+</code></pre>
+<p>Appendix C.1 gives all eight rates. PM10 and TPM have equal defaults in separate cells. For plasma cutting:</p>
+<pre><code class="language-excel">'Part 4 Releases'!O14 = 'Input Cutting Information'!B8
+'Part 4 Releases'!P14 = (O14*60*M14)/1000000
+'Part 4 Releases'!O23 = 'Input Cutting Information'!B8
+'Part 4 Releases'!P23 = (O23*60*M23)/1000000
+'Part 4 Releases'!P32 = 0.75*P14
+</code></pre>
+<p>M14 and M23 are 5.3 g/min. The <code>60</code> converts annual hours into annual minutes.</p>
+<h3 id="82-metals-from-tpm">8.2 Metals from TPM</h3>
+<p>For Cr, Co, Ni, Mn, Pb, Zn, Cu, Ag and Sb:</p>
+<pre><code class="language-text">Metal_t = f_process,s × TPM_t,process
+Metal_kg = Metal_t × 1,000
+</code></pre>
+<p>In <code>Part 1 Releases</code>, Q contains the input fraction, R references the matching cutting TPM result in <code>Part 4 Releases!P21:P28</code>, S calculates kg, and U calculates tonnes. For plasma-cutting chromium:</p>
+<pre><code class="language-excel">Q21 = 'Input Cutting Information'!C8
+R21 = 'Part 4 Releases'!P23
+S21 = (Q21*R21)*1000
+U21 = Q21*R21
+</code></pre>
+<p>The “Emission Factor” column O is <code>NA</code> and is <strong>not used</strong> by these formulas. Entering a number into that column would not change the release. The controlling rate is the TPM rate in Part 4 column M. All nine ordinary element groups use the same process TPM basis.</p>
+<h3 id="83-cutting-crvi-is-not-estimated">8.3 Cutting Cr(VI) is not estimated</h3>
+<p>For the Cr(VI) section, <code>Part 1 Releases!Q55:Q62</code> contains literal text <code>NA</code>. The formulas are:</p>
+<pre><code class="language-excel">S55 = IFERROR((Q55*R55)*1000,0)
+U55 = IFERROR(Q55*R55,0)
+</code></pre>
+<p>They repeat through row 62. Multiplication by <code>NA</code> errors and <code>IFERROR</code> returns zero. Thus <strong>all default cutting Cr(VI) results are zero because the calculation is unavailable</strong>, not because the workbook derives zero Cr(VI) from chromium content. The ordinary chromium fraction is not referenced in these eight rows.</p>
+<h2 id="9-spraying-calculations">9. Spraying calculations</h2>
+<h3 id="91-metals">9.1 Metals</h3>
+<p>For each spraying process and substance:</p>
+<pre><code class="language-text">Substance_in_sprayed_material_kg = M × f_s
+Metal_kg = Spraying_EF_s × f_s × M / 1,000
+Metal_t  = Spraying_EF_s × f_s × M / 1,000,000
+</code></pre>
+<p>The factor is <strong>g released per kg of that substance in the sprayed material</strong>. It is not g/kg of total feed. This distinction is stated in <code>Part 1 Releases!AA17</code> and <code>X90</code>.</p>
+<p>In Part 1, AA holds the substance factor, AB its rating, AC the material fraction, AD annual sprayed mass, AE kg release, and AG tonnes release. Plasma-spray chromium illustrates the pattern:</p>
+<pre><code class="language-excel">AC19 = 'Input Spraying Information '!C6
+AD19 = 'Input Spraying Information '!B6
+AE19 = (AA19*AC19*AD19)/1000
+AG19 = (AA19*AC19*AD19)/1000000
+</code></pre>
+<p>AA19 is 90.9 g/kg of chromium. Plasma-spray Cr(VI) uses AA47 = 11.8 with the <strong>same chromium fraction</strong> from C6. There is no separate speciation input and no post-calculation subtraction of Cr(VI) from the total chromium output.</p>
+<p>All 60 spraying substance factors and their ratings are in Appendix C.2.</p>
+<h3 id="92-pm10-and-tpm-base-estimate-with-a-metal-sum-floor">9.2 PM10 and TPM: base estimate with a metal-sum floor</h3>
+<p>For each process, calculate two candidates in tonnes:</p>
+<pre><code class="language-text">Base_PM10_t = M × EF_PM10 / 1,000,000
+Base_TPM_t  = M × EF_TPM  / 1,000,000
+
+Element_sum_t = Cr_t + Co_t + Ni_t + Mn_t + Pb_t + Zn_t + Cu_t + Ag_t + Sb_t
+
+PM10_t = max(Base_PM10_t, Element_sum_t)
+TPM_t  = max(Base_TPM_t, Element_sum_t)
+PM2.5_t = 0.75 × PM10_t
+</code></pre>
+<p><strong>Cr(VI) is excluded from this sum.</strong> The formula includes nine ordinary elements, not all ten Part 1 substance outputs. This avoids adding the separately calculated chromium subset to the sum containing total chromium.</p>
+<p>The comparison is made <strong>for each spraying process before summing the processes</strong>. Do not replace <code>Σ max(base_p, metals_p)</code> with <code>max(Σ base_p, Σ metals_p)</code>; those expressions can differ.</p>
+<p>For plasma spray, the element sum is:</p>
+<pre><code class="language-excel">SUM('Part 1 Releases'!AG19,'Part 1 Releases'!AG26,
+    'Part 1 Releases'!AG33,'Part 1 Releases'!AG40,
+    'Part 1 Releases'!AG54,'Part 1 Releases'!AG61,
+    'Part 1 Releases'!AG68,'Part 1 Releases'!AG75,
+    'Part 1 Releases'!AG82)
+</code></pre>
+<p><code>Part 4 Releases!Y12</code> implements an <code>IF(base &gt;= sum, base, sum)</code>, mathematically the maximum above. Y19 repeats it for TPM with its own base factor. Y26 is <code>0.75*Y12</code>. The following five process rows shift each Part 1 reference down by the matching process offset.</p>
+<p>A zero base PM factor does not necessarily turn off spraying PM: the element sum can still control. Likewise, increasing a spraying metal factor can increase both its Part 1 release and the Part 4 PM floor. No corresponding floor exists for welding or cutting.</p>
+<h2 id="10-output-totals-and-exact-cell-map">10. Output totals and exact cell map</h2>
+<h3 id="101-part-1-summary-and-activity-blocks">10.1 Part 1 summary and activity blocks</h3>
+<p>All references in this table are on <code>Part 1 Releases</code>. Each activity's subtotal sums its complete block, including blank separator rows in the welding sections.</p>
+<table>
+<thead>
+<tr>
+<th>Substance</th>
+<th style="text-align: right;">Summary row</th>
+<th>Welding detail rows</th>
+<th>Welding kg / t total</th>
+<th>Cutting detail rows</th>
+<th>Cutting kg / t total</th>
+<th>Spraying detail rows</th>
+<th>Spraying kg / t total</th>
+<th>Workbook reporting-unit label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chromium</td>
+<td style="text-align: right;">5</td>
+<td>19–77</td>
+<td>G78 / I78</td>
+<td>19–26</td>
+<td>S27 / U27</td>
+<td>19–24</td>
+<td>AE25 / AG25</td>
+<td>Part 1A, tonnes</td>
+</tr>
+<tr>
+<td>Cobalt</td>
+<td style="text-align: right;">6</td>
+<td>80–138</td>
+<td>G139 / I139</td>
+<td>28–35</td>
+<td>S36 / U36</td>
+<td>26–31</td>
+<td>AE32 / AG32</td>
+<td>Part 1B, kg</td>
+</tr>
+<tr>
+<td>Nickel</td>
+<td style="text-align: right;">7</td>
+<td>141–199</td>
+<td>G200 / I200</td>
+<td>37–44</td>
+<td>S45 / U45</td>
+<td>33–38</td>
+<td>AE39 / AG39</td>
+<td>Part 1A, tonnes</td>
+</tr>
+<tr>
+<td>Manganese</td>
+<td style="text-align: right;">8</td>
+<td>202–260</td>
+<td>G261 / I261</td>
+<td>46–53</td>
+<td>S54 / U54</td>
+<td>40–45</td>
+<td>AE46 / AG46</td>
+<td>Part 1A, tonnes</td>
+</tr>
+<tr>
+<td>Cr(VI)</td>
+<td style="text-align: right;">9</td>
+<td>263–321</td>
+<td>G322 / I322</td>
+<td>55–62</td>
+<td>S63 / U63</td>
+<td>47–52</td>
+<td>AE53 / AG53</td>
+<td>Part 1B, kg</td>
+</tr>
+<tr>
+<td>Lead</td>
+<td style="text-align: right;">10</td>
+<td>324–382</td>
+<td>G383 / I383</td>
+<td>64–71</td>
+<td>S72 / U72</td>
+<td>54–59</td>
+<td>AE60 / AG60</td>
+<td>Part 1B, kg</td>
+</tr>
+<tr>
+<td>Zinc</td>
+<td style="text-align: right;">12</td>
+<td>385–443</td>
+<td>G444 / I444</td>
+<td>73–80</td>
+<td>S81 / U81</td>
+<td>61–66</td>
+<td>AE67 / AG67</td>
+<td>Part 1A, tonnes</td>
+</tr>
+<tr>
+<td>Copper</td>
+<td style="text-align: right;">13</td>
+<td>446–458</td>
+<td>G459 / I459</td>
+<td>82–89</td>
+<td>S90 / U90</td>
+<td>68–73</td>
+<td>AE74 / AG74</td>
+<td>Part 1A, tonnes</td>
+</tr>
+<tr>
+<td>Silver</td>
+<td style="text-align: right;">14</td>
+<td>461–473</td>
+<td>G474 / I474</td>
+<td>91–98</td>
+<td>S99 / U99</td>
+<td>75–80</td>
+<td>AE81 / AG81</td>
+<td>Part 1A, tonnes</td>
+</tr>
+<tr>
+<td>Antimony</td>
+<td style="text-align: right;">15</td>
+<td>476–488</td>
+<td>G489 / I489</td>
+<td>100–107</td>
+<td>S108 / U108</td>
+<td>82–87</td>
+<td>AE88 / AG88</td>
+<td>Part 1A, tonnes</td>
+</tr>
+</tbody>
+</table>
+<p>For summary row <code>r</code>:</p>
+<pre><code class="language-text">B_r = welding kg subtotal + cutting kg subtotal + spraying kg subtotal
+D_r = welding t subtotal  + cutting t subtotal  + spraying t subtotal
+</code></pre>
+<p>For chromium, the actual formulas are B5 <code>=G78+S27+AE25</code> and D5 <code>=I78+U27+AG25</code>. Row 11 is intentionally blank. The summary lists kg and tonnes for every substance; column F tells the reader which unit this workbook associates with reporting. No threshold comparison follows those formulas.</p>
+<p>Every substance-group CAS field contains <code>*</code>, meaning no single CAS number applies; the workbook does not provide individual species-level CAS calculations.</p>
+<h3 id="102-row-offsets-for-the-seven-other-welding-groups">10.2 Row offsets for the seven other-welding groups</h3>
+<p>Process order in this table is SMAW, GMAW, FCAW, SAW, GTAW, PAW, Other Arc Welding Methods.</p>
+<table>
+<thead>
+<tr>
+<th>Substance</th>
+<th>Part 1 process rows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cr</td>
+<td>40, 53, 62, 67, 71, 75, 77</td>
+</tr>
+<tr>
+<td>Co</td>
+<td>101, 114, 123, 128, 132, 136, 138</td>
+</tr>
+<tr>
+<td>Ni</td>
+<td>162, 175, 184, 189, 193, 197, 199</td>
+</tr>
+<tr>
+<td>Mn</td>
+<td>223, 236, 245, 250, 254, 258, 260</td>
+</tr>
+<tr>
+<td>Cr(VI)</td>
+<td>284, 297, 306, 311, 315, 319, 321</td>
+</tr>
+<tr>
+<td>Pb</td>
+<td>345, 358, 367, 372, 376, 380, 382</td>
+</tr>
+<tr>
+<td>Zn</td>
+<td>406, 419, 428, 433, 437, 441, 443</td>
+</tr>
+<tr>
+<td>Cu</td>
+<td>446, 448, 450, 452, 454, 456, 458</td>
+</tr>
+<tr>
+<td>Ag</td>
+<td>461, 463, 465, 467, 469, 471, 473</td>
+</tr>
+<tr>
+<td>Sb</td>
+<td>476, 478, 480, 482, 484, 486, 488</td>
+</tr>
+</tbody>
+</table>
+<p>For every row: D is the method-dependent factor, F the selected activity, G the gated kg release, and I is <code>G/1000</code>. Appendix B.2 records all 70 exact factor formulas. Later F cells link to the matching chromium-block F cell.</p>
+<h3 id="103-part-4-totals">10.3 Part 4 totals</h3>
+<p>All references below are on <code>Part 4 Releases</code>, and all release values are tonnes/year.</p>
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Summary</th>
+<th>Welding detail / total</th>
+<th>Cutting detail / total</th>
+<th>Spraying detail / total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PM10</td>
+<td><code>B5=G71+P20+Y18</code></td>
+<td>G12:G70 / G71</td>
+<td>P12:P19 / P20</td>
+<td>Y12:Y17 / Y18</td>
+</tr>
+<tr>
+<td>TPM</td>
+<td><code>B6=G132+P29+Y25</code></td>
+<td>G73:G131 / G132</td>
+<td>P21:P28 / P29</td>
+<td>Y19:Y24 / Y25</td>
+</tr>
+<tr>
+<td>PM2.5</td>
+<td><code>B7=G193+P38+Y32</code></td>
+<td>G134:G192 / G193</td>
+<td>P30:P37 / P38</td>
+<td>Y26:Y31 / Y32</td>
+</tr>
+</tbody>
+</table>
+<p>Welding PM10 process rows are the Part 1 chromium rows minus seven. The TPM block adds 61 to each PM10 row. The PM2.5 block adds 122. Its formula at row <code>r+122</code> is <code>=G_r*0.75</code>. Cutting PM2.5 row <code>r+18</code> is <code>=0.75*P_r</code>. Spraying PM2.5 row <code>r+14</code> is <code>=0.75*Y_r</code>.</p>
+<p>With unmodified default factors and numeric inputs:</p>
+<pre><code class="language-text">Part4!B5 = Part4!B6
+Part4!B7 = 0.75 × Part4!B5
+Part1!B_r = 1,000 × Part1!D_r
+</code></pre>
+<p>These are useful reconciliation checks. PM10, TPM and PM2.5 are overlapping size categories; summing the three is not another particulate total.</p>
+<h2 id="11-controls-overrides-and-rounding">11. Controls, overrides and rounding</h2>
+<h3 id="111-control-efficiency-is-an-external-adjustment">11.1 Control efficiency is an external adjustment</h3>
+<p><code>Instructions!A63:A64</code> gives:</p>
+<pre><code class="language-text">Controlled_emissions = Uncontrolled_emissions × (100 − control_efficiency_percent) / 100
+</code></pre>
+<p>No cell accepts control efficiency and no release formula applies it. For 90% control, multiply the relevant uncontrolled emission by 0.10. Apply any justified control outside this workbook, at the applicable process/substance level, before facility aggregation. Capture efficiency, bypass fractions, operating coverage and multiple control stages are not modeled by the source.</p>
+<h3 id="112-site-specific-emission-factors">11.2 Site-specific emission factors</h3>
+<p>The instructions permit site-specific factor replacements if units are converted correctly. Literal factor cells are often unlocked, but the method-dependent “other” factors are protected formulas. Preserve an original copy and record any overrides when using a working copy.</p>
+<table>
+<thead>
+<tr>
+<th>Factor location</th>
+<th>Meaning and downstream effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Part 1 D, listed welding rows</td>
+<td>g substance/kg electrode; changes that substance's welding release</td>
+</tr>
+<tr>
+<td>Part 1 D, other welding rows</td>
+<td>Computed method switch; not an ordinary unlocked input</td>
+</tr>
+<tr>
+<td>Part 1 O, cutting</td>
+<td><code>NA</code>, unused; does not control cutting releases</td>
+</tr>
+<tr>
+<td>Part 1 AA, spraying</td>
+<td>g substance/kg substance in sprayed material; may also change the Part 4 metal-sum floor</td>
+</tr>
+<tr>
+<td>Part 4 D, listed PM10 and TPM rows</td>
+<td>g particulate/kg electrode; separate PM10/TPM constants</td>
+</tr>
+<tr>
+<td>Part 4 D, other rows</td>
+<td>Method-selected PM10 factor; other TPM rows link back to it</td>
+</tr>
+<tr>
+<td>Part 4 M, cutting PM10 and TPM rows</td>
+<td>g/min; TPM rate also controls Part 1 cutting metals</td>
+</tr>
+<tr>
+<td>Part 4 V, spraying PM10 and TPM rows</td>
+<td>g particulate/kg total material; separate constants, each subject to the element-sum floor</td>
+</tr>
+<tr>
+<td>PM2.5 factor columns</td>
+<td><code>NA</code>; PM2.5 comes from 0.75 × PM10</td>
+</tr>
+</tbody>
+</table>
+<p>The generic instruction to zero a process factor must be interpreted against these dependencies. To represent an unused process, zero activity is the direct input control. Zeroing only one substance factor cannot suppress other substances; zeroing a spraying PM factor cannot suppress its metal-sum floor.</p>
+<h3 id="113-display-precision-versus-calculation-precision">11.3 Display precision versus calculation precision</h3>
+<p>There are <strong>no <code>ROUND</code> formulas</strong>. Summary release values use the <code>0.000</code> number format. Method 2 weighted averages use <code>0.0000</code>. Part 1 detail releases mostly retain General format; Part 4 release cells use three-decimal formatting. Calculations and totals use underlying precision, not displayed text.</p>
+<p>For example, 0.00059 tonnes can display as <code>0.001</code> tonnes while the linked kg result remains 0.59 kg. A small nonzero emission can display as <code>0.000</code>. Sum unrounded values, then format the final result. The instructions' reference to six decimals for dioxins/furans is generic text; this workbook has no dioxin/furan calculation.</p>
+<h2 id="12-workbook-defects-and-edge-cases">12. Workbook defects and edge cases</h2>
+<h3 id="121-eight-confirmed-activity-reference-inconsistencies">12.1 Eight confirmed activity-reference inconsistencies</h3>
+<p>These are source formulas, not changes made by this analysis. “Matching input” below is inferred from the row's electrode label and the corresponding chromium/PM rows. It is the apparent intended mapping, not an approved amendment to the official calculator.</p>
+<table>
+<thead>
+<tr>
+<th>Part 1 cell</th>
+<th>Labeled electrode</th>
+<th>Actual Table A input</th>
+<th>Actual input's meaning</th>
+<th>Matching input by label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F181</td>
+<td>FCAW E316LT, nickel</td>
+<td>C50</td>
+<td>FCAW E309</td>
+<td>C51</td>
+</tr>
+<tr>
+<td>F421</td>
+<td>FCAW E110, zinc</td>
+<td>C44</td>
+<td>GMAW ERNiCu</td>
+<td>C47</td>
+</tr>
+<tr>
+<td>F422</td>
+<td>FCAW E11018, zinc</td>
+<td>C46</td>
+<td>Blank separator row</td>
+<td>C48</td>
+</tr>
+<tr>
+<td>F423</td>
+<td>FCAW E308LT, zinc</td>
+<td>C47</td>
+<td>FCAW E110</td>
+<td>C49</td>
+</tr>
+<tr>
+<td>F424</td>
+<td>FCAW E309, zinc</td>
+<td>C48</td>
+<td>FCAW E11018</td>
+<td>C50</td>
+</tr>
+<tr>
+<td>F425</td>
+<td>FCAW E316LT, zinc</td>
+<td>C48</td>
+<td>FCAW E11018</td>
+<td>C51</td>
+</tr>
+<tr>
+<td>F426</td>
+<td>FCAW E70T, zinc</td>
+<td>C49</td>
+<td>FCAW E308LT</td>
+<td>C52</td>
+</tr>
+<tr>
+<td>F427</td>
+<td>FCAW E71T, zinc</td>
+<td>C51</td>
+<td>FCAW E316LT</td>
+<td>C53</td>
+</tr>
+</tbody>
+</table>
+<p>For example, F181 is literally <code>='Input Arc Welding Information'!C50</code>. Therefore 1,000 kg entered only for E316LT in C51 yields zero nickel from its labeled row; 1,000 kg entered only for E309 in C50 triggers the 0.093 g/kg factor stored at D181, yielding 0.093 kg nickel.</p>
+<p>The zinc block's actual default result, in kg/year, simplifies to:</p>
+<pre><code class="language-text">FCAW-labeled listed zinc =
+  (0 × C44 + 0 × C46 + 0.0056 × C47 + 0 × C48
+   + 0.0056 × C48 + 0.01 × C49 + 0.01 × C51) / 1,000
+</code></pre>
+<p>Thus C52 and C53 do not drive their expected zinc rows. Some incorrect references currently multiply a zero factor, but become consequential if that factor is overridden. Appendix A records factors by the source's row labels; use this exception table as well when reproducing source behavior.</p>
+<h3 id="122-unavailable-values-can-look-like-zero">12.2 Unavailable values can look like zero</h3>
+<ul>
+<li>Cutting Cr(VI) deliberately converts the error caused by <code>NA</code> into zero.</li>
+<li>Listed-electrode Cu, Ag and Sb are not modeled; Method 1 other-welding factors for these elements are zero.</li>
+<li>Many listed-electrode factors are zero. The workbook does not distinguish “unknown factor,” “not applicable” and “measured zero” with structured metadata.</li>
+<li>Empty numeric inputs commonly become zero through Excel references and arithmetic. A zero output does not demonstrate that every required input was supplied.</li>
+</ul>
+<h3 id="123-validation-limitations">12.3 Validation limitations</h3>
+<p>The only data validations are the two selector lists on Table A and the process-category list on Table B. They allow blanks. There are no numeric validations for nonnegative quantity, fractions between 0 and 1, composition totals, annual time bounds, or required composition.</p>
+<p>For Table B, blank/text composition cells are treated as zero by <code>SUMPRODUCT</code>, while numeric usage remains in the denominator. A missing composition can therefore dilute a process's weighted average. Text quantities in the referenced <code>SUMIF</code> sum range are not numeric usage. Store all quantities and fractions as numbers, not numeric-looking text. Text in a numeric field elsewhere may produce <code>#VALUE!</code>; Excel errors can propagate, except where <code>IFERROR</code> explicitly catches them. Negative numeric inputs and fractions over 1 are not rejected by the formulas. Canceling positive and negative quantities can force Method 2's weighted fraction to zero through its zero-total branch.</p>
+<p>The workbook does not normalize the nine entered fractions to sum to 1. They may omit other elements, so their sum need not be 1 for a valid material. It also does not check whether their sum exceeds 1. Cr(VI) is not an additional fraction to include in that input sum.</p>
+<h3 id="124-other-source-quirks">12.4 Other source quirks</h3>
+<ul>
+<li>Copper tonnes summary D13 contains <code>=U90+AG74++I459</code>. The extra unary plus is mathematically harmless; parsers must accept it or normalize it without changing the result.</li>
+<li>Five small literal-expression factors are <code>=0.001/2</code>, giving 0.0005: D52, D90, D91, D103 and D105 in Part 1. Do not mistake these for missing factors.</li>
+<li>The source has copied “except tetraethyl lead” wording in some non-lead subtotal labels. This text does not modify the substances or formulas.</li>
+<li>Part 4 uses “Arc SAW” for the cutting arc-saw label. This is a cutting process, distinct from submerged arc welding in Table A.</li>
+<li>The hidden changelog includes 2018 review notes and references to a 2009 predecessor and a 2016–2017 substance list. Its EF-source text and linked URL are not consistent descriptions of the same chapter. The active <code>Instructions!A27:A48</code> bibliography is recorded in Appendix D, but neither the changelog nor the filename proves present-day applicability.</li>
+<li>The workbook requests full recalculation on load. Its stored zero results describe the supplied blank template, not a completed facility calculation.</li>
+</ul>
+<h2 id="13-worked-examples">13. Worked examples</h2>
+<p>Each example starts from otherwise empty/zero activity inputs and the original factors. Values below retain calculation precision. They are illustrative inputs, not facility data.</p>
+<h3 id="131-listed-smaw-e308">13.1 Listed SMAW E308</h3>
+<p>Set Table A C13 to 1,000 kg/year. Leave C4/C5 as Yes.</p>
+<pre><code class="language-text">Cr = 0.59 × 1,000 / 1,000 = 0.59 kg = 0.00059 t
+Co = 0.001 kg
+Ni = 0.1 kg
+Mn = 0.43 kg
+Cr(VI) = 0.2 kg
+Pb = 0.01 kg
+Zn = 0.0056 kg
+PM10 = TPM = 13.4 × 1,000 / 1,000,000 = 0.0134 t
+PM2.5 = 0.75 × 0.0134 = 0.01005 t
+</code></pre>
+<p>The metal results flow through the seven welding subtotals into Part 1 B5:B12. The particulate results appear at Part 4 B5:B7.</p>
+<h3 id="132-other-smaw-method-1">13.2 Other SMAW, Method 1</h3>
+<p>Set Table A C4 to No, C5 to Yes, C6 to Method 1 and C32 to 1,000.</p>
+<pre><code class="language-text">Cr = 0.46 kg
+Co = 0.001 kg
+Ni = 0.255 kg
+Mn = 1.963 kg
+Cr(VI) = 0.179 kg
+Pb = 0.043 kg
+Zn = 1.305 kg
+Cu = Ag = Sb = 0 kg
+PM10 = TPM = 0.0206 t
+PM2.5 = 0.01545 t
+</code></pre>
+<p>Changing C4 back to Yes, with C5 still Yes, suppresses all these other-category releases even though the quantity remains entered.</p>
+<h3 id="133-other-smaw-method-2-with-two-materials">13.3 Other SMAW, Method 2 with two materials</h3>
+<p>Enable other welding and select Method 2. Enter:</p>
+<table>
+<thead>
+<tr>
+<th>Table B row</th>
+<th>Category</th>
+<th style="text-align: right;">Usage, kg/year</th>
+<th style="text-align: right;">Cr fraction</th>
+<th style="text-align: right;">Ni fraction</th>
+<th style="text-align: right;">Mn fraction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>Other SMAW</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.02</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Other SMAW</td>
+<td style="text-align: right;">300</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.04</td>
+</tr>
+</tbody>
+</table>
+<p>Other element fractions are zero.</p>
+<pre><code class="language-text">Q8 = 100 + 300 = 400 kg/year
+R8 (Cr) = (100×0.10 + 300×0.20)/400 = 0.175
+T8 (Ni) = (100×0.05 + 300×0.10)/400 = 0.0875
+U8 (Mn) = (100×0.02 + 300×0.04)/400 = 0.035
+
+Cr effective factor = 5.73 × 0.175 = 1.00275 g/kg
+Cr = 1.00275 × 400 / 1,000 = 0.4011 kg
+Ni = 5.73 × 0.0875 × 400 / 1,000 = 0.20055 kg
+Mn = 5.73 × 0.035 × 400 / 1,000 = 0.08022 kg
+Cr(VI) = 3.6099 × 0.175 × 400 / 1,000 = 0.252693 kg
+PM10 = TPM = 20 × 400 / 1,000,000 = 0.008 t
+PM2.5 = 0.006 t
+</code></pre>
+<p>The mass-weighted Cr fraction is 0.175, not the unweighted average 0.15. Changing the composition changes metals but leaves Method 2 particulate unchanged for the same process and usage.</p>
+<h3 id="134-plasma-arc-cutting">13.4 Plasma arc cutting</h3>
+<p>Set cutting B8 = 100 hours, C8 = 0.20 Cr, E8 = 0.10 Ni and F8 = 0.02 Mn. Other fractions are zero.</p>
+<pre><code class="language-text">PM10 = TPM = 100 × 60 × 5.3 / 1,000,000 = 0.0318 t = 31.8 kg
+PM2.5 = 0.75 × 0.0318 = 0.02385 t
+Cr = 0.20 × 31.8 = 6.36 kg
+Ni = 0.10 × 31.8 = 3.18 kg
+Mn = 0.02 × 31.8 = 0.636 kg
+Cr(VI) = 0 in the workbook's unavailable-calculation branch
+</code></pre>
+<h3 id="135-plasma-spraying-base-particulate-estimate-controls">13.5 Plasma spraying: base particulate estimate controls</h3>
+<p>Set spraying B6 = 1,000 kg, C6 = 0.10 Cr and E6 = 0.10 Ni, with other fractions zero.</p>
+<pre><code class="language-text">Cr = 90.9 × 0.10 × 1,000 / 1,000 = 9.09 kg
+Ni = 150 × 0.10 × 1,000 / 1,000 = 15 kg
+Cr(VI) = 11.8 × 0.10 × 1,000 / 1,000 = 1.18 kg
+Element sum excluding Cr(VI) = 24.09 kg = 0.02409 t
+Base PM = 60 × 1,000 / 1,000,000 = 0.06 t
+PM10 = TPM = max(0.06, 0.02409) = 0.06 t
+PM2.5 = 0.045 t
+</code></pre>
+<h3 id="136-plasma-spraying-metal-sum-controls">13.6 Plasma spraying: metal sum controls</h3>
+<p>Use the same 1,000 kg, now with 0.50 Cr and 0.50 Ni:</p>
+<pre><code class="language-text">Cr = 45.45 kg
+Ni = 75 kg
+Cr(VI) = 5.9 kg
+Element sum excluding Cr(VI) = 120.45 kg = 0.12045 t
+Base PM = 0.06 t
+PM10 = TPM = 0.12045 t
+PM2.5 = 0.0903375 t
+</code></pre>
+<p>Adding Cr(VI) again would incorrectly produce 126.35 kg for the floor; the workbook does not do that.</p>
+<h3 id="137-combined-activities-and-an-external-control-adjustment">13.7 Combined activities and an external control adjustment</h3>
+<p>Combine examples 13.1, 13.4 and 13.5, using only those activities:</p>
+<pre><code class="language-text">Total Cr = 0.59 + 6.36 + 9.09 = 16.04 kg = 0.01604 t
+Total Ni = 0.1 + 3.18 + 15 = 18.28 kg = 0.01828 t
+Total Cr(VI) = 0.2 + 0 + 1.18 = 1.38 kg
+Total PM10 = TPM = 0.0134 + 0.0318 + 0.06 = 0.1052 t
+Total PM2.5 = 0.01005 + 0.02385 + 0.045 = 0.0789 t
+</code></pre>
+<p>If a separately established 90% control efficiency applies to all of those PM10 releases, the external adjustment is <code>0.1052 × 0.10 = 0.01052 t</code>. The workbook summary itself remains the uncontrolled 0.1052 t.</p>
+<h2 id="14-reimplementation-specification">14. Reimplementation specification</h2>
+<h3 id="141-separate-faithful-reproduction-from-corrections">14.1 Separate faithful reproduction from corrections</h3>
+<p>A faithful implementation must reproduce the original factor precision, gates, unavailable-value behavior, and eight mismatched input references. A corrected implementation should identify and version its changes explicitly. Do not silently repair references while claiming numerical identity with this file.</p>
+<p>Keep the source version/hash, factor units, ratings, factor cell addresses, input mapping, and overrides as provenance. Zero, unavailable, and not-implemented outputs should remain distinguishable in the application even if a compatibility output must reproduce the spreadsheet's zero.</p>
+<h3 id="142-complete-computation-sequence">14.2 Complete computation sequence</h3>
+<pre><code class="language-text">1. Read the three Table A selector values.
+2. Read the 46 listed quantities and seven Method 1 other quantities.
+3. Group Table B rows 7–106 into seven process categories.
+4. Compute each group's quantity and nine weighted fractions, with zero-total handling.
+5. For every listed welding row:
+     select its substance and PM factors;
+     resolve its actual source quantity, including the Section 12 exceptions;
+     calculate substance kg/t and PM10/TPM tonnes.
+6. For each other-welding process:
+     select Method 1 if C6 equals Method 1, otherwise Method 2;
+     select the corresponding quantity and effective factors;
+     apply the C4/C5 other-release gate;
+     calculate all ten metals and PM10/TPM.
+7. For each cutting process:
+     calculate PM10 and TPM from active hours and g/min rates;
+     multiply TPM by each of the nine ordinary element fractions;
+     reproduce the unavailable Cr(VI) branch separately.
+8. For each spraying process:
+     calculate all ten substance releases from material mass and fractions;
+     sum the nine ordinary element releases, excluding Cr(VI);
+     apply that sum as the floor for PM10 and TPM, independently per process.
+9. Calculate each process's PM2.5 as 75% of its PM10.
+10. Sum process releases into each activity subtotal, then combine activities.
+11. Preserve full precision and format summaries to three decimals.
+12. Apply any external control/reporting workflow separately from workbook reproduction.
+</code></pre>
+<p>The formulas required are arithmetic, unary plus/minus, equality and <code>&gt;=</code>, <code>IF</code>, <code>IFERROR</code>, <code>OR</code>, <code>AND</code>, <code>NOT</code>, <code>SUM</code>, <code>SUMIF</code>, and <code>SUMPRODUCT</code>. The double unary minus in Method 2 converts category-match booleans to 1/0. There is no lookup interpolation, hidden database, macro-generated calculation, or iterative solver.</p>
+<h3 id="143-recommended-validation-for-an-application">14.3 Recommended validation for an application</h3>
+<p>These checks would improve an application but are <strong>not enforced by the workbook</strong>: require a valid method and process category, nonnegative activity, fractions in [0,1], and explicit handling of unknown composition; detect duplicate allocation of the same usage; reject or flag rows outside the supported category set; and flag a sum of ordinary element fractions above 1. Do not require the nine tracked elements to sum to 1, since materials can contain untracked elements.</p>
+<p>Retain separate reporting outputs for total chromium and Cr(VI), and for TPM/PM10/PM2.5. Preserve a clear unavailable status for Parts 2–3, Part 5 and cutting Cr(VI) in any richer application model.</p>
+<h2 id="15-verification-and-limits">15. Verification and limits</h2>
+<p>The analysis inspected all ten worksheets, all populated cells, formulas and stored results, the hidden changelog, defined-name inventory, validation rules, protection settings, merged ranges, number formats, hyperlinks, and package relationships. No calculation-bearing hidden rows or columns were found; Instructions row 14 is hidden and empty. Far-right BA/BB and BM cells are dropdown support lists, not additional calculators.</p>
+<p>All <strong>2,351 formula cells</strong> were independently evaluated with a small evaluator implementing the functions actually used by this workbook. Its baseline results matched every saved formula result. The evaluator traversed all formulas for each of <strong>74 single-category scenarios</strong>: 46 listed electrodes, seven Method 1 other processes, seven Method 2 other processes, eight cutting processes, and six spraying processes. Additional examples and boundary checks covered weighted mixtures, method gates, a blank method selector taking the Method 2 branch, row 106 inclusion, row 107 exclusion, both spraying-floor branches, and the nickel/zinc reference defects. <strong>930 numerical assertions passed</strong>, including kg/tonne reconciliation and default particulate relationships.</p>
+<p>An independent spreadsheet engine, Artifact Tool, also imported the source and recalculated in-memory examples for listed welding, Method 2 weighted welding, cutting, both spraying-floor branches, and the reference defects. Its Method 1 handling of unused blank quantities selected through <code>IF</code> produced <code>#VALUE!</code>; using explicit numeric zeros for those unused quantities returned the expected 0.46 kg chromium and 0.0206 tonnes PM10 for the 1,000 kg Other SMAW example. This is an engine-compatibility limitation, not evidence that Excel rejects the source template. The mathematical checks above treat blank selected numeric references using Excel's zero semantics.</p>
+<p>Microsoft Excel itself was not automated for this review. The source's original formatting and embedded images were not re-exported. The underlying scientific publications were not re-derived or reviewed to validate each factor, and present-day regulatory applicability was outside this reverse engineering. The eight mismatched activity references are confirmed by formula inspection and nonzero calculations; the proposed matching inputs are identified as inference. No backend/frontend code, factors, or source workbook cells were changed. Workspace destination validation (<code>python3 scripts/bootstrap.py --check</code>) passed.</p>
+<h2 id="appendix-a-listed-welding-electrodes-and-all-default-factors">Appendix A. Listed welding electrodes and all default factors</h2>
+<p>Each factor is <code>value (rating)</code>, in g/kg of electrode consumed. A rating of <code>-</code> is the workbook’s unspecified rating, not a numerical adjustment. Zero is an actual stored default. Copper, silver and antimony have no listed-electrode rows. Values are transcribed from the source, with binary floating-point tails removed. The input map describes row labels; the eight actual-reference exceptions in Section 12 override it for faithful reproduction.</p>
+<h3 id="a1-input-and-factor-addresses">A.1 Input and factor addresses</h3>
+<p>The P1 base row is chromium; add 61, 122, 183, 244, 305 or 366 for Co, Ni, Mn, Cr(VI), Pb or Zn. Factors are in D and ratings in E. The P4 base row is PM10; add 61 for TPM and 122 for PM2.5. P4 factors and ratings are also in D/E; PM2.5 has <code>NA</code> factors.</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>Electrode</th>
+<th>Table A input</th>
+<th>P1 base row</th>
+<th>P4 base row</th>
+<th>SCC suffix / note marker</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMAW</td>
+<td>14Mn-4Cr</td>
+<td>C11</td>
+<td>19</td>
+<td>12</td>
+<td>(-04)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E11018</td>
+<td>C12</td>
+<td>20</td>
+<td>13</td>
+<td>(-08)h</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E308</td>
+<td>C13</td>
+<td>21</td>
+<td>14</td>
+<td>(-12)i</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E309</td>
+<td>C14</td>
+<td>22</td>
+<td>15</td>
+<td>(-)j</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E310</td>
+<td>C15</td>
+<td>23</td>
+<td>16</td>
+<td>(-16)k</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E316</td>
+<td>C16</td>
+<td>24</td>
+<td>17</td>
+<td>(-20)m</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E410</td>
+<td>C17</td>
+<td>25</td>
+<td>18</td>
+<td>(-24)n</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E6010</td>
+<td>C18</td>
+<td>26</td>
+<td>19</td>
+<td>(-28)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E6011</td>
+<td>C19</td>
+<td>27</td>
+<td>20</td>
+<td>(-32)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E6012</td>
+<td>C20</td>
+<td>28</td>
+<td>21</td>
+<td>(-36)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E6013</td>
+<td>C21</td>
+<td>29</td>
+<td>22</td>
+<td>(-40)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E7018</td>
+<td>C22</td>
+<td>30</td>
+<td>23</td>
+<td>(-44)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E7024</td>
+<td>C23</td>
+<td>31</td>
+<td>24</td>
+<td>(-48)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E7028</td>
+<td>C24</td>
+<td>32</td>
+<td>25</td>
+<td>(-52)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E8018</td>
+<td>C25</td>
+<td>33</td>
+<td>26</td>
+<td>(-56)p</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E9015</td>
+<td>C26</td>
+<td>34</td>
+<td>27</td>
+<td>(-60)q</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>E9018</td>
+<td>C27</td>
+<td>35</td>
+<td>28</td>
+<td>(-64)r</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>ECoCr</td>
+<td>C28</td>
+<td>36</td>
+<td>29</td>
+<td>(-68)s</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>ENi-Cl</td>
+<td>C29</td>
+<td>37</td>
+<td>30</td>
+<td>(-72)</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>ENiCrMo</td>
+<td>C30</td>
+<td>38</td>
+<td>31</td>
+<td>(-76)t</td>
+</tr>
+<tr>
+<td>SMAW</td>
+<td>ENi-Cu</td>
+<td>C31</td>
+<td>39</td>
+<td>32</td>
+<td>(-80)u</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>E308L</td>
+<td>C34</td>
+<td>42</td>
+<td>35</td>
+<td>(-12)v</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>E309</td>
+<td>C35</td>
+<td>43</td>
+<td>36</td>
+<td>(-)</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>E70S</td>
+<td>C36</td>
+<td>44</td>
+<td>37</td>
+<td>(-54)w</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ER1260</td>
+<td>C37</td>
+<td>45</td>
+<td>38</td>
+<td>(-10)</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ER5154</td>
+<td>C38</td>
+<td>46</td>
+<td>39</td>
+<td>(-26)</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ER316</td>
+<td>C39</td>
+<td>47</td>
+<td>40</td>
+<td>(-20)x</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ER4043</td>
+<td>C40</td>
+<td>48</td>
+<td>41</td>
+<td>(-)</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ER5356</td>
+<td>C41</td>
+<td>49</td>
+<td>42</td>
+<td>(-)</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ERNiCr-3</td>
+<td>C42</td>
+<td>50</td>
+<td>43</td>
+<td>(-)</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ERNiCrMo</td>
+<td>C43</td>
+<td>51</td>
+<td>44</td>
+<td>(-76)y</td>
+</tr>
+<tr>
+<td>GMAW</td>
+<td>ERNiCu</td>
+<td>C44</td>
+<td>52</td>
+<td>45</td>
+<td>(-80)z</td>
+</tr>
+<tr>
+<td>FCAW</td>
+<td>E110</td>
+<td>C47</td>
+<td>55</td>
+<td>48</td>
+<td>(-06)aa</td>
+</tr>
+<tr>
+<td>FCAW</td>
+<td>E11018</td>
+<td>C48</td>
+<td>56</td>
+<td>49</td>
+<td>(-08)</td>
+</tr>
+<tr>
+<td>FCAW</td>
+<td>E308LT</td>
+<td>C49</td>
+<td>57</td>
+<td>50</td>
+<td>(-12)bb</td>
+</tr>
+<tr>
+<td>FCAW</td>
+<td>E309</td>
+<td>C50</td>
+<td>58</td>
+<td>51</td>
+<td>(-)cc</td>
+</tr>
+<tr>
+<td>FCAW</td>
+<td>E316LT</td>
+<td>C51</td>
+<td>59</td>
+<td>52</td>
+<td>(-20)dd</td>
+</tr>
+<tr>
+<td>FCAW</td>
+<td>E70T</td>
+<td>C52</td>
+<td>60</td>
+<td>53</td>
+<td>(-54)ee</td>
+</tr>
+<tr>
+<td>FCAW</td>
+<td>E71T</td>
+<td>C53</td>
+<td>61</td>
+<td>54</td>
+<td>(-55)ff</td>
+</tr>
+<tr>
+<td>SAW</td>
+<td>EM12K</td>
+<td>C56</td>
+<td>64</td>
+<td>57</td>
+<td>(-10)gg</td>
+</tr>
+<tr>
+<td>SAW</td>
+<td>ER309</td>
+<td>C57</td>
+<td>65</td>
+<td>58</td>
+<td>(-)hh</td>
+</tr>
+<tr>
+<td>SAW</td>
+<td>ER316</td>
+<td>C58</td>
+<td>66</td>
+<td>59</td>
+<td>(-)ii</td>
+</tr>
+<tr>
+<td>GTAW</td>
+<td>ER2319</td>
+<td>C61</td>
+<td>69</td>
+<td>62</td>
+<td>(-)</td>
+</tr>
+<tr>
+<td>GTAW</td>
+<td>ER4043</td>
+<td>C62</td>
+<td>70</td>
+<td>63</td>
+<td>(-)</td>
+</tr>
+<tr>
+<td>PAW</td>
+<td>ER2319</td>
+<td>C65</td>
+<td>73</td>
+<td>66</td>
+<td>(-)</td>
+</tr>
+<tr>
+<td>PAW</td>
+<td>ER4043</td>
+<td>C66</td>
+<td>74</td>
+<td>67</td>
+<td>(-)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="a2-substance-factors">A.2 Substance factors</h3>
+<table>
+<thead>
+<tr>
+<th>Process / electrode</th>
+<th>Cr</th>
+<th>Co</th>
+<th>Ni</th>
+<th>Mn</th>
+<th>Cr(VI)</th>
+<th>Pb</th>
+<th>Zn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMAW / 14Mn-4Cr</td>
+<td>1.39 (C)</td>
+<td>0 (-)</td>
+<td>1.71 (C)</td>
+<td>23.2 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / E11018</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>1.38 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / E308</td>
+<td>0.59 (D)</td>
+<td>0.001 (D)</td>
+<td>0.1 (D)</td>
+<td>0.43 (D)</td>
+<td>0.2 (D)</td>
+<td>0.01 (D)</td>
+<td>0.0056 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E309</td>
+<td>0.71 (D)</td>
+<td>0 (-)</td>
+<td>0.06 (D)</td>
+<td>0.4 (D)</td>
+<td>0.09 (D)</td>
+<td>0.01 (D)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / E310</td>
+<td>2.53 (C)</td>
+<td>0 (-)</td>
+<td>0.196 (C)</td>
+<td>2.2 (C)</td>
+<td>1.88 (C)</td>
+<td>0.024 (C)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / E316</td>
+<td>0.54 (D)</td>
+<td>0 (-)</td>
+<td>0.06 (D)</td>
+<td>0.54 (D)</td>
+<td>0.22 (D)</td>
+<td>0.01 (D)</td>
+<td>0.0056 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E410</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.014 (C)</td>
+<td>0.685 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / E6010</td>
+<td>0.003 (B)</td>
+<td>0 (-)</td>
+<td>0.004 (B)</td>
+<td>0.991 (B)</td>
+<td>0.001 (B)</td>
+<td>0 (-)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E6011</td>
+<td>0.005 (C)</td>
+<td>0.001 (C)</td>
+<td>0.005 (C)</td>
+<td>0.998 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E6012</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E6013</td>
+<td>0.004 (B)</td>
+<td>0.0005 (-)</td>
+<td>0.002 (B)</td>
+<td>0.945 (B)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E7018</td>
+<td>0.006 (C)</td>
+<td>0.0005 (-)</td>
+<td>0.051 (D)</td>
+<td>0.98 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E7024</td>
+<td>0.001 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.629 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E7028</td>
+<td>0.013 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.8461 (C)</td>
+<td>0 (-)</td>
+<td>0.162 (C)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E8018</td>
+<td>0.017 (C)</td>
+<td>0 (-)</td>
+<td>0.051 (C)</td>
+<td>0.03 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>1.63 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E9015</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / E9018</td>
+<td>0.212 (C)</td>
+<td>0 (-)</td>
+<td>0.013 (C)</td>
+<td>0.783 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / ECoCr</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / ENi-Cl</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.89 (C)</td>
+<td>0.039 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / ENiCrMo</td>
+<td>0.42 (C)</td>
+<td>0 (-)</td>
+<td>0.247 (C)</td>
+<td>0.043 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SMAW / ENi-Cu</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.423 (C)</td>
+<td>0.212 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / E308L</td>
+<td>0.19 (D)</td>
+<td>0.0005 (-)</td>
+<td>0.07 (D)</td>
+<td>0.16 (D)</td>
+<td>0.009 (D)</td>
+<td>0 (-)</td>
+<td>0.0056 (D)</td>
+</tr>
+<tr>
+<td>GMAW / E309</td>
+<td>4.6 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.0475 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / E70S</td>
+<td>0.001 (A)</td>
+<td>0.0005 (-)</td>
+<td>0.03 (A)</td>
+<td>0.332 (A)</td>
+<td>0 (-)</td>
+<td>0.0003 (D)</td>
+<td>0.0081 (D)</td>
+</tr>
+<tr>
+<td>GMAW / ER1260</td>
+<td>0.004 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / ER5154</td>
+<td>0.01 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.034 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / ER316</td>
+<td>0.36 (D)</td>
+<td>0.002 (D)</td>
+<td>0.35 (D)</td>
+<td>0.3 (D)</td>
+<td>0.0173 (D)</td>
+<td>0 (-)</td>
+<td>0.0056 (D)</td>
+</tr>
+<tr>
+<td>GMAW / ER4043</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / ER5356</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / ERNiCr-3</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / ERNiCrMo</td>
+<td>0.353 (B)</td>
+<td>0 (-)</td>
+<td>1.25 (B)</td>
+<td>0.07 (B)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GMAW / ERNiCu</td>
+<td>0.0005 (-)</td>
+<td>0 (-)</td>
+<td>0.451 (C)</td>
+<td>0.022 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>FCAW / E110</td>
+<td>0.002 (D)</td>
+<td>0 (-)</td>
+<td>0.112 (D)</td>
+<td>2.02 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>FCAW / E11018</td>
+<td>0.969 (C)</td>
+<td>0 (-)</td>
+<td>0.102 (C)</td>
+<td>0.704 (C)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>FCAW / E308LT</td>
+<td>0.24 (D)</td>
+<td>0 (-)</td>
+<td>0.07 (D)</td>
+<td>0.36 (D)</td>
+<td>0.02 (D)</td>
+<td>0 (-)</td>
+<td>0.0056 (D)</td>
+</tr>
+<tr>
+<td>FCAW / E309</td>
+<td>2.22 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.0146 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>FCAW / E316LT</td>
+<td>0.97 (B)</td>
+<td>0 (-)</td>
+<td>0.093 (B)</td>
+<td>0.59 (B)</td>
+<td>0.14 (B)</td>
+<td>0 (-)</td>
+<td>0.0056 (D)</td>
+</tr>
+<tr>
+<td>FCAW / E70T</td>
+<td>0.004 (B)</td>
+<td>0 (-)</td>
+<td>0.005 (B)</td>
+<td>0.891 (B)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.01 (D)</td>
+</tr>
+<tr>
+<td>FCAW / E71T</td>
+<td>0.002 (B)</td>
+<td>0.001 (B)</td>
+<td>0.012 (C)</td>
+<td>0.603 (B)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.01 (D)</td>
+</tr>
+<tr>
+<td>SAW / EM12K</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SAW / ER309</td>
+<td>0.01 (D)</td>
+<td>0 (-)</td>
+<td>0.01 (D)</td>
+<td>0.09 (D)</td>
+<td>0 (-)</td>
+<td>0.01 (D)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>SAW / ER316</td>
+<td>0.01 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.07 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GTAW / ER2319</td>
+<td>9.7e-05 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0.0002838 (D)</td>
+<td>0 (-)</td>
+<td>0.0001676 (D)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>GTAW / ER4043</td>
+<td>4.28e-05 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>4.22e-05 (D)</td>
+<td>0 (-)</td>
+<td>0.000233 (D)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>PAW / ER2319</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>5.8e-06 (D)</td>
+<td>0 (-)</td>
+<td>4.4e-06 (D)</td>
+<td>0 (-)</td>
+</tr>
+<tr>
+<td>PAW / ER4043</td>
+<td>3.09e-05 (D)</td>
+<td>0 (-)</td>
+<td>0 (-)</td>
+<td>2.31e-05 (D)</td>
+<td>0 (-)</td>
+<td>7.6e-06 (D)</td>
+<td>0 (-)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="a3-particulate-factors">A.3 Particulate factors</h3>
+<p>The same stored factor and rating apply to PM10 and TPM. PM2.5 uses 75% of the PM10 release.</p>
+<table>
+<thead>
+<tr>
+<th>Process / electrode</th>
+<th>PM10 / TPM factor (rating)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMAW / 14Mn-4Cr</td>
+<td>81.6 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E11018</td>
+<td>16.4 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E308</td>
+<td>13.4 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E309</td>
+<td>26.66 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E310</td>
+<td>15.1 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E316</td>
+<td>11.3 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E410</td>
+<td>13.2 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E6010</td>
+<td>25.6 (B)</td>
+</tr>
+<tr>
+<td>SMAW / E6011</td>
+<td>38.4 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E6012</td>
+<td>8 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E6013</td>
+<td>19.7 (B)</td>
+</tr>
+<tr>
+<td>SMAW / E7018</td>
+<td>18 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E7024</td>
+<td>9.2 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E7028</td>
+<td>18 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E8018</td>
+<td>17.1 (C)</td>
+</tr>
+<tr>
+<td>SMAW / E9015</td>
+<td>17 (D)</td>
+</tr>
+<tr>
+<td>SMAW / E9018</td>
+<td>16.9 (C)</td>
+</tr>
+<tr>
+<td>SMAW / ECoCr</td>
+<td>27.9 (C)</td>
+</tr>
+<tr>
+<td>SMAW / ENi-Cl</td>
+<td>18.2 (C)</td>
+</tr>
+<tr>
+<td>SMAW / ENiCrMo</td>
+<td>11.7 (C)</td>
+</tr>
+<tr>
+<td>SMAW / ENi-Cu</td>
+<td>10.1 (C)</td>
+</tr>
+<tr>
+<td>GMAW / E308L</td>
+<td>2.6 (D)</td>
+</tr>
+<tr>
+<td>GMAW / E309</td>
+<td>17.8 (-)</td>
+</tr>
+<tr>
+<td>GMAW / E70S</td>
+<td>4.7 (A)</td>
+</tr>
+<tr>
+<td>GMAW / ER1260</td>
+<td>20.5 (D)</td>
+</tr>
+<tr>
+<td>GMAW / ER5154</td>
+<td>24.1 (D)</td>
+</tr>
+<tr>
+<td>GMAW / ER316</td>
+<td>3.2 (C)</td>
+</tr>
+<tr>
+<td>GMAW / ER4043</td>
+<td>7.78 (D)</td>
+</tr>
+<tr>
+<td>GMAW / ER5356</td>
+<td>106.69 (D)</td>
+</tr>
+<tr>
+<td>GMAW / ERNiCr-3</td>
+<td>2.6 (D)</td>
+</tr>
+<tr>
+<td>GMAW / ERNiCrMo</td>
+<td>3.9 (C)</td>
+</tr>
+<tr>
+<td>GMAW / ERNiCu</td>
+<td>2 (C)</td>
+</tr>
+<tr>
+<td>FCAW / E110</td>
+<td>20.8 (D)</td>
+</tr>
+<tr>
+<td>FCAW / E11018</td>
+<td>57 (D)</td>
+</tr>
+<tr>
+<td>FCAW / E308LT</td>
+<td>5.5 (D)</td>
+</tr>
+<tr>
+<td>FCAW / E309</td>
+<td>19.5 (-)</td>
+</tr>
+<tr>
+<td>FCAW / E316LT</td>
+<td>8.5 (B)</td>
+</tr>
+<tr>
+<td>FCAW / E70T</td>
+<td>15.1 (B)</td>
+</tr>
+<tr>
+<td>FCAW / E71T</td>
+<td>10.3 (B)</td>
+</tr>
+<tr>
+<td>SAW / EM12K</td>
+<td>0.05 (C)</td>
+</tr>
+<tr>
+<td>SAW / ER309</td>
+<td>16.65 (D)</td>
+</tr>
+<tr>
+<td>SAW / ER316</td>
+<td>7.76 (D)</td>
+</tr>
+<tr>
+<td>GTAW / ER2319</td>
+<td>0.5489 (D)</td>
+</tr>
+<tr>
+<td>GTAW / ER4043</td>
+<td>5.2748 (D)</td>
+</tr>
+<tr>
+<td>PAW / ER2319</td>
+<td>0.3367 (D)</td>
+</tr>
+<tr>
+<td>PAW / ER4043</td>
+<td>0.4703 (D)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="appendix-b-other-welding-defaults-and-exact-factor-formulas">Appendix B. Other-welding defaults and exact factor formulas</h2>
+<h3 id="b1-method-1-constants">B.1 Method 1 constants</h3>
+<p>All values below are g/kg of electrode. All ratings are <code>-</code>. Copper, silver and antimony default to zero in Method 1.</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>P1 chromium row</th>
+<th>Cr</th>
+<th>Co</th>
+<th>Ni</th>
+<th>Mn</th>
+<th>Cr(VI)</th>
+<th>Pb</th>
+<th>Zn</th>
+<th>PM10 / TPM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Other SMAW</td>
+<td>40</td>
+<td>0.46</td>
+<td>0.001</td>
+<td>0.255</td>
+<td>1.963</td>
+<td>0.179</td>
+<td>0.043</td>
+<td>1.305</td>
+<td>20.6</td>
+</tr>
+<tr>
+<td>Other GMAW</td>
+<td>53</td>
+<td>0.69</td>
+<td>0.001</td>
+<td>0.43</td>
+<td>0.153</td>
+<td>0.024</td>
+<td>0.0003</td>
+<td>0.006</td>
+<td>17.8</td>
+</tr>
+<tr>
+<td>Other FCAW</td>
+<td>62</td>
+<td>0.63</td>
+<td>0.001</td>
+<td>0.066</td>
+<td>0.861</td>
+<td>0.049</td>
+<td>0</td>
+<td>0.008</td>
+<td>19.5</td>
+</tr>
+<tr>
+<td>Other SAW</td>
+<td>67</td>
+<td>0.01</td>
+<td>0</td>
+<td>0.01</td>
+<td>0.08</td>
+<td>0</td>
+<td>0.01</td>
+<td>0</td>
+<td>8.2</td>
+</tr>
+<tr>
+<td>Other GTAW</td>
+<td>71</td>
+<td>6.99e-05</td>
+<td>0</td>
+<td>0</td>
+<td>0.000163</td>
+<td>0</td>
+<td>0.0002003</td>
+<td>0</td>
+<td>2.9</td>
+</tr>
+<tr>
+<td>Other PAW</td>
+<td>75</td>
+<td>3.09e-05</td>
+<td>0</td>
+<td>0</td>
+<td>1.45e-05</td>
+<td>0</td>
+<td>6e-06</td>
+<td>0</td>
+<td>0.4</td>
+</tr>
+<tr>
+<td>Other Welding Methods</td>
+<td>77</td>
+<td>0.298</td>
+<td>0.001</td>
+<td>0.19</td>
+<td>0.51</td>
+<td>0.05</td>
+<td>0.011</td>
+<td>0.44</td>
+<td>11.6</td>
+</tr>
+</tbody>
+</table>
+<h3 id="b2-every-method-dependent-welding-factor">B.2 Every method-dependent welding factor</h3>
+<p><code>A</code> means <code>Input Arc Welding Information</code>; <code>B</code> means <code>Input Arc Welding (Method 2)</code>. The formulas below replace only these sheet names for readability. Every factor is in <code>Part 1 Releases!D</code>; the final table covers <code>Part 4 Releases!D</code>. This preserves the exact constants, including the SAW chromium distinction.</p>
+<h4 id="part-1">Part 1</h4>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Substance</th>
+<th>Process</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D40</td>
+<td>Cr</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.46,20*0.2865*B!R8)</code></td>
+</tr>
+<tr>
+<td>D53</td>
+<td>Cr</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.69,10*0.5464*B!R9)</code></td>
+</tr>
+<tr>
+<td>D62</td>
+<td>Cr</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.63,20*0.2865*B!R10)</code></td>
+</tr>
+<tr>
+<td>D67</td>
+<td>Cr</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.01,(0.0053+0.00902)*B!R11)</code></td>
+</tr>
+<tr>
+<td>D71</td>
+<td>Cr</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.0000699,2.9*B!R12)</code></td>
+</tr>
+<tr>
+<td>D75</td>
+<td>Cr</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.0000309,0.4*B!R13)</code></td>
+</tr>
+<tr>
+<td>D77</td>
+<td>Cr</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0.298,50*B!R14)</code></td>
+</tr>
+<tr>
+<td>D101</td>
+<td>Co</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.001,20*0.2865*B!S8)</code></td>
+</tr>
+<tr>
+<td>D114</td>
+<td>Co</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.001,10*0.5464*B!S9)</code></td>
+</tr>
+<tr>
+<td>D123</td>
+<td>Co</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.001,20*0.2865*B!S10)</code></td>
+</tr>
+<tr>
+<td>D128</td>
+<td>Co</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.0143*B!S11)</code></td>
+</tr>
+<tr>
+<td>D132</td>
+<td>Co</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,2.9*B!S12)</code></td>
+</tr>
+<tr>
+<td>D136</td>
+<td>Co</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.4*B!S13)</code></td>
+</tr>
+<tr>
+<td>D138</td>
+<td>Co</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0.001,50*B!S14)</code></td>
+</tr>
+<tr>
+<td>D162</td>
+<td>Ni</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.255,20*0.2865*B!T8)</code></td>
+</tr>
+<tr>
+<td>D175</td>
+<td>Ni</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.43,10*0.5464*B!T9)</code></td>
+</tr>
+<tr>
+<td>D184</td>
+<td>Ni</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.066,20*0.2865*B!T10)</code></td>
+</tr>
+<tr>
+<td>D189</td>
+<td>Ni</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.01,0.0143*B!T11)</code></td>
+</tr>
+<tr>
+<td>D193</td>
+<td>Ni</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,2.9*B!T12)</code></td>
+</tr>
+<tr>
+<td>D197</td>
+<td>Ni</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.4*B!T13)</code></td>
+</tr>
+<tr>
+<td>D199</td>
+<td>Ni</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0.19,50*B!T14)</code></td>
+</tr>
+<tr>
+<td>D223</td>
+<td>Mn</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",1.963,20*0.2865*B!U8)</code></td>
+</tr>
+<tr>
+<td>D236</td>
+<td>Mn</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.153,10*0.5464*B!U9)</code></td>
+</tr>
+<tr>
+<td>D245</td>
+<td>Mn</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.861,20*0.2865*B!U10)</code></td>
+</tr>
+<tr>
+<td>D250</td>
+<td>Mn</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.08,0.0143*B!U11)</code></td>
+</tr>
+<tr>
+<td>D254</td>
+<td>Mn</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.000163,2.9*B!U12)</code></td>
+</tr>
+<tr>
+<td>D258</td>
+<td>Mn</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.0000145,0.4*B!U13)</code></td>
+</tr>
+<tr>
+<td>D260</td>
+<td>Mn</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0.51,50*B!U14)</code></td>
+</tr>
+<tr>
+<td>D284</td>
+<td>Cr(VI)</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.179,20*0.2865*0.63*B!R8)</code></td>
+</tr>
+<tr>
+<td>D297</td>
+<td>Cr(VI)</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.024,10*0.5464*0.05*B!R9)</code></td>
+</tr>
+<tr>
+<td>D306</td>
+<td>Cr(VI)</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.049,20*0.2865*0.63*B!R10)</code></td>
+</tr>
+<tr>
+<td>D311</td>
+<td>Cr(VI)</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,(0.00902)*B!R11)</code></td>
+</tr>
+<tr>
+<td>D315</td>
+<td>Cr(VI)</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,2.9*0.1*B!R12)</code></td>
+</tr>
+<tr>
+<td>D319</td>
+<td>Cr(VI)</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.4*0.1*B!R13)</code></td>
+</tr>
+<tr>
+<td>D321</td>
+<td>Cr(VI)</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0.05,50*0.1*B!R14)</code></td>
+</tr>
+<tr>
+<td>D345</td>
+<td>Pb</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.043,20*0.2865*B!V8)</code></td>
+</tr>
+<tr>
+<td>D358</td>
+<td>Pb</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.0003,10*0.5464*B!V9)</code></td>
+</tr>
+<tr>
+<td>D367</td>
+<td>Pb</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,20*0.2865*B!V10)</code></td>
+</tr>
+<tr>
+<td>D372</td>
+<td>Pb</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.01,0.0143*B!V11)</code></td>
+</tr>
+<tr>
+<td>D376</td>
+<td>Pb</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.0002003,2.9*B!V12)</code></td>
+</tr>
+<tr>
+<td>D380</td>
+<td>Pb</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.000006,0.4*B!V13)</code></td>
+</tr>
+<tr>
+<td>D382</td>
+<td>Pb</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0.011,50*B!V14)</code></td>
+</tr>
+<tr>
+<td>D406</td>
+<td>Zn</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",1.305,20*0.2865*B!W8)</code></td>
+</tr>
+<tr>
+<td>D419</td>
+<td>Zn</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.006,10*0.5464*B!W9)</code></td>
+</tr>
+<tr>
+<td>D428</td>
+<td>Zn</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.008,20*0.2865*B!W10)</code></td>
+</tr>
+<tr>
+<td>D433</td>
+<td>Zn</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.0143*B!W11)</code></td>
+</tr>
+<tr>
+<td>D437</td>
+<td>Zn</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,2.9*B!W12)</code></td>
+</tr>
+<tr>
+<td>D441</td>
+<td>Zn</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.4*B!W13)</code></td>
+</tr>
+<tr>
+<td>D443</td>
+<td>Zn</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0.44,50*B!W14)</code></td>
+</tr>
+<tr>
+<td>D446</td>
+<td>Cu</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,20*0.2865*B!X8)</code></td>
+</tr>
+<tr>
+<td>D448</td>
+<td>Cu</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,10*0.5464*B!X9)</code></td>
+</tr>
+<tr>
+<td>D450</td>
+<td>Cu</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,20*0.2865*B!X10)</code></td>
+</tr>
+<tr>
+<td>D452</td>
+<td>Cu</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.0143*B!X11)</code></td>
+</tr>
+<tr>
+<td>D454</td>
+<td>Cu</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,2.9*B!X12)</code></td>
+</tr>
+<tr>
+<td>D456</td>
+<td>Cu</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.4*B!X13)</code></td>
+</tr>
+<tr>
+<td>D458</td>
+<td>Cu</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0,50*B!X14)</code></td>
+</tr>
+<tr>
+<td>D461</td>
+<td>Ag</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,20*0.2865*B!Y8)</code></td>
+</tr>
+<tr>
+<td>D463</td>
+<td>Ag</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,10*0.5464*B!Y9)</code></td>
+</tr>
+<tr>
+<td>D465</td>
+<td>Ag</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,20*0.2865*B!Y10)</code></td>
+</tr>
+<tr>
+<td>D467</td>
+<td>Ag</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.0143*B!Y11)</code></td>
+</tr>
+<tr>
+<td>D469</td>
+<td>Ag</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,2.9*B!Y12)</code></td>
+</tr>
+<tr>
+<td>D471</td>
+<td>Ag</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.4*B!Y13)</code></td>
+</tr>
+<tr>
+<td>D473</td>
+<td>Ag</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0,50*B!Y14)</code></td>
+</tr>
+<tr>
+<td>D476</td>
+<td>Sb</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,20*0.2865*B!Z8)</code></td>
+</tr>
+<tr>
+<td>D478</td>
+<td>Sb</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,10*0.5464*B!Z9)</code></td>
+</tr>
+<tr>
+<td>D480</td>
+<td>Sb</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,20*0.2865*B!Z10)</code></td>
+</tr>
+<tr>
+<td>D482</td>
+<td>Sb</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.0143*B!Z11)</code></td>
+</tr>
+<tr>
+<td>D484</td>
+<td>Sb</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,2.9*B!Z12)</code></td>
+</tr>
+<tr>
+<td>D486</td>
+<td>Sb</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0,0.4*B!Z13)</code></td>
+</tr>
+<tr>
+<td>D488</td>
+<td>Sb</td>
+<td>Other Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",0,50*B!Z14)</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="part-4">Part 4</h4>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Substance</th>
+<th>Process</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D33</td>
+<td>PM10</td>
+<td>Other SMAW</td>
+<td><code>=IF(A!$C$6="Method 1",20.6,20)</code></td>
+</tr>
+<tr>
+<td>D46</td>
+<td>PM10</td>
+<td>Other GMAW</td>
+<td><code>=IF(A!$C$6="Method 1",17.8,10)</code></td>
+</tr>
+<tr>
+<td>D55</td>
+<td>PM10</td>
+<td>Other FCAW</td>
+<td><code>=IF(A!$C$6="Method 1",19.5,20)</code></td>
+</tr>
+<tr>
+<td>D60</td>
+<td>PM10</td>
+<td>Other SAW</td>
+<td><code>=IF(A!$C$6="Method 1",8.2,0.05)</code></td>
+</tr>
+<tr>
+<td>D64</td>
+<td>PM10</td>
+<td>Other GTAW</td>
+<td><code>=IF(A!$C$6="Method 1",2.9,2.9)</code></td>
+</tr>
+<tr>
+<td>D68</td>
+<td>PM10</td>
+<td>Other PAW</td>
+<td><code>=IF(A!$C$6="Method 1",0.4,0.4)</code></td>
+</tr>
+<tr>
+<td>D70</td>
+<td>PM10</td>
+<td>Other Arc Welding Methods</td>
+<td><code>=IF(A!$C$6="Method 1",11.6,50)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="appendix-c-all-cutting-and-spraying-factors">Appendix C. All cutting and spraying factors</h2>
+<h3 id="c1-cutting">C.1 Cutting</h3>
+<p>PM10 and TPM use identical stored defaults, in g/min. PM2.5 is calculated from PM10, with <code>NA</code> in its factor column. P4 rows below are PM10 rows; add 9 for TPM and 18 for PM2.5.</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>Cutting input row</th>
+<th>P4 row</th>
+<th>PM10 / TPM factor</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Oxy</td>
+<td>6</td>
+<td>12</td>
+<td>0.38</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Air Carbon Arc Cutting (CAC-A)</td>
+<td>7</td>
+<td>13</td>
+<td>2</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Plasma Arc Cutting (PAC)</td>
+<td>8</td>
+<td>14</td>
+<td>5.3</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Laser</td>
+<td>9</td>
+<td>15</td>
+<td>0.26</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Arc SAW</td>
+<td>10</td>
+<td>16</td>
+<td>1.17</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Grinder</td>
+<td>11</td>
+<td>17</td>
+<td>0.39</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Reciprocating Saw</td>
+<td>12</td>
+<td>18</td>
+<td>0.00019</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Other Cutting Methods</td>
+<td>13</td>
+<td>19</td>
+<td>1.6</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="c2-spraying-metals">C.2 Spraying metals</h3>
+<p>Factors are g of released substance per kg of that substance in sprayed material. Each entry is <code>value (rating)</code>. P1 base row identifies chromium; add 7, 14, 21, 28, 35, 42, 49, 56 or 63 for Co, Ni, Mn, Cr(VI), Pb, Zn, Cu, Ag or Sb.</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>Spraying input row</th>
+<th>P1 base row</th>
+<th>Cr</th>
+<th>Co</th>
+<th>Ni</th>
+<th>Mn</th>
+<th>Cr(VI)</th>
+<th>Pb</th>
+<th>Zn</th>
+<th>Cu</th>
+<th>Ag</th>
+<th>Sb</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plasma Spray</td>
+<td>6</td>
+<td>19</td>
+<td>90.9 (D)</td>
+<td>60 (-)</td>
+<td>150 (D)</td>
+<td>60 (-)</td>
+<td>11.8 (D)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+</tr>
+<tr>
+<td>Flame Spray (Single-wire )</td>
+<td>7</td>
+<td>20</td>
+<td>15.6 (D)</td>
+<td>16.6 (-)</td>
+<td>16.6 (-)</td>
+<td>16.6 (-)</td>
+<td>4.68 (D)</td>
+<td>16.6 (-)</td>
+<td>16.6 (-)</td>
+<td>16.6 (-)</td>
+<td>16.6 (-)</td>
+<td>16.6 (-)</td>
+</tr>
+<tr>
+<td>Flame Spray (Other)</td>
+<td>8</td>
+<td>21</td>
+<td>44.9 (-)</td>
+<td>60 (-)</td>
+<td>110 (D)</td>
+<td>60 (-)</td>
+<td>6.2 (D)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+</tr>
+<tr>
+<td>Electric Arc Spray</td>
+<td>9</td>
+<td>22</td>
+<td>23.2 (D)</td>
+<td>19.75 (-)</td>
+<td>6 (D)</td>
+<td>19.75 (-)</td>
+<td>6.96 (D)</td>
+<td>19.75 (-)</td>
+<td>19.75 (-)</td>
+<td>19.75 (-)</td>
+<td>19.75 (-)</td>
+<td>19.75 (-)</td>
+</tr>
+<tr>
+<td>High velocity oxy-fuel coating spraying (HVOF)</td>
+<td>10</td>
+<td>23</td>
+<td>44.9 (-)</td>
+<td>60 (-)</td>
+<td>110 (D)</td>
+<td>60 (-)</td>
+<td>6.2 (D)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+</tr>
+<tr>
+<td>Other Spraying Methods</td>
+<td>11</td>
+<td>24</td>
+<td>44.9 (D)</td>
+<td>60 (-)</td>
+<td>94 (D)</td>
+<td>60 (-)</td>
+<td>7.17 (D)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+<td>60 (-)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="c3-spraying-particulate-base-factors">C.3 Spraying particulate base factors</h3>
+<p>Factors are g/kg of total material sprayed, before the metal-sum floor. P4 rows below are PM10 rows; add 7 for TPM and 14 for PM2.5.</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>P4 row</th>
+<th>PM10 / TPM base factor</th>
+<th>Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plasma Spray</td>
+<td>12</td>
+<td>60</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Flame Spray (Single-wire )</td>
+<td>13</td>
+<td>16.6</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Flame Spray (Other)</td>
+<td>14</td>
+<td>60</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Electric Arc Spray</td>
+<td>15</td>
+<td>19.75</td>
+<td>D</td>
+</tr>
+<tr>
+<td>High velocity oxy-fuel coating spraying (HVOF)</td>
+<td>16</td>
+<td>60</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Other Spraying Methods</td>
+<td>17</td>
+<td>60</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="appendix-d-electrode-aliases-and-workbook-source-bibliography">Appendix D. Electrode aliases and workbook source bibliography</h2>
+<h3 id="d1-electrode-aliases-and-process-notes">D.1 Electrode aliases and process notes</h3>
+<p>These are the workbook’s own notes, including its spelling. Match each letter marker to the SCC/note-marker column in Appendix A.1; the G-column row number is the note location, not the electrode input row. They document the grouping, without adding new equivalences. The SCC families are SMAW <code>309051xx</code>, GMAW <code>309052xx</code>, FCAW <code>309053xx</code>, and SAW <code>309054xx</code>. The workbook does not assign SCC family codes to GTAW, PAW or Other Arc Welding Methods.</p>
+<table>
+<thead>
+<tr>
+<th>Cell in Table A sheet</th>
+<th>Workbook note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G10</td>
+<td>Notes:</td>
+</tr>
+<tr>
+<td>G11</td>
+<td>h. Includes E11018-M</td>
+</tr>
+<tr>
+<td>G12</td>
+<td>i. Includes E308-16, E308L-15, E308L-16, E308-17, E308L-17, and E308H-17</td>
+</tr>
+<tr>
+<td>G13</td>
+<td>j. Includes E309-16, E309-17, and E309L-17</td>
+</tr>
+<tr>
+<td>G14</td>
+<td>k. Includes E310-16</td>
+</tr>
+<tr>
+<td>G15</td>
+<td>m. Includes E316-15, E316-16, and E316L-16</td>
+</tr>
+<tr>
+<td>G16</td>
+<td>n. Includes E410-16</td>
+</tr>
+<tr>
+<td>G17</td>
+<td>p. Includes E8018C3</td>
+</tr>
+<tr>
+<td>G18</td>
+<td>q. Includes E9015B3</td>
+</tr>
+<tr>
+<td>G19</td>
+<td>r. Includes E9018B3 and E9018G</td>
+</tr>
+<tr>
+<td>G20</td>
+<td>s. Includes ECoCr-A</td>
+</tr>
+<tr>
+<td>G21</td>
+<td>t. Includes ENiCrMo-4</td>
+</tr>
+<tr>
+<td>G22</td>
+<td>u. Includes ENi-Cu-2</td>
+</tr>
+<tr>
+<td>G23</td>
+<td>v. Includes E308LSi, and ER308L</td>
+</tr>
+<tr>
+<td>G24</td>
+<td>w. Includes E70S-3, E70S-5, and E70S-6</td>
+</tr>
+<tr>
+<td>G25</td>
+<td>x. Includes ER316I-Si and ER316L-Si</td>
+</tr>
+<tr>
+<td>G26</td>
+<td>y. Includes ENiCrMo-3 and ENi-CrMo-4</td>
+</tr>
+<tr>
+<td>G27</td>
+<td>z. Includes ERNiCu-7</td>
+</tr>
+<tr>
+<td>G28</td>
+<td>aa. Includes E110TS-K3</td>
+</tr>
+<tr>
+<td>G29</td>
+<td>bb. Includes E308LT-3, and E308LT0-1</td>
+</tr>
+<tr>
+<td>G30</td>
+<td>cc. Includes E309, and E309LT-1</td>
+</tr>
+<tr>
+<td>G31</td>
+<td>dd. Includes E316LT-3</td>
+</tr>
+<tr>
+<td>G32</td>
+<td>ee. Includes E70T-1, E70T-2, E70T-4, E70T-5, E70T-7, and E70T-G</td>
+</tr>
+<tr>
+<td>G34</td>
+<td>ff. Includes E71T-1, E71T-11, E71T-1M, E71T-12MJ, and E71T-1C</td>
+</tr>
+<tr>
+<td>G35</td>
+<td>gg. Includes EM12K1 and F72-EM12K2</td>
+</tr>
+<tr>
+<td>G36</td>
+<td>hh. Includes ER309 and ER309L</td>
+</tr>
+<tr>
+<td>G37</td>
+<td>ii.Includes ER316 and ER316L</td>
+</tr>
+<tr>
+<td>G42</td>
+<td>1. This process includes Metal Inert Gas (MIG) and Metal Active Gas (MAG)</td>
+</tr>
+<tr>
+<td>G43</td>
+<td>2. This process includes Tungsten Inert Gas (TIG)</td>
+</tr>
+<tr>
+<td>G44</td>
+<td>3. Only if filler materials are used</td>
+</tr>
+<tr>
+<td>G45</td>
+<td>4. Only if filler materials are used</td>
+</tr>
+</tbody>
+</table>
+<h3 id="d2-bibliography-recorded-by-the-workbook">D.2 Bibliography recorded by the workbook</h3>
+<p>These references are transcribed from <code>Instructions</code>; their underlying publications were not independently reviewed for this reverse engineering. The workbook does not supply a source-by-factor citation map.</p>
+<table>
+<thead>
+<tr>
+<th>Instructions cell</th>
+<th>Recorded source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A27</td>
+<td>Emission factors are from the US EPA's WebFIRE (version of December 2005) database.</td>
+</tr>
+<tr>
+<td>A28</td>
+<td>AP-42 Chapter 12.19, Electric Arc Welding (version of January 1995)</td>
+</tr>
+<tr>
+<td>A29</td>
+<td>Emission of Fume, Nitrogen Oxides and Noise in Plasma Cutting of Stainless and Mild Steel (1994)</td>
+</tr>
+<tr>
+<td>A30</td>
+<td>Fume Generation Rates for Stainless Steel, Nickel and Aluminum Alloys (Pulsed GMAW) (1996)</td>
+</tr>
+<tr>
+<td>A31</td>
+<td>Shipyard Welding Emission Factor Development (1999)</td>
+</tr>
+<tr>
+<td>A32</td>
+<td>Development of Emission Inventory for Metal Welding, Cutting and Spraying Operations (2000)</td>
+</tr>
+<tr>
+<td>A33</td>
+<td>Fume Generation and Content of Total Chromium and Hexavalent Chromium in Flux-cored Arc Welding (2003)</td>
+</tr>
+<tr>
+<td>A34</td>
+<td>Airborne Toxic Control Measure to Reduce Emissions of Hexavalent Chromium and Nickel from Thermal Spraying (2005)</td>
+</tr>
+<tr>
+<td>A35</td>
+<td>Methodology for Estimating Hexavalent Chromium Emissions from Thermal Spraying (2005)</td>
+</tr>
+<tr>
+<td>A36</td>
+<td>Emissions of Chromium (VI) from Arc Welding (2007)</td>
+</tr>
+<tr>
+<td>A37</td>
+<td>Fume emissions during gas metal arc welding (2007)</td>
+</tr>
+<tr>
+<td>A38</td>
+<td>Measurement of secondary emissions during laser cutting of steel equipments (2008)</td>
+</tr>
+<tr>
+<td>A39</td>
+<td>Total Fume and Heavy Metals Emission Factors Applicable to Aluminum-Lithium Alloy Welding (2010)</td>
+</tr>
+<tr>
+<td>A40</td>
+<td>Development of Welding Emission Factors for Cr and Cr(VI) with a Confidence Level (2012)</td>
+</tr>
+<tr>
+<td>A41</td>
+<td>Profiling Mild Steel Welding Processes to Reduce Fume Emissions and Costs in the Workplace (2014)</td>
+</tr>
+<tr>
+<td>A42</td>
+<td>Profiling stainless steel welding processes to reduce fume emissions, hexavalent chromium emissions and operating costs in the workplace (2016)</td>
+</tr>
+<tr>
+<td>A43</td>
+<td>Factors Affecting the Capture Efficiency of a Fume Extraction Torch for Gas Metal Arc Welding (2016)</td>
+</tr>
+<tr>
+<td>A44</td>
+<td>Characterization of Particulate Fume and Oxides Emission from Stainless Steel Plasma Cutting (2016)</td>
+</tr>
+<tr>
+<td>A45</td>
+<td>Calculations Guidance Package Metal Spraying (2018)</td>
+</tr>
+<tr>
+<td>A46</td>
+<td>Evaluation of Total Fume and Heavy Metal Emission Factors Applicable to Gas Metal Arc Welding (2019)</td>
+</tr>
+<tr>
+<td>A47</td>
+<td>Total Fume Emissions and Emission Factors Applicable to Gas Metal Arc Welding (2019)</td>
+</tr>
+<tr>
+<td>A48</td>
+<td>Air Pollution Control District of San Diego County, Welding Operations (1998)</td>
+</tr>
+</tbody>
+</table></main></body></html>

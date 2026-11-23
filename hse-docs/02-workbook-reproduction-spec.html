@@ -1,0 +1,657 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>16 — Welding workbook reproduction and activity derivation</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202a;--muted:#5a6672;--line:#d8dee5;--accent:#1d5c86;--code:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 64px}
+main{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px clamp(16px,4vw,44px)}
+nav.top{max-width:980px;margin:0 auto 12px;font-size:14px}nav.top a{color:var(--accent)}
+h1{font-size:30px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:34px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:18px;margin:24px 0 8px}h4{margin:18px 0 6px}
+a{color:var(--accent)}p,li{max-width:80ch}
+code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto}pre code{padding:0;background:none}
+table{border-collapse:collapse;margin:14px 0;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--code)}
+blockquote{margin:12px 0;padding:4px 14px;border-left:4px solid var(--accent);color:var(--muted)}
+[data-unlinked]{color:inherit;text-decoration:none}
+.toc{background:var(--code);border-radius:6px;padding:10px 16px;font-size:14px}.toc ul{margin:4px 0;padding-left:18px}
+@media print{body{background:#fff;padding:0}main{border:0;padding:0}nav.top{display:none}h2{break-after:avoid}table{display:table}}
+</style></head><body><nav class="top"><a href="index.html">← All HSE documents</a></nav><main><h1 id="16-welding-workbook-reproduction-and-activity-derivation">16 — Welding workbook reproduction and activity derivation</h1>
+<p>Prepared: 2026-11-12. Status: proposed, with D10 decided by JADA on 2026-11-12. This document extends <a data-unlinked="00-automation-first-plan.md">00 — Automation-first plan</a>. It does not change any code.</p>
+<p><strong>Sources:</strong></p>
+<ul>
+<li>The ECCC workbook: <a href="source/Electric%20Arc%20Welding%2C%20Cutting%20and%20Spraying%20Calculator_2022_10_26.xlsx"><code>Electric Arc Welding, Cutting and Spraying Calculator_2022_10_26.xlsx</code></a>, SHA-256 <code>4c3e6f6a0fc1acd8038ab5ccd6e82cf65cd65e5d6bc69a7372b0a2a23dddaa93</code>.</li>
+<li>The calculation guide extracted from it: <a href="01-workbook-calculation-guide.html"><code>electric-arc-welding-cutting-and-spraying-calculation-guide.md</code></a>, cited below as <strong>G</strong> with its section number (for example G §9.2).</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#1-the-two-goals">The two goals</a></li>
+<li><a href="#2-the-workbook-is-the-reference-d10">The workbook is the reference (D10)</a></li>
+<li><a href="#3-workbook-paths-mapped-to-the-engine">Workbook paths mapped to the engine</a></li>
+<li><a href="#4-factor-table-contract-additions">Factor table contract additions</a></li>
+<li><a href="#5-output-status-zero-is-not-one-thing">Output status: zero is not one thing</a></li>
+<li><a href="#6-activity-derivation-getting-the-workbooks-inputs-from-documents">Activity derivation: getting the workbook's inputs from documents</a></li>
+<li><a href="#7-composition-sources">Composition sources</a></li>
+<li><a href="#8-choosing-method-1-or-method-2-automatically">Choosing Method 1 or Method 2 automatically</a></li>
+<li><a href="#9-releases-versus-thresholds">Releases versus thresholds</a></li>
+<li><a href="#10-verification">Verification</a></li>
+<li><a href="#11-changes-to-the-slice-plan">Changes to the slice plan</a></li>
+<li><a href="#12-decisions">Decisions</a></li>
+<li><a href="#13-beyond-welding-the-same-pattern-for-other-calculators">Beyond welding: the same pattern for other calculators</a></li>
+</ol>
+<hr />
+<h2 id="1-the-two-goals">1. The two goals</h2>
+<ol>
+<li><strong>Calculate exactly like the government's workbook.</strong> For the same inputs, the engine's welding, cutting and spraying results equal the workbook's results, cell for cell. The workbook is the reference and G is the specification.</li>
+<li><strong>Fill the workbook's inputs automatically.</strong> The workbook needs three activity measures and some compositions:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Workbook input</th>
+<th>Unit</th>
+<th>What a client usually has instead</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Electrode/filler used, per electrode class (<code>U</code>)</td>
+<td>kg/year</td>
+<td>Invoices with product names and pack sizes</td>
+</tr>
+<tr>
+<td>Active cutting time, per cutting process (<code>H</code>)</td>
+<td>hours/year</td>
+<td>Invoices for grinding discs, plasma consumables, gouging carbons, gas cylinders; rarely a time log</td>
+</tr>
+<tr>
+<td>Material sprayed, per spraying process (<code>M</code>)</td>
+<td>kg/year</td>
+<td>Invoices for wire or powder</td>
+</tr>
+<tr>
+<td>Element fractions (Method 2, cutting, spraying)</td>
+<td>mass fraction</td>
+<td>SDS for consumables; steel grade on stock invoices</td>
+</tr>
+</tbody>
+</table>
+<p>Most clients can't answer "how many hours did you grind in 2026?". They can upload the invoices that show they bought 600 grinding discs. The software turns the second into the first, with a range, and asks a person only when the range could change an outcome (<a data-unlinked="00-automation-first-plan.md#7-materiality-the-robustness-test-and-the-exception-queue">00 §7</a>).</p>
+<hr />
+<h2 id="2-the-workbook-is-the-reference-d10">2. The workbook is the reference (D10)</h2>
+<p><strong>Decision (JADA, 2026-11-12):</strong> the official workbook is the reference, and the engine follows its formulas as written. The workbook is the Government of Canada's published method, so matching it is the defensible position, and the guide documents every formula.</p>
+<p>What "exactly" includes (all from G):</p>
+<table>
+<thead>
+<tr>
+<th>Behavior</th>
+<th>G §</th>
+<th>How the engine reproduces it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Eight activity references that read a different electrode's input (<code>Part 1 Releases!F181</code>, <code>F421:F427</code>)</td>
+<td>12.1</td>
+<td>As <strong>data</strong>: the factor row's <code>activity_label</code> points to the input the workbook actually reads. Each such row carries <code>workbook_note: G§12.1</code>, the trace shows it, and the eight rows are listed once for practitioner confirmation. Nothing is hard-coded.</td>
+</tr>
+<tr>
+<td>Cutting Cr(VI) is "NA", turned into 0 by <code>IFERROR</code></td>
+<td>8.3</td>
+<td>The output is 0 with status <code>not_estimated_by_method</code> (<a href="#5-output-status-zero-is-not-one-thing">§5</a>)</td>
+</tr>
+<tr>
+<td>"Other" welding releases are zero unless an item is unknown or unlisted (the C4/C5 gate)</td>
+<td>4.2</td>
+<td>The engine sets the gate from facts: <code>other_enabled</code> is true when any welding consumable maps to an "Other" category</td>
+</tr>
+<tr>
+<td>One method (C6) for all "other" welding in the facility</td>
+<td>4.2</td>
+<td>One method per facility-year, chosen by policy (<a href="#8-choosing-method-1-or-method-2-automatically">§8</a>)</td>
+</tr>
+<tr>
+<td>Exact constants: SAW chromium K = 0.01432 against 0.0143 for other SAW elements; <code>=0.001/2</code> factors</td>
+<td>7.2, 12.4</td>
+<td>Factor values are imported as exact literals from the formulas, never retyped</td>
+</tr>
+<tr>
+<td>Method 2 zero-total branch: a process with zero total usage gets fraction 0</td>
+<td>7.1</td>
+<td>Implemented in the weighted-fraction step</td>
+</tr>
+<tr>
+<td>Spraying PM10/TPM = max(base estimate, sum of nine metals), <strong>per process</strong>, Cr(VI) excluded from the sum</td>
+<td>9.2</td>
+<td>A <code>max_of</code> step per process before summing processes</td>
+</tr>
+<tr>
+<td>PM2.5 = 0.75 × PM10 for every activity; TPM = PM10 for welding and cutting defaults</td>
+<td>5.2, 7.3, 8.1</td>
+<td>Imported as factor relations, not as code constants</td>
+</tr>
+<tr>
+<td>Copper, silver and antimony are not calculated for listed electrodes</td>
+<td>5.1</td>
+<td>Status <code>not_modelled</code> for those rows</td>
+</tr>
+<tr>
+<td>Control efficiency is applied outside the workbook, per process and substance, before facility totals</td>
+<td>11.1</td>
+<td>A separate, flagged adjustment step. Default: uncontrolled (<a data-unlinked="00-automation-first-plan.md#63-starter-default-set-for-metal_fab-proposed-each-needs-one-time-approval">00 §6.3</a>)</td>
+</tr>
+<tr>
+<td>No rounding during calculation; display rounds to three decimals</td>
+<td>11.3</td>
+<td>Matches the S04 rule: round only at output</td>
+</tr>
+</tbody>
+</table>
+<p>The engine also keeps what the workbook can't: provenance, intervals and distinct statuses (G §14.1 recommends exactly that). Those extras never change the central number.</p>
+<p>If ECCC publishes a corrected workbook, it becomes a new pack version with a new import. The import picks up whatever the new formulas read, so those eight rows follow automatically.</p>
+<hr />
+<h2 id="3-workbook-paths-mapped-to-the-engine">3. Workbook paths mapped to the engine</h2>
+<table>
+<thead>
+<tr>
+<th>Workbook path</th>
+<th>G §</th>
+<th>Engine steps (calculators from S06 plus the new steps in §11)</th>
+<th>Inputs (facts)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Listed electrode, metals</td>
+<td>5.1</td>
+<td><code>activity_x_factor@1</code>: EF (g/kg electrode) × U ÷ 1,000</td>
+<td>U per workbook label</td>
+</tr>
+<tr>
+<td>Listed electrode, PM10/TPM, PM2.5</td>
+<td>5.2</td>
+<td><code>activity_x_factor@1</code> for PM10 and TPM (separate factor cells); PM2.5 = 0.75 × PM10</td>
+<td>U</td>
+</tr>
+<tr>
+<td>Other welding, Method 1</td>
+<td>6</td>
+<td><code>activity_x_factor@1</code> with the Method 1 constants (G App. B.1)</td>
+<td>U per "Other" process</td>
+</tr>
+<tr>
+<td>Other welding, Method 2, weighted fractions</td>
+<td>7.1</td>
+<td><strong><code>weighted_fraction@1</code></strong> (new): Σ(Uᵢ × fᵢ) ÷ ΣUᵢ, zero-total branch</td>
+<td>Per-item U and fractions</td>
+</tr>
+<tr>
+<td>Other welding, Method 2, metals</td>
+<td>7.2</td>
+<td><code>composition@1</code>: K × f̄ × U ÷ 1,000. Cr(VI) uses K_CrVI × f̄_Cr</td>
+<td>f̄ per process, U per process</td>
+</tr>
+<tr>
+<td>Other welding, Method 2, particulate</td>
+<td>7.3</td>
+<td><code>activity_x_factor@1</code>: process factor × U. Composition is not used.</td>
+<td>U per process</td>
+</tr>
+<tr>
+<td>Cutting, particulate</td>
+<td>8.1</td>
+<td><code>activity_x_factor@1</code>: H × 60 × R (g/min)</td>
+<td>H per cutting process</td>
+</tr>
+<tr>
+<td>Cutting, metals</td>
+<td>8.2</td>
+<td><code>composition@1</code> (<code>speciate_output</code>): f × TPM</td>
+<td>Time-weighted f per process</td>
+</tr>
+<tr>
+<td>Cutting, Cr(VI)</td>
+<td>8.3</td>
+<td>Fixed output 0, status <code>not_estimated_by_method</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Spraying, metals</td>
+<td>9.1</td>
+<td><code>composition@1</code>: EF (g per kg <strong>of that substance</strong>) × f × M ÷ 1,000</td>
+<td>M and mass-weighted f per process</td>
+</tr>
+<tr>
+<td>Spraying, PM10/TPM</td>
+<td>9.2</td>
+<td><code>activity_x_factor@1</code> for the base, the sum of nine metals, then <strong><code>max_of@1</code></strong> (new) per process</td>
+<td>M, the spraying metal outputs</td>
+</tr>
+<tr>
+<td>Totals</td>
+<td>10</td>
+<td>Aggregation (S10): process → activity → facility</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Units come from the factor row's <code>unit_basis</code> (<a href="#4-factor-table-contract-additions">§4</a>), so the ÷1,000 and ×60 steps are unit conversions in the S04 unit table, not literals in code.</p>
+<p><strong>Interval behavior of the two new steps:</strong></p>
+<ul>
+<li><code>max_of</code>: low = max(lows), central = max(centrals), high = max(highs). Monotone, so widening an input never narrows the result.</li>
+<li><code>weighted_fraction</code>: for non-negative usage and fractions, the bounds use the interval rules from S04. For the central value it is the exact workbook formula. If the bounds are hard to state tightly, the low and high fractions can be bounded by the lowest and highest item fraction, which is always valid and conservative.</li>
+</ul>
+<hr />
+<h2 id="4-factor-table-contract-additions">4. Factor table contract additions</h2>
+<p>These extend the <code>factors.csv</code> contract in <a data-unlinked="05-calculators-and-factors.md#4-the-factor-table-contract">05 §4</a> for the welding, cutting and spraying modules.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>label</code></td>
+<td>Workbook label, exact text (including trailing spaces in sheet names, normalized and recorded)</td>
+<td><code>E310</code>, <code>Other SMAW</code>, <code>Grinder</code></td>
+</tr>
+<tr>
+<td><code>process_family</code></td>
+<td>SMAW, GMAW, FCAW, SAW, GTAW, PAW, other_arc, cutting, spraying</td>
+<td><code>SMAW</code></td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>listed, method1, method2, cutting, spraying</td>
+<td><code>method2</code></td>
+</tr>
+<tr>
+<td><code>substance</code></td>
+<td>Workbook output (Cr, Co, Ni, Mn, CrVI, Pb, Zn, Cu, Ag, Sb, PM10, TPM, PM2.5)</td>
+<td><code>CrVI</code></td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>Exact literal from the formula or cell, as a string</td>
+<td><code>0.01432</code>, <code>0.0005</code></td>
+</tr>
+<tr>
+<td><code>unit_basis</code></td>
+<td><code>g_per_kg_electrode</code>, <code>g_per_kg_substance_in_material</code>, <code>g_per_kg_material</code>, <code>g_per_min</code></td>
+<td><code>g_per_kg_substance_in_material</code></td>
+</tr>
+<tr>
+<td><code>uses_fraction_of</code></td>
+<td>For Method 2 and spraying: which fraction multiplies the factor (Cr(VI) uses Cr)</td>
+<td><code>Cr</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>value</code>, <code>published_zero</code>, <code>not_available</code>, <code>not_modelled</code></td>
+<td><code>published_zero</code></td>
+</tr>
+<tr>
+<td><code>rating</code></td>
+<td>Workbook rating (A–E, <code>-</code>)</td>
+<td><code>C</code></td>
+</tr>
+<tr>
+<td><code>source_cell</code></td>
+<td>Workbook address</td>
+<td><code>Part 1 Releases!D23</code></td>
+</tr>
+<tr>
+<td><code>activity_label</code></td>
+<td>The input this row actually reads. Equals <code>label</code> except the eight rows in G §12.1</td>
+<td><code>E309</code> for the F181 row</td>
+</tr>
+<tr>
+<td><code>workbook_note</code></td>
+<td>Guide reference when the row follows a workbook formula that differs from its label</td>
+<td><code>G§12.1</code></td>
+</tr>
+</tbody>
+</table>
+<p>The importer (S11) generates this file from the workbook's formulas. It then checks it against the guide's appendices A–C, which list every factor. A difference between the two is an import failure, not something to fix by hand.</p>
+<hr />
+<h2 id="5-output-status-zero-is-not-one-thing">5. Output status: zero is not one thing</h2>
+<p>The workbook prints 0 for four different situations (G §12.2). The engine keeps them apart:</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Example</th>
+<th>In the HSE summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>value</code></td>
+<td>A calculated number, possibly 0 because activity is 0</td>
+<td>E7018, 0 kg used</td>
+<td>Normal</td>
+</tr>
+<tr>
+<td><code>published_zero</code></td>
+<td>The workbook's factor is a literal 0</td>
+<td>Many listed-electrode factors</td>
+<td>Normal; listed in the factor table</td>
+</tr>
+<tr>
+<td><code>not_estimated_by_method</code></td>
+<td>The method can't estimate it and returns 0</td>
+<td>Cutting Cr(VI)</td>
+<td><strong>Listed in the assumptions:</strong> "The ECCC calculator does not estimate Cr(VI) from cutting."</td>
+</tr>
+<tr>
+<td><code>not_modelled</code></td>
+<td>The workbook has no row for it</td>
+<td>Cu, Ag, Sb for listed electrodes</td>
+<td>Listed in the assumptions</td>
+</tr>
+</tbody>
+</table>
+<p>This refines rule 7 of <a data-unlinked="00-automation-first-plan.md#19-rules-for-coding-agents-copy-into-agentsmd-for-the-new-branch">00 §19</a>: unknown is still never zero. The only zeros allowed are a calculated zero, a published zero, or a zero the official method itself defines, and the last two always carry their status into the package.</p>
+<hr />
+<h2 id="6-activity-derivation-getting-the-workbooks-inputs-from-documents">6. Activity derivation: getting the workbook's inputs from documents</h2>
+<h3 id="61-the-idea">6.1 The idea</h3>
+<p>For each workbook input, the engine uses the best rung of the data ladder (<a data-unlinked="00-automation-first-plan.md#61-the-data-ladder">00 §6.1</a>) that the documents support:</p>
+<pre><code class="language-text">measured / logged value        (a time log, machine controller report, scale tickets)
+  ↓ else
+derived from purchase records  (consumables × approved conversion parameters)
+  ↓ else
+client band answer             (&quot;about how many hours a week does someone grind?&quot;)
+  ↓ else
+policy default                 (conservative, approved once)
+</code></pre>
+<p>A derivation is a typed calculation with approved parameters. It is never an LLM estimate. The parameters live in <code>defaults.yaml</code> with a source, a range and an approval, like every other default (<a data-unlinked="00-automation-first-plan.md#62-default-entry-format">00 §6.2</a>).</p>
+<h3 id="62-the-derivation-library">6.2 The derivation library</h3>
+<table>
+<thead>
+<tr>
+<th>Workbook input</th>
+<th>Evidence in documents</th>
+<th>Derivation</th>
+<th>Parameters (in <code>defaults.yaml</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Electrode/filler kg, per label</td>
+<td>Invoice lines for rod, wire, filler</td>
+<td>Σ (packs × pack size), converted to kg; stock change if known, else ± <code>stock_uncertainty</code></td>
+<td>Pack sizes come from the invoice or the SDS/TDS; <code>stock_uncertainty</code> (proposed 25%)</td>
+</tr>
+<tr>
+<td><strong>Grinder hours</strong></td>
+<td>Grinding discs, flap discs, cut-off wheels used on angle grinders</td>
+<td>Σ (discs of type t × active minutes per disc of type t) ÷ 60</td>
+<td>Active minutes per disc, by type and diameter</td>
+</tr>
+<tr>
+<td>Plasma arc cutting hours</td>
+<td>Plasma electrodes and nozzles</td>
+<td>electrodes consumed × arc-on hours per electrode</td>
+<td>Arc-on life per electrode, by amperage class</td>
+</tr>
+<tr>
+<td>Oxy-fuel cutting hours</td>
+<td>Acetylene, propane or MAPP cylinders, oxygen</td>
+<td>fuel gas volume × cutting share ÷ torch consumption per hour</td>
+<td>Consumption per tip size; cutting share of the gas (the rest may be heating or brazing)</td>
+</tr>
+<tr>
+<td>Air carbon arc (gouging) hours</td>
+<td>Gouging carbons</td>
+<td>carbons × burn minutes per carbon ÷ 60</td>
+<td>Burn minutes per carbon, by diameter</td>
+</tr>
+<tr>
+<td>Laser cutting hours</td>
+<td>Controller runtime report, or assist-gas volume</td>
+<td>runtime directly; else gas volume ÷ flow rate</td>
+<td>Assist-gas flow rate</td>
+</tr>
+<tr>
+<td>Reciprocating or arc saw hours</td>
+<td>Blades</td>
+<td>blades × active minutes per blade ÷ 60</td>
+<td>Minutes per blade</td>
+</tr>
+<tr>
+<td>Sprayed kg, per spraying process</td>
+<td>Wire or powder invoices</td>
+<td>Same as electrode kg</td>
+<td>Pack sizes</td>
+</tr>
+</tbody>
+</table>
+<p>Rules for derivations:</p>
+<ul>
+<li><strong>One consumable feeds one activity.</strong> The class map (<a data-unlinked="00-automation-first-plan.md#53-classification-product--material-class">00 §5.3</a>) assigns each consumable to exactly one cutting process. A cut-off wheel on an angle grinder is <code>Grinder</code>. Where the workbook's categories don't fit cleanly (for example a band saw), the class map entry needs practitioner approval (D13).</li>
+<li><strong>Parameters are ranges.</strong> Every life or rate parameter has low, central and high values, so the derived hours are an interval. That is what lets the robustness test decide whether anyone needs to be asked.</li>
+<li><strong>The trace shows the derivation.</strong> "Grinder: 600 discs (invoices 3, 7, 12) × 15–25–40 min ÷ 60 = 150–250–400 h. Disc life from <code>defaults.yaml#grinding.disc_125mm</code>."</li>
+<li><strong>A logged value always wins.</strong> If the client uploads a time log or a controller report, the derivation isn't used.</li>
+</ul>
+<h3 id="63-worked-example-grinding-from-disc-purchases">6.3 Worked example: grinding from disc purchases</h3>
+<p>The disc-life numbers below are <strong>placeholders for illustration</strong>. Real values need a source (manufacturer data or the practitioner's experience) and approval (D13).</p>
+<pre><code class="language-text">Evidence:  600 × 125 mm grinding discs bought in 2026 (3 invoices)
+Parameter: active grinding minutes per disc, 125 mm = 15 / 25 / 40   (low / central / high)
+
+Hours      = 600 × (15, 25, 40) ÷ 60            = 150 / 250 / 400 h
+PM10       = hours × 60 × 0.39 g/min (G App. C.1, Grinder)
+           = 3.51 / 5.85 / 9.36 kg
+TPM        = PM10 (equal default factors)        = 3.51 / 5.85 / 9.36 kg
+PM2.5      = 0.75 × PM10                         = 2.6325 / 4.3875 / 7.02 kg
+
+Base metal: 304 stainless bought as stock; Cr 18–20 % (grade standard), central 19 %
+Cr release = Cr fraction × TPM (G §8.2)         = 0.6318 / 1.1115 / 1.872 kg
+</code></pre>
+<p>The Part 4 PM10 air-release threshold is 0.5 tonnes (500 kg). Even the high estimate, 9.36 kg, is far below 500 × (1 − 0.2) = 400 kg, so the outcome is <strong>robust not met</strong> and nobody is asked about grinding hours. The disc-life guess can be quite rough without changing the answer. This is why derivation plus the robustness test is enough for most shops.</p>
+<p>If a shop's numbers were close to a threshold, the sensitivity step (<a data-unlinked="00-automation-first-plan.md#7-materiality-the-robustness-test-and-the-exception-queue">00 §7</a>) would rank grinding hours as a driver. It would then ask one band question ("About how many hours per week does someone grind?") or ask for a log.</p>
+<h3 id="64-new-question-type-use">6.4 New question type use</h3>
+<p>No new question types are needed. A derived value is shown to the client as a <code>confirm_prefill</code> ("We estimate about 250 hours of grinding from 600 discs. [Looks right] [Change]"), only when the robustness test says it matters. Otherwise it appears only in the HSE summary and the assumptions appendix.</p>
+<hr />
+<h2 id="7-composition-sources">7. Composition sources</h2>
+<table>
+<thead>
+<tr>
+<th>Workbook input</th>
+<th>First source</th>
+<th>Fallback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Method 2 electrode fractions (Cr, Co, Ni, Mn, Pb, Zn, Cu, Ag, Sb)</td>
+<td>The electrode's SDS, via the platform's <code>sds_extractor</code> (% ranges → intervals)</td>
+<td>Method 1 for that process (<a href="#8-choosing-method-1-or-method-2-automatically">§8</a>)</td>
+</tr>
+<tr>
+<td>Cutting fractions, time-weighted per process (G §3.4)</td>
+<td>Base-metal grades from <code>metal_stock</code> invoice lines, looked up in <code>metal_grades.csv</code> (grade standard ranges)</td>
+<td>Policy default: the shop's highest-alloy grade on record, flagged</td>
+</tr>
+<tr>
+<td>Allocation of cutting hours across base metals</td>
+<td>Purchased stock mass share by grade (a default, flagged)</td>
+<td>Client confirmation if the robustness test says it matters</td>
+</tr>
+<tr>
+<td>Spraying fractions, mass-weighted per process (G §3.5)</td>
+<td>The feedstock SDS</td>
+<td>Bounding rule (<a data-unlinked="00-automation-first-plan.md#64-the-bounding-rule-for-unknown-composition">00 §6.4</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>The workbook expects these averages to be prepared outside it (G §3.4, §3.5). The engine prepares them with <code>weighted_fraction@1</code> and records every item that went into each average.</p>
+<p>Validation the workbook doesn't do, from G §14.3: fractions must lie between 0 and 1; the nine tracked fractions may sum to less than 1 but not more; quantities are non-negative; the same usage can't be allocated twice. A missing composition is an unknown, not a zero, so it can't silently dilute a weighted average (G §12.3).</p>
+<hr />
+<h2 id="8-choosing-method-1-or-method-2-automatically">8. Choosing Method 1 or Method 2 automatically</h2>
+<p>The workbook applies one method to all "other" welding in a facility (C6, G §4.2). It recommends Method 1 by default and Method 2 when Method 1 isn't reasonable and composition is known (<code>Instructions!A79:A83</code>).</p>
+<p>Proposed policy (<code>policy.yaml: other_welding_method</code>, D12):</p>
+<ol>
+<li>Listed electrodes always use their listed rows (both methods leave them alone).</li>
+<li>If no consumable maps to an "Other" category, the gate is off and "other" releases are zero, as in the workbook.</li>
+<li>Otherwise compute <strong>both</strong> methods. Method 2 is possible only if every "other" consumable has an SDS composition.</li>
+<li>Report with <strong>Method 1</strong> (the workbook's default), unless:
+   - the practitioner's policy says Method 2 when composition is complete; or
+   - the two methods give different threshold outcomes. Then the case goes to the HSE summary as one decision: "Method 1 says met, Method 2 says not met. Composition is from SDS for all 4 products. Choose."</li>
+<li>The chosen method and the reason are recorded in the package.</li>
+</ol>
+<hr />
+<h2 id="9-releases-versus-thresholds">9. Releases versus thresholds</h2>
+<p>The workbook calculates <strong>air releases</strong>. It does not calculate the quantities that decide whether a substance must be reported (G §1).</p>
+<ul>
+<li><strong>Thresholds</strong> use the manufactured, processed or otherwise used quantity (MPO): for example the chromium contained in the electrodes and base metal used. That comes from composition × mass, in S07's rules and the core material assessment.</li>
+<li><strong>Releases</strong> are what gets reported once a threshold is met. That is the workbook's output.</li>
+</ul>
+<p>One open point for the practitioner (D14): Cr(VI) in welding fume is formed during welding. Whether, and how, the workbook's Cr(VI) release estimate should count toward the Cr(VI) MPO quantity ("manufactured") is an interpretation question, not something the workbook answers.</p>
+<hr />
+<h2 id="10-verification">10. Verification</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>What it proves</th>
+<th>Slice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Parity, single category:</strong> the 74 single-category scenarios the guide used (46 listed, 7 Method 1, 7 Method 2, 8 cutting, 6 spraying; G §15), each at several quantities</td>
+<td>Every factor row and path matches the workbook</td>
+<td>S12</td>
+</tr>
+<tr>
+<td><strong>Parity, mixtures and edge cases:</strong> weighted Method 2 mixtures, both gate states, a blank method selector (takes Method 2), Table B row 106 included and row 107 excluded, both spraying-floor branches, the eight G §12.1 rows</td>
+<td>Every branch and formula is reproduced</td>
+<td>S12</td>
+</tr>
+<tr>
+<td><strong>Guide worked examples</strong> G §13.1–13.7, as fixed tests with the guide's numbers written as literals</td>
+<td>Independent hand-checkable arithmetic</td>
+<td>S06b, S12</td>
+</tr>
+<tr>
+<td><strong>Derivation tests:</strong> hand-worked arithmetic for each derivation mode, with intervals (§6.3 is the first)</td>
+<td>Derivations are correct</td>
+<td>S13b</td>
+</tr>
+<tr>
+<td><strong>Property tests:</strong> widening a derivation parameter never narrows the result; <code>max_of</code> is monotone</td>
+<td>Robustness logic stays sound</td>
+<td>S06b, S13b</td>
+</tr>
+</tbody>
+</table>
+<p>Parity target: <strong>100% of generated cases, no exception list</strong>, at 1e-9 relative tolerance. The G §12.1 rows are handled as data, so no row needs an exception.</p>
+<p>Parity speed: S01 measured 0.85 s per case when copying the workbook each time. S12 should load the workbook once and change only the inputs between cases, so thousands of cases run in minutes.</p>
+<hr />
+<h2 id="11-changes-to-the-slice-plan">11. Changes to the slice plan</h2>
+<p>These update the table in <a data-unlinked="00-automation-first-plan.md#16-work-breakdown-for-agents">00 §16</a>.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Slice</th>
+<th>Depends on</th>
+<th>Done when</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>S06b</strong> (new)</td>
+<td><code>max_of@1</code> and <code>weighted_fraction@1</code> (with the zero-total branch), interval-aware; guide examples G §13.3, §13.5, §13.6 as fixtures</td>
+<td>S06</td>
+<td>Fixtures and property tests pass</td>
+<td>0.4k</td>
+</tr>
+<tr>
+<td><strong>S11</strong> (expanded)</td>
+<td><code>jada-pack import</code>: generate welding, cutting and spraying <code>factors.csv</code> from the workbook formulas with the §4 columns (status, unit basis, <code>activity_label</code>, <code>workbook_note</code>, exact literals); cross-check against G appendices A–C</td>
+<td>S02, S06b</td>
+<td>CSVs byte-stable; 0 differences from G appendices; counts frozen</td>
+<td>1.2k</td>
+</tr>
+<tr>
+<td><strong>S12</strong> (expanded)</td>
+<td><code>jada-pack parity</code>: the §10 scenario set; workbook loaded once per run</td>
+<td>S01, S11, S09</td>
+<td>100% parity, no exception list</td>
+<td>1.0k</td>
+</tr>
+<tr>
+<td><strong>S13b</strong> (new)</td>
+<td><code>derive_activity@1</code> (modes: <code>count_x_life</code>, <code>volume_div_rate</code>, <code>mass_from_packs</code>, <code>share_allocation</code>) and placeholder derivation defaults marked unapproved</td>
+<td>S13, S16</td>
+<td>§6.3 example and one test per mode pass; unapproved defaults can't be used by an <code>auto</code> path</td>
+<td>0.8k</td>
+</tr>
+<tr>
+<td><strong>S16</strong> (expanded)</td>
+<td>The class map also covers derivation consumables: grinding discs, cut-off wheels, plasma consumables, gouging carbons, cutting gases, saw blades, spray wire/powder, and <code>metal_stock</code> grades</td>
+<td>S02</td>
+<td>Parser and map tests on real invoice lines</td>
+<td>1.0k</td>
+</tr>
+</tbody>
+</table>
+<p>Suggested order after S07: S06b → S11 → (S05, then S08–S10) → S12 → S13 → S16 → S13b. S06b and S11 need no database, so they can run while the database is set up for S05.</p>
+<hr />
+<h2 id="12-decisions">12. Decisions</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Decision</th>
+<th>Recommendation</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D10</td>
+<td>The official workbook is the reference; the engine follows its formulas as written</td>
+<td>—</td>
+<td><strong>Decided</strong> by JADA, 2026-11-12</td>
+</tr>
+<tr>
+<td>D11</td>
+<td>Cutting Cr(VI): report the workbook's result (not estimated) and disclose it in the assumptions</td>
+<td>Accept; follows from D10</td>
+<td>Proposed</td>
+</tr>
+<tr>
+<td>D12</td>
+<td>Method 1 or Method 2 for "other" welding (<a href="#8-choosing-method-1-or-method-2-automatically">§8</a>)</td>
+<td>Method 1 by default; both computed; the practitioner decides only when they disagree on an outcome</td>
+<td>Proposed</td>
+</tr>
+<tr>
+<td>D13</td>
+<td>Derivation parameters (disc life, consumable life, gas rates) and class-map entries for consumables that don't fit a workbook category</td>
+<td>The practitioner approves each with a source; start with the consumables seen in pilot clients' invoices</td>
+<td>Proposed; needed before S13b's defaults are approved</td>
+</tr>
+<tr>
+<td>D14</td>
+<td>Whether welding-fume Cr(VI) counts toward Cr(VI) MPO ("manufactured")</td>
+<td>The practitioner's interpretation, recorded as policy</td>
+<td>Open</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-beyond-welding-the-same-pattern-for-other-calculators">13. Beyond welding: the same pattern for other calculators</h2>
+<p>The same three-part pattern applies to every ECCC calculator JADA adopts (blasting, combustion, the road-dust calculator in the same folder):</p>
+<ol>
+<li><strong>A guide like G</strong>, extracted from the official file: every formula, factor, gate and special case.</li>
+<li><strong>A faithful import plus parity</strong>, with special cases as data and statuses for zero values.</li>
+<li><strong>A derivation library</strong> that turns the documents clients actually have into the calculator's inputs, with approved ranges, and lets the robustness test decide whether to ask anyone.</li>
+</ol>
+<p>For a new sector, step 1 comes first. It is what made this document possible, and it turns "trust the agent's reading of the spreadsheet" into a reviewable specification.</p></main></body></html>

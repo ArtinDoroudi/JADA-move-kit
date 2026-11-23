@@ -1,0 +1,308 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2025–2027 NPRI workbook crosscheck</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202a;--muted:#5a6672;--line:#d8dee5;--accent:#1d5c86;--code:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 64px}
+main{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px clamp(16px,4vw,44px)}
+nav.top{max-width:980px;margin:0 auto 12px;font-size:14px}nav.top a{color:var(--accent)}
+h1{font-size:30px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:34px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:18px;margin:24px 0 8px}h4{margin:18px 0 6px}
+a{color:var(--accent)}p,li{max-width:80ch}
+code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto}pre code{padding:0;background:none}
+table{border-collapse:collapse;margin:14px 0;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--code)}
+blockquote{margin:12px 0;padding:4px 14px;border-left:4px solid var(--accent);color:var(--muted)}
+[data-unlinked]{color:inherit;text-decoration:none}
+.toc{background:var(--code);border-radius:6px;padding:10px 16px;font-size:14px}.toc ul{margin:4px 0;padding-left:18px}
+@media print{body{background:#fff;padding:0}main{border:0;padding:0}nav.top{display:none}h2{break-after:avoid}table{display:table}}
+</style></head><body><nav class="top"><a href="index.html">← All HSE documents</a></nav><main><h1 id="20252027-npri-workbook-crosscheck">2025–2027 NPRI workbook crosscheck</h1>
+<p>Read-only reconciliation of the copied 2026 JSON registry to the supplied official workbook. No source or JSON values were changed.</p>
+<h2 id="inputs-and-coverage">Inputs and coverage</h2>
+<ul>
+<li>Workbook: <code>2025-2027 NPRI Substance List_Liste des substances INRP 2025-2027 (10-04-2026) (1).xlsx</code>; sheet <code>2025-2027</code>; SHA-256 <code>3f59b956b92c0040b86ce579cd8268acec345042ac290ff3b9f8eb97126e2dd8</code>.</li>
+<li>JSON: <code>content/regulation/notice_2025_2027/substances_2026.json</code>; declared source SHA-256 <code>3f59b956b92c0040b86ce579cd8268acec345042ac290ff3b9f8eb97126e2dd8</code>; copied JSON SHA-256 <code>127967fdde1d59f46f5eb706d185d4a5e1b5b068dfcc5160def27f2cb9148e8d</code>; corrections are loaded from the JSON file's sibling <code>corrections.yaml</code> when present.</li>
+<li>Workbook records: 493; JSON records: 493.</li>
+<li>Reproduce from the backend root with <code>python scripts/crosscheck_npri_regulation.py --workbook PATH</code>; <code>openpyxl==3.1.5</code> is pinned in <code>requirements-npri.txt</code>. Exit status is nonzero for unexplained findings.</li>
+<li>Workbook bilingual layout: EN identity/part in C/D and FR identity/part in M/N; one row supplies the EN and FR values.</li>
+<li>Key: <code>(part, normalized identity)</code>; matching does not use workbook/JSON row positions. CAS is whitespace-normalized; NPRI identifiers are uppercased and <code>NA - n</code> spacing is canonicalized. Names/threshold text use Unicode NFKC plus collapsed whitespace; punctuation, accents, note numerals and wording remain significant.</li>
+<li>Numeric thresholds parse the leading quantity and mass unit independently from EN and FR source text. <code>tonnes</code> is converted to kg and <code>grams</code> to 0.001 kg for the derived <code>threshold_kg</code> comparison. <code>n/a</code> and French <code>s. o.</code> are treated as nonnumeric/null for concentration. Reporting unit vocabulary normalizes English/French kilogram, tonne and gram forms; <code>grams TEQ</code> and <code>grammes ET</code> are treated as equivalent labels for the same TEQ unit. Qualitative source threshold text is compared verbatim after whitespace normalization. The JSON's internal <code>threshold_kind</code> taxonomy has no equivalent workbook column and is not inferred from source prose.</li>
+<li>Workbook Notes sheet (rows 8–42) supplies numbered substance qualifiers. Numeric superscript references are read from English and French rich-text name runs. JSON group-member CAS values are compared with CAS RN values explicitly present in referenced notes; explicitly excluded CAS values are reported and checked separately. Footnotes with no explicit CAS do not independently establish a member list.</li>
+</ul>
+<h3 id="counts-by-part">Counts by part</h3>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th style="text-align: right;">Workbook</th>
+<th style="text-align: right;">JSON</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1A</td>
+<td style="text-align: right;">177</td>
+<td style="text-align: right;">177</td>
+</tr>
+<tr>
+<td>1B</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr>
+<td>1C</td>
+<td style="text-align: right;">163</td>
+<td style="text-align: right;">163</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">62</td>
+</tr>
+</tbody>
+</table>
+<h3 id="identitypart-coverage">Identity+part coverage</h3>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th style="text-align: right;">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>matched identity+part keys</td>
+<td style="text-align: right;">493</td>
+</tr>
+<tr>
+<td>missing JSON keys</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>extra JSON keys</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>duplicate workbook keys</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>duplicate JSON keys</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mismatch-counts-by-type">Mismatch counts by type</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th style="text-align: right;">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>identity</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>identity_kind</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>part</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>bilingual_identity</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>bilingual_part</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>name_en</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>name_fr</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>threshold_text_en</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>threshold_text_fr</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>threshold_value</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>threshold_unit</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>threshold_value_fr</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>threshold_unit_fr</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>threshold_kg</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>concentration_en</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>concentration_fr</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>reporting_unit_en</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>reporting_unit_fr</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>flag_voc</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>flag_pah</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>flag_pfas</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>qualifier_note_numbers</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>qualifier_note_text</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>group_member_cas</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>excluded_cas</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>group_excluded_cas</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>missing_json</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>extra_json</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>duplicate_workbook</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>duplicate_json</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Total mismatch findings: <strong>1</strong>. Counts are finding counts, so one record can have multiple findings.</p>
+<h2 id="findings">Findings</h2>
+<h3 id="reporting_unit_fr-1">reporting_unit_fr (1)</h3>
+<ul>
+<li>Excel row 201 (B201, C201, D201, L201, M201, N201) / JSON part1B:569-64-2: copied <code>kilograms</code>; workbook <code>tonnes (EN source unit: kilograms; FR source unit: tonnes)</code>.</li>
+</ul>
+<h2 id="workbook-note-markup-observation">Workbook note-markup observation</h2>
+<p>Records where EN/FR superscript formatting differs: 1. This source-workbook formatting observation is not counted as a JSON content mismatch; the JSON note references use the superscripted language cell.</p>
+<ul>
+<li>Excel row 426 (B426, C426, D426, L426, M426, N426) / JSON part4:NA - M10: EN superscript refs: ∅; FR superscript refs: 25, 26.</li>
+</ul>
+<h2 id="group-cas-inventory">Group CAS inventory</h2>
+<p>Records with nonempty JSON <code>group_member_cas_rns</code>: 19; listed CAS values: 235.</p>
+<ul>
+<li><code>part1A:NA - 16</code> (row 11): <code>14798-03-9, 7664-41-7</code></li>
+<li><code>part1A:1319-77-3</code> (row 54): <code>106-44-5, 108-39-4, 95-48-7</code></li>
+<li><code>part1A:41834-16-6</code> (row 96): <code>354-12-1, 354-15-4, 354-21-2</code></li>
+<li><code>part1A:34077-87-7</code> (row 97): <code>306-83-2, 354-23-4, 812-04-4, 90454-18-5</code></li>
+<li><code>part1A:63938-10-3</code> (row 98): <code>2837-89-0, 354-25-6, 374-07-2, 76-14-2</code></li>
+<li><code>part1A:NA - 21</code> (row 141): <code>140-66-9, 1806-26-4, 27193-28-8, 68987-90-6, 9002-93-1, 9036-19-5</code></li>
+<li><code>part1A:NA - M14</code> (row 167): <code>463-58-1, 624-92-0, 74-93-1, 75-15-0, 75-18-3, 7783-06-4</code></li>
+<li><code>part1A:1330-20-7</code> (row 177): <code>106-42-3, 108-38-3, 95-47-6</code></li>
+<li><code>part1B:NA - 46</code> (row 181): <code>12222-69-4, 16889-10-4, 20721-50-0, 21811-64-3, 2581-69-3, 27184-69-6, 2734-52-3, 2832-40-8, 2872-52-8, 31464-38-7, 31482-56-1, 3179-89-3, 3180-81-2, 40880-51-1, 43047-20-7, 4314-14-1, 6054-48-4, 6250-23-3, 6253-10-7, 6300-37-4, 6439-53-8, 65122-05-6, 6657-00-7, 69472-19-1, 730-40-5, 83249-52-9, 842-07-9</code></li>
+<li><code>part1B:NA - 50</code> (row 186): <code>102-77-2, 117920-00-0, 120-78-5, 149-30-4, 155-04-4, 21564-17-0, 22405-83-0, 2492-26-4, 32510-27-3, 3741-80-8, 38456-45-0, 4979-32-2, 65605-47-2, 65605-48-3, 68911-68-2, 7778-70-3, 95-29-4, 95-31-8, 95-32-9, 95-33-0</code></li>
+<li><code>part1B:NA - 39</code> (row 190): <code>106232-85-3</code></li>
+<li><code>part1B:NA - 38</code> (row 191): <code>85535-85-9</code></li>
+<li><code>part1B:NA - 49</code> (row 194): <code>13601-19-9, 13746-66-2, 13943-58-3, 13967-50-5, 14038-43-8, 143-33-9, 25869-00-5, 25869-98-1, 506-61-6</code></li>
+<li><code>part1B:NA - 48</code> (row 200): <code>10460-00-1, 1078712-76-1, 111-86-4, 112-18-5, 112-69-6, 112-75-4, 112-90-3, 112-99-2, 1120-24-7, 124-22-1, 124-28-7, 124-30-1, 125328-36-1, 125328-37-2, 125328-38-3, 125328-39-4, 125328-41-8, 125328-42-9, 125328-43-0, 125328-44-1, 125328-45-2, 125328-46-3, 13281-06-6, 143-27-1, 14676-61-0, 1613-17-8, 1838-08-0, 1920-05-4, 19855-61-9, 2016-56-0, 2016-57-1, 2190-04-7, 22020-14-0, 22023-23-0, 24287-35-2, 25324-14-5, 28061-69-0, 28701-67-9, 29317-52-0, 3007-31-6, 30113-45-2, 40165-68-2, 4455-26-9, 50291-24-2, 5538-95-4, 61788-45-2, 61788-46-3, 61788-62-3, 61788-63-4, 61788-91-8, 61788-93-0, 61788-95-2, 61789-76-2, 61789-79-5, 61790-18-9, 61790-33-8, 61790-57-6, 61790-59-8, 61790-60-1, 61791-55-7, 65059-85-0, 67700-98-5, 67700-99-6, 68037-91-2, 68037-92-3, 68037-95-6, 68037-98-9, 68130-68-7, 68155-38-4, 68439-70-3, 68479-04-9, 68513-50-8, 68603-64-5, 68603-65-6, 68610-26-4, 68610-68-4, 68783-23-3, 68783-24-4, 68783-25-5, 68784-38-3, 68814-69-7, 68855-63-0, 68909-95-5, 68955-53-3, 68955-54-4, 71011-01-3, 71011-03-5, 7173-62-8, 7378-99-6, 7396-58-9, 75444-69-8, 929-73-7</code></li>
+<li><code>part1B:NA - 20</code> (row 204): <code>104-35-8, 104-40-5, 127087-87-0, 1323-65-5, 20427-84-3, 25154-52-3, 26027-38-3, 26523-78-4, 27176-93-8, 27177-05-5, 27177-08-8, 27986-36-3, 28679-13-2, 28987-17-9, 37205-87-1, 37251-69-7, 37340-60-6, 51811-79-1, 51938-25-1, 68081-86-7, 68412-53-3, 68412-54-4, 68515-89-9, 68515-93-5, 7311-27-5, 84852-15-3, 9016-45-9, 9051-57-4</code></li>
+<li><code>part5:NA - 41</code> (row 438): <code>105-46-4, 110-19-0, 123-86-4</code></li>
+<li><code>part5:NA - 45</code> (row 471): <code>107-98-2, 109-59-1, 111-90-0, 112-07-2, 112-15-2, 112-25-4, 112-34-5, 124-17-4, 1569-01-3, 1569-02-4, 2807-30-9, 29911-27-1, 29911-28-2, 34590-94-8, 5131-66-8, 54839-24-6, 623-84-7, 88917-22-0</code></li>
+<li><code>part5:25551-13-7</code> (row 489): <code>108-67-8, 526-73-8</code></li>
+<li><code>part5:1330-20-7</code> (row 492): <code>106-42-3, 108-38-3, 95-47-6</code></li>
+</ul>
+<h2 id="effective-correction-summary">Effective correction summary</h2>
+<p>The effective registry is loaded through <code>load_substance_registry</code>; its sibling <a data-unlinked="corrections.yaml">corrections.yaml</a> records the evidence and bilingual source quotations. The audit independently reconciles effective values against workbook cells and Notes, including member and excluded CAS separately.</p>
+<p>Effective corrections: 15 substance records; full evidence and note text are in <code>corrections.yaml</code>.</p>
+<ul>
+<li><code>part1A:NA - 17</code> (Excel row 135): qualifier_note_numbers <code>[]</code> → <code>[10]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1A:NA - 21</code> (Excel row 141): group_member_cas_rns <code>[]</code> → <code>['140-66-9', '1806-26-4', '27193-28-8', '68987-90-6', '9002-93-1', '9036-19-5']</code>; qualifier_note_numbers <code>[]</code> → <code>[11]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1A:NA - 22</code> (Excel row 146): group_member_cas_rns <code>['7723-14-0']</code> → <code>[]</code>; group_excluded_cas_rns <code>∅</code> → <code>['7723-14-0']</code></li>
+<li><code>part1B:NA - 46</code> (Excel row 181): group_member_cas_rns <code>[]</code> → <code>['12222-69-4', '16889-10-4', '20721-50-0', '21811-64-3', '2581-69-3', '27184-69-6', '2734-52-3', '2832-40-8', '2872-52-8', '31464-38-7', '31482-56-1', '3179-89-3', '3180-81-2', '40880-51-1', '43047-20-7', '4314-14-1', '6054-48-4', '6250-23-3', '6253-10-7', '6300-37-4', '6439-53-8', '65122-05-6', '6657-00-7', '69472-19-1', '730-40-5', '83249-52-9', '842-07-9']</code>; qualifier_note_numbers <code>[]</code> → <code>[16]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1B:2390-60-5</code> (Excel row 182): group_member_cas_rns <code>['306-83-2', '354-23-4', '812-04-4', '90454-18-5']</code> → <code>[]</code>; qualifier_note_numbers <code>[7]</code> → <code>[]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1B:548-62-9</code> (Excel row 183): qualifier_note_numbers <code>[3]</code> → <code>[]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1B:2390-59-2</code> (Excel row 184): qualifier_note_numbers <code>[4]</code> → <code>[]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1B:NA - 50</code> (Excel row 186): group_member_cas_rns <code>[]</code> → <code>['102-77-2', '117920-00-0', '120-78-5', '149-30-4', '155-04-4', '21564-17-0', '22405-83-0', '2492-26-4', '32510-27-3', '3741-80-8', '38456-45-0', '4979-32-2', '65605-47-2', '65605-48-3', '68911-68-2', '7778-70-3', '95-29-4', '95-31-8', '95-32-9', '95-33-0']</code>; qualifier_note_numbers <code>[]</code> → <code>[17]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1B:NA - 49</code> (Excel row 194): group_member_cas_rns <code>[]</code> → <code>['13601-19-9', '13746-66-2', '13943-58-3', '13967-50-5', '14038-43-8', '143-33-9', '25869-00-5', '25869-98-1', '506-61-6']</code>; qualifier_note_numbers <code>[]</code> → <code>[20]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1B:NA - 08</code> (Excel row 199): group_member_cas_rns <code>['78-00-2']</code> → <code>[]</code>; group_excluded_cas_rns <code>∅</code> → <code>['78-00-2']</code>; qualifier_exclusions <code>∅</code> → <code>[{'kind': 'alloy', 'materials_en': ['stainless steel', 'brass', 'bronze'], 'source_note_number': 21}]</code></li>
+<li><code>part1B:NA - 48</code> (Excel row 200): group_member_cas_rns <code>[]</code> → <code>['10460-00-1', '1078712-76-1', '111-86-4', '112-18-5', '112-69-6', '112-75-4', '112-90-3', '112-99-2', '1120-24-7', '124-22-1', '124-28-7', '124-30-1', '125328-36-1', '125328-37-2', '125328-38-3', '125328-39-4', '125328-41-8', '125328-42-9', '125328-43-0', '125328-44-1', '125328-45-2', '125328-46-3', '13281-06-6', '143-27-1', '14676-61-0', '1613-17-8', '1838-08-0', '1920-05-4', '19855-61-9', '2016-56-0', '2016-57-1', '2190-04-7', '22020-14-0', '22023-23-0', '24287-35-2', '25324-14-5', '28061-69-0', '28701-67-9', '29317-52-0', '3007-31-6', '30113-45-2', '40165-68-2', '4455-26-9', '50291-24-2', '5538-95-4', '61788-45-2', '61788-46-3', '61788-62-3', '61788-63-4', '61788-91-8', '61788-93-0', '61788-95-2', '61789-76-2', '61789-79-5', '61790-18-9', '61790-33-8', '61790-57-6', '61790-59-8', '61790-60-1', '61791-55-7', '65059-85-0', '67700-98-5', '67700-99-6', '68037-91-2', '68037-92-3', '68037-95-6', '68037-98-9', '68130-68-7', '68155-38-4', '68439-70-3', '68479-04-9', '68513-50-8', '68603-64-5', '68603-65-6', '68610-26-4', '68610-68-4', '68783-23-3', '68783-24-4', '68783-25-5', '68784-38-3', '68814-69-7', '68855-63-0', '68909-95-5', '68955-53-3', '68955-54-4', '71011-01-3', '71011-03-5', '7173-62-8', '7378-99-6', '7396-58-9', '75444-69-8', '929-73-7']</code>; qualifier_note_numbers <code>[]</code> → <code>[22]</code>; bilingual qualifier text reconciled</li>
+<li><code>part1B:NA - 20</code> (Excel row 204): group_member_cas_rns <code>[]</code> → <code>['104-35-8', '104-40-5', '127087-87-0', '1323-65-5', '20427-84-3', '25154-52-3', '26027-38-3', '26523-78-4', '27176-93-8', '27177-05-5', '27177-08-8', '27986-36-3', '28679-13-2', '28987-17-9', '37205-87-1', '37251-69-7', '37340-60-6', '51811-79-1', '51938-25-1', '68081-86-7', '68412-53-3', '68412-54-4', '68515-89-9', '68515-93-5', '7311-27-5', '84852-15-3', '9016-45-9', '9051-57-4']</code>; qualifier_note_numbers <code>[]</code> → <code>[23]</code>; bilingual qualifier text reconciled</li>
+<li><code>part5:NA - 41</code> (Excel row 438): group_member_cas_rns <code>['105-46-4', '110-19-0', '123-86-4', '540-88-5']</code> → <code>['105-46-4', '110-19-0', '123-86-4']</code>; group_excluded_cas_rns <code>∅</code> → <code>['540-88-5']</code></li>
+<li><code>part5:NA - 32</code> (Excel row 455): group_member_cas_rns <code>['110-54-3']</code> → <code>[]</code>; group_excluded_cas_rns <code>∅</code> → <code>['110-54-3']</code></li>
+<li><code>part5:25551-13-7</code> (Excel row 489): group_member_cas_rns <code>['108-67-8', '526-73-8', '95-63-6']</code> → <code>['108-67-8', '526-73-8']</code>; group_excluded_cas_rns <code>∅</code> → <code>['95-63-6']</code></li>
+</ul>
+<p>Explicit exclusion records: 5.</p>
+<ul>
+<li><code>part1A:NA - 22</code> (Excel row 146): excluded CAS <code>7723-14-0</code></li>
+<li><code>part1B:NA - 08</code> (Excel row 199): excluded CAS <code>78-00-2</code></li>
+<li>Structured alloy exclusion: stainless steel, brass, bronze; source note 21</li>
+<li><code>part5:NA - 41</code> (Excel row 438): excluded CAS <code>540-88-5</code></li>
+<li><code>part5:NA - 32</code> (Excel row 455): excluded CAS <code>110-54-3</code></li>
+<li><code>part5:25551-13-7</code> (Excel row 489): excluded CAS <code>95-63-6</code></li>
+</ul>
+<h2 id="explicitly-unresolved-source-conflicts">Explicitly unresolved source conflicts</h2>
+<p>The following exact bilingual workbook discrepancy is retained as an open source conflict; it is never blanket-ignored:</p>
+<ul>
+<li>Excel row 201 (B201, C201, D201, L201, M201, N201) / JSON part1B:569-64-2: JSON <code>kilograms</code>; workbook <code>tonnes (EN source unit: kilograms; FR source unit: tonnes)</code>.</li>
+</ul>
+<p>Unexplained finding count: <strong>0</strong>.</p></main></body></html>

@@ -1,0 +1,319 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>15 — Decisions, risks and open questions</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16202a;--muted:#5a6672;--line:#d8dee5;--accent:#1d5c86;--code:#eef1f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161c;--card:#182028;--ink:#e5ebf0;--muted:#9aa7b3;--line:#2a3541;--accent:#7cb6e0;--code:#1f2832;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 64px}
+main{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px clamp(16px,4vw,44px)}
+nav.top{max-width:980px;margin:0 auto 12px;font-size:14px}nav.top a{color:var(--accent)}
+h1{font-size:30px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:34px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:18px;margin:24px 0 8px}h4{margin:18px 0 6px}
+a{color:var(--accent)}p,li{max-width:80ch}
+code{font:13.5px ui-monospace,Menlo,Consolas,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:6px;overflow-x:auto}pre code{padding:0;background:none}
+table{border-collapse:collapse;margin:14px 0;font-size:14px;display:block;overflow-x:auto;max-width:100%}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--code)}
+blockquote{margin:12px 0;padding:4px 14px;border-left:4px solid var(--accent);color:var(--muted)}
+[data-unlinked]{color:inherit;text-decoration:none}
+.toc{background:var(--code);border-radius:6px;padding:10px 16px;font-size:14px}.toc ul{margin:4px 0;padding-left:18px}
+@media print{body{background:#fff;padding:0}main{border:0;padding:0}nav.top{display:none}h2{break-after:avoid}table{display:table}}
+</style></head><body><nav class="top"><a href="index.html">← All HSE documents</a></nav><main><h1 id="15-decisions-risks-and-open-questions">15 — Decisions, risks and open questions</h1>
+<p>Prepared: 2026-11-09. Status: proposed. Every decision below is <strong>proposed</strong> until the JADA team accepts it. Nothing in this set has been implemented.</p>
+<blockquote>
+<p><strong>Revised 2026-11-11:</strong> ADR-007 is superseded and ADR-013 to ADR-017 plus risks V1–V10 are added in <a data-unlinked="00-automation-first-plan.md#20-how-this-plan-changes-documents-0115">00 §18 and §20</a>; decisions D1–D9 are in <a data-unlinked="00-automation-first-plan.md#17-decisions-jada-needs-to-make">00 §17</a>.</p>
+</blockquote>
+<h2 id="1-architecture-decision-records">1. Architecture decision records</h2>
+<p>Each ADR follows the same pattern: context, decision, alternatives considered, consequences.</p>
+<h3 id="adr-001-split-the-product-into-engine-packs-and-regulation-data">ADR-001 — Split the product into engine, packs and regulation data</h3>
+<ul>
+<li><strong>Context:</strong> v0 needs ~3.9k application lines per finished process family, and the all-industry scope has 488 process slots (<a data-unlinked="01-why-change-v0-diagnosis.md">01</a>).</li>
+<li><strong>Decision:</strong> an industry-neutral engine, versioned industry packs built from shared modules, and regulation data per Gazette notice (<a data-unlinked="02-architecture-overview.md">02</a>).</li>
+<li><strong>Alternatives:</strong></li>
+<li>(a) continue v0's style and refactor later: rejected, because cost grows linearly with coverage and review becomes impossible;</li>
+<li>(b) one engine per industry: rejected, because most processes are shared;</li>
+<li>(c) buy an EHS platform: out of scope for this document, but worth a separate commercial check.</li>
+<li><strong>Consequences:</strong> about 6 weeks of foundation work (N1) before new coverage ships. In return, new coverage becomes mostly data and practitioner review.</li>
+</ul>
+<h3 id="adr-002-one-fact-model-with-a-fixed-set-of-typed-entity-kinds">ADR-002 — One fact model with a fixed set of typed entity kinds</h3>
+<ul>
+<li><strong>Context:</strong> v0 has 15 resolution payload kinds, each with its own validator, review service, routes and editor.</li>
+<li><strong>Decision:</strong> every human statement is a fact keyed by a question ID, with one review flow. Structure uses 10 fixed entity kinds (<a data-unlinked="03-domain-model-and-facts.md">03</a>).</li>
+<li><strong>Alternatives:</strong> (a) keep per-feature tables: rejected (it is the vertical-slice cause); (b) full EAV including structure: rejected, because it loses referential integrity.</li>
+<li><strong>Consequences:</strong> rich nested value schemas are allowed. Generic authorization and freshness; one review screen.</li>
+</ul>
+<h3 id="adr-003-calculators-are-code-factors-and-bindings-are-data-formula-strings-are-never-evaluated">ADR-003 — Calculators are code; factors and bindings are data; formula strings are never evaluated</h3>
+<ul>
+<li><strong>Context:</strong> v0's factor rows carry formula strings, but the math lives in per-method functions.</li>
+<li><strong>Decision:</strong> a registry of pure, versioned calculators. Packs bind facts to calculators and factor tables. A <code>formula</code> text in data is inert documentation (<a data-unlinked="05-calculators-and-factors.md">05</a>).</li>
+<li><strong>Alternatives:</strong> (a) evaluate formula strings safely: rejected, because it creates an untestable language in data; (b) per-method code (v0): rejected.</li>
+<li><strong>Consequences:</strong> about 14 calculators for all industries; new math needs a reviewed calculator.</li>
+</ul>
+<h3 id="adr-004-a-closed-routing-grammar-with-no-arithmetic">ADR-004 — A closed routing grammar with no arithmetic</h3>
+<ul>
+<li><strong>Context:</strong> question visibility and method eligibility need conditions.</li>
+<li><strong>Decision:</strong> equality and inclusion over facts, plus <code>all/any/not</code>. Numeric and date logic goes into named derivations (<a data-unlinked="06-pack-format-spec.md#5-routing-grammar">06 §5</a>).</li>
+<li><strong>Alternatives:</strong> a general expression language (JSONLogic, CEL): rejected because of the "YAML becomes a programming language" risk.</li>
+<li><strong>Consequences:</strong> a few more derivation functions. Packs stay reviewable by practitioners.</li>
+</ul>
+<h3 id="adr-005-regulation-logic-as-named-rule-functions-parameters-per-notice">ADR-005 — Regulation logic as named rule functions, parameters per notice</h3>
+<ul>
+<li><strong>Decision:</strong> <code>regulation/notice_2025_2027/</code> holds identities, thresholds, exemptions, stack criteria, obligations and filing fields. Rule functions are versioned code bound by the notice. Interpretation holds are data (<a data-unlinked="07-regulation-as-data.md">07</a>).</li>
+<li><strong>Consequences:</strong> a new notice is a new folder. Rule logic changes create <code>@N+1</code>, and old notices stay replayable.</li>
+</ul>
+<h3 id="adr-006-fixed-stage-order-with-eager-calculation-no-dependency-graph">ADR-006 — Fixed stage order with eager calculation; no dependency graph</h3>
+<ul>
+<li><strong>Context:</strong> some thresholds depend on emissions, and some reporting outputs depend on thresholds.</li>
+<li><strong>Decision:</strong> eight fixed stages. Calculate everything computable in stage 3, and decide what is <em>required</em> in stage 7 (<a data-unlinked="04-engine-pipeline.md#3-ordering-and-the-threshold-before-emissions-problem">04 §3</a>).</li>
+<li><strong>Alternatives:</strong> a general dependency graph, or iterative evaluation: rejected as unnecessary for facility-sized data.</li>
+<li><strong>Consequences:</strong> slightly more computation (negligible). Much simpler reasoning and testing.</li>
+</ul>
+<h3 id="adr-007-golden-cases-signed-by-practitioners-are-the-specification">ADR-007 — Golden cases signed by practitioners are the specification</h3>
+<ul>
+<li><strong>Decision:</strong> a module branch is <code>automatic</code> only with ≥2 signed cases of independent origin. Cases compare exactly. Mutation cases are generated (<a data-unlinked="10-golden-cases-and-verification.md">10</a>).</li>
+<li><strong>Consequences:</strong> practitioner time is the pacing resource and must be planned (about a third of each process estimate).</li>
+</ul>
+<h3 id="adr-008-keep-v0s-lifecycle-digests-and-export">ADR-008 — Keep v0's lifecycle, digests and export</h3>
+<ul>
+<li><strong>Decision:</strong> reuse <code>digests.py</code>, the snapshot, lifecycle projection and package export, and add content pinning (<a data-unlinked="11-lifecycle-freshness-and-replay.md">11</a>).</li>
+<li><strong>Consequences:</strong> less risk in N1. These are the best-tested parts of v0.</li>
+</ul>
+<h3 id="adr-009-park-rare-branches-dont-delete-them">ADR-009 — Park rare branches; don't delete them</h3>
+<ul>
+<li><strong>Decision:</strong> EGU, prior-year comparison and low-hours oil-and-gas UI are parked behind flags, with a <code>parked</code> obligation that blocks if triggered. Monthly distribution and condensable PM become filing-field questions (<a data-unlinked="12-migration-from-v0.md#park-behind-a-flag-rebuilt-as-pack-modules-or-duties-when-a-client-needs-them">12 §2</a>).</li>
+<li><strong>Consequences:</strong> a facility that triggers a parked duty gets a visible developer blocker, never a silent skip.</li>
+</ul>
+<h3 id="adr-010-shared-modules-live-under-packsshared-from-day-one">ADR-010 — Shared modules live under <code>packs/shared/</code> from day one</h3>
+<ul>
+<li><strong>Decision:</strong> generic processes (welding, blasting, coating, degreasing, combustion, tanks, waste, water, roads) are shared modules, even while metal_fab is the only pack.</li>
+<li><strong>Consequences:</strong> stable module IDs in filed history. A little more care in naming during N1–N2.</li>
+</ul>
+<h3 id="adr-011-content-is-pinned-per-workspace-re-pinning-is-explicit-and-diffed">ADR-011 — Content is pinned per workspace; re-pinning is explicit and diffed</h3>
+<ul>
+<li><strong>Decision:</strong> workspaces pin notice and pack versions. JADA re-pins explicitly and sees a diff. Filed revisions never re-pin (<a data-unlinked="11-lifecycle-freshness-and-replay.md#4-re-pinning-content">11 §4</a>).</li>
+</ul>
+<h3 id="adr-012-long-format-csv-for-factor-tables-produced-by-reviewed-importers">ADR-012 — Long-format CSV for factor tables, produced by reviewed importers</h3>
+<ul>
+<li><strong>Decision:</strong> one row per key combination × output, with the column contract in <a data-unlinked="05-calculators-and-factors.md#4-the-factor-table-contract">05 §4</a>, produced by <code>jada-pack import</code> from official workbooks with frozen manifests and counts.</li>
+<li><strong>Consequences:</strong> practitioners can open the CSV in a spreadsheet, and PR diffs show exact row changes.</li>
+</ul>
+<h2 id="2-risk-register">2. Risk register</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Risk</th>
+<th>Likelihood</th>
+<th>Impact</th>
+<th>Mitigation</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>N1 takes longer than 6 weeks and squeezes Beta A before filing season</td>
+<td>Medium</td>
+<td>High</td>
+<td>Keep lifecycle code; port stages one at a time behind a flag; the parity harness shows progress objectively. If N1 slips past mid-February, run the pilot on v0 for the E310 / blasting / NG paths and finish the migration after June 1.</td>
+<td>Tech lead</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>YAML grows conditions and turns into a language</td>
+<td>Medium</td>
+<td>High</td>
+<td>Closed grammar (ADR-004); schema rejects unknown keys; derivations are reviewed code</td>
+<td>Tech lead</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Practitioner capacity is the bottleneck for case signing and factor review</td>
+<td>High</td>
+<td>High</td>
+<td>Prioritize electrode batches by pilot demand; schedule practitioner time per cycle; a branch stays manual until signed (that is acceptable)</td>
+<td>JADA lead</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>Parity triage matches v0 bugs instead of fixing them</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Practitioner decides every regulatory difference; triage log</td>
+<td>Tech lead + HSE</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Generic fact review feels less guided than v0's bespoke editors</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Rich value schemas, impact preview, help text; the five custom screens for genuinely complex interactions; usability test with a nontechnical client in N2</td>
+<td>Frontend dev</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>Unresolved identity mappings (chromium basis, lead qualifier) keep welding Part 1 assessments pending</td>
+<td>High</td>
+<td>Medium</td>
+<td>Explicit <code>practitioner</code> open items from N1; decide before Beta A; the pending state is honest, not a defect</td>
+<td>HSE</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>Imported workbook rows carry old assumptions (fume = PM10, PM2.5 = 75%, uncontrolled factors)</td>
+<td>High</td>
+<td>Medium</td>
+<td>Each assumption is a reviewable row in the import manifest (<a data-unlinked="08-welding-pack-design.md#32-the-import-manifest">08 §3.2</a>)</td>
+<td>HSE</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>A Gazette amendment lands during the pilot</td>
+<td>Low</td>
+<td>High</td>
+<td>Amendment-audit freshness gate in CI; holds and notice versioning</td>
+<td>JADA lead</td>
+</tr>
+<tr>
+<td>R9</td>
+<td>Over-generalizing for industries nobody has bought</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Rule of two; Wave 4 only with an anchor client</td>
+<td>Tech lead</td>
+</tr>
+<tr>
+<td>R10</td>
+<td>Uncommitted v0 work is lost before N0</td>
+<td>Low</td>
+<td>Very high</td>
+<td>N0 week 1: commit everything on the existing branch; never reset or clean</td>
+<td>Dev A</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>Replay breaks after engine changes</td>
+<td>Low</td>
+<td>High</td>
+<td>Calculator and rule versions retained; replay test with broken loaders on every release</td>
+<td>Tech lead</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Agents produce large unreviewed diffs again</td>
+<td>Medium</td>
+<td>High</td>
+<td>1–3k-line slices, committed and reviewed per slice; boundary CI check; budgets reported per cycle</td>
+<td>Tech lead</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-open-questions">3. Open questions</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>Why it matters</th>
+<th>Owner</th>
+<th>Needed by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td>Accept this architecture direction (ADR-001)?</td>
+<td>Everything else depends on it</td>
+<td>JADA leadership</td>
+<td>Before N1 (7 Dec 2026)</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td>Chromium factor basis: is the workbook "Chromium and its compounds" total chromium or non-hexavalent?</td>
+<td>Part 1A <code>NA - 04</code> assessments for all stainless welding</td>
+<td>HSE practitioner (source research, possibly an ECCC question)</td>
+<td>Before Beta A</td>
+</tr>
+<tr>
+<td>Q3</td>
+<td>Lead qualifier: how is the stainless/brass/bronze exclusion applied to welding fume outputs?</td>
+<td>Part 1B lead</td>
+<td>HSE practitioner</td>
+<td>Before Beta A</td>
+</tr>
+<tr>
+<td>Q4</td>
+<td>Method 2 arithmetic: exact transcription and check against a recalculated workbook</td>
+<td>Promotes Method 2 from manual to automatic</td>
+<td>Developer + HSE</td>
+<td>Beta B</td>
+</tr>
+<tr>
+<td>Q5</td>
+<td>I03 (stack NOx 10 vs 20 t) and I04 (temperature comparator): seek ECCC clarification?</td>
+<td>Automatic stack assessment</td>
+<td>JADA lead</td>
+<td>Before any client with a ≥25 m stack</td>
+</tr>
+<tr>
+<td>Q6</td>
+<td>I05: oil heater unit-scale issue</td>
+<td>Fuel-oil automation</td>
+<td>Developer + HSE</td>
+<td>Beta B</td>
+</tr>
+<tr>
+<td>Q7</td>
+<td>The <code>=0.001/2</code> derived factor convention in five Part 1 welding cells</td>
+<td>Those rows can't be used until understood</td>
+<td>HSE practitioner</td>
+<td>Before their electrode batch</td>
+</tr>
+<tr>
+<td>Q8</td>
+<td>Who is authorized to sign golden cases (role, credential)? Is one signer enough for Beta A?</td>
+<td>Defines the review gate</td>
+<td>JADA leadership</td>
+<td>N1</td>
+</tr>
+<tr>
+<td>Q9</td>
+<td>Which 3–5 pilot shops, and what is their real process mix?</td>
+<td>Picks electrode batches and Beta A content</td>
+<td>JADA sales + HSE</td>
+<td>N0</td>
+</tr>
+<tr>
+<td>Q10</td>
+<td>Practitioner tooling: are CSV/YAML PRs acceptable, or is a small content-editing UI needed?</td>
+<td>Practitioner throughput</td>
+<td>JADA lead</td>
+<td>N2 retrospective</td>
+</tr>
+<tr>
+<td>Q11</td>
+<td>Content store hosting for replay (database table vs object storage)</td>
+<td>Retention and replay</td>
+<td>Tech lead</td>
+<td>N1</td>
+</tr>
+<tr>
+<td>Q12</td>
+<td>When to build multi-site and consultant accounts</td>
+<td>Oil-and-gas sales motion</td>
+<td>JADA leadership</td>
+<td>Before N7</td>
+</tr>
+<tr>
+<td>Q13</td>
+<td>Should a commercial EHS or NPRI tool be evaluated before committing to the build?</td>
+<td>Build-vs-buy sanity check</td>
+<td>JADA leadership</td>
+<td>Before N1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-what-this-document-set-does-not-decide">4. What this document set does not decide</h2>
+<ul>
+<li>It does not approve any factor, method, interpretation or filing.</li>
+<li>It does not change any code or data. Implementation needs explicit go-ahead per cycle.</li>
+<li>It does not set staffing, pricing or contracts. Effort figures are planning estimates.</li>
+<li>It does not supersede the source register, the regulatory inventory or the C1–C12 gates. It restructures how they are met.</li>
+</ul></main></body></html>
