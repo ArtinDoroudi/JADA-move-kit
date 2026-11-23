@@ -1,0 +1,75 @@
+source_id: S05
+file: Electric Arc Welding, Cutting and Spraying Calculator_2022_10_26.xlsx
+file_sha256: 4c3e6f6a0fc1acd8038ab5ccd6e82cf65cd65e5d6bc69a7372b0a2a23dddaa93
+guide_sha256: 1c6407e262f2a5b5e683840eb071497b2488fa48d987ee13d04e8d07615dc2b7
+review_state: published_unreviewed
+positions:
+  part1: 532
+  part4: 201
+rows:
+  welding_arc:
+    listed: 460
+    method1: 91
+    method2: 91
+  thermal_cutting:
+    cutting: 104
+  thermal_spray:
+    spraying: 78
+aliases:
+  Input Arc Welding Information!G10: 'Notes:'
+  Input Arc Welding Information!G11: h. Includes E11018-M
+  Input Arc Welding Information!G12: i. Includes E308-16, E308L-15, E308L-16, E308-17,
+    E308L-17, and E308H-17
+  Input Arc Welding Information!G13: j. Includes E309-16, E309-17, and E309L-17
+  Input Arc Welding Information!G14: k. Includes E310-16
+  Input Arc Welding Information!G15: m. Includes E316-15, E316-16, and E316L-16
+  Input Arc Welding Information!G16: n. Includes E410-16
+  Input Arc Welding Information!G17: p. Includes E8018C3
+  Input Arc Welding Information!G18: q. Includes E9015B3
+  Input Arc Welding Information!G19: r. Includes E9018B3 and E9018G
+  Input Arc Welding Information!G20: s. Includes ECoCr-A
+  Input Arc Welding Information!G21: t. Includes ENiCrMo-4
+  Input Arc Welding Information!G22: u. Includes ENi-Cu-2
+  Input Arc Welding Information!G23: v. Includes E308LSi, and ER308L
+  Input Arc Welding Information!G24: w. Includes E70S-3, E70S-5, and E70S-6
+  Input Arc Welding Information!G25: x. Includes ER316I-Si and ER316L-Si
+  Input Arc Welding Information!G26: y. Includes ENiCrMo-3 and ENi-CrMo-4
+  Input Arc Welding Information!G27: z. Includes ERNiCu-7
+  Input Arc Welding Information!G28: aa. Includes E110TS-K3
+  Input Arc Welding Information!G29: bb. Includes E308LT-3, and E308LT0-1
+  Input Arc Welding Information!G30: cc. Includes E309, and E309LT-1
+  Input Arc Welding Information!G31: dd. Includes E316LT-3
+  Input Arc Welding Information!G32: ee. Includes E70T-1, E70T-2, E70T-4, E70T-5,
+    E70T-7, and E70T-G
+  Input Arc Welding Information!G34: ff. Includes E71T-1, E71T-11, E71T-1M, E71T-12MJ,
+    and E71T-1C
+  Input Arc Welding Information!G35: gg. Includes EM12K1 and F72-EM12K2
+  Input Arc Welding Information!G36: hh. Includes ER309 and ER309L
+  Input Arc Welding Information!G37: ii.Includes ER316 and ER316L
+  Input Arc Welding Information!G42: '1. This process includes Metal Inert Gas (MIG)
+    and Metal Active Gas (MAG) '
+  Input Arc Welding Information!G43: 2. This process includes Tungsten Inert Gas (TIG)
+  Input Arc Welding Information!G44: 3. Only if filler materials are used
+  Input Arc Welding Information!G45: 4. Only if filler materials are used
+not_modelled:
+  listed:
+  - Cu
+  - Ag
+  - Sb
+spraying_particulate_floor:
+  calculator: max_of@1
+  per: process
+  outputs:
+  - PM10
+  - TPM
+  metals:
+  - Cr
+  - Co
+  - Ni
+  - Mn
+  - Pb
+  - Zn
+  - Cu
+  - Ag
+  - Sb
+  source_range: Part 4 Releases!Y12:Y17,Y19:Y24

@@ -1,0 +1,17 @@
+format: pack-format/1
+id: metal_fab
+version: '2026.1'
+label: Welding and metal fabrication
+notice: notice_2025_2027
+reporting_years:
+- 2026
+modules:
+- use: shared/welding_arc@2026.1
+  screen: P01
+- use: shared/thermal_cutting@2026.1
+  screen: P05
+- use: shared/thermal_spray@2026.1
+  screen: P09
+common_questions: core/common@2026.1
+catch_all: G17
+whole_facility_cases: cases/

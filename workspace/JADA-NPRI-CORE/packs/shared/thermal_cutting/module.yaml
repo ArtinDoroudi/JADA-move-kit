@@ -1,0 +1,16 @@
+format: module-format/1
+id: thermal_cutting
+version: '2026.1'
+label: Thermal cutting
+sources:
+- S05
+entity:
+  kind: activity
+questions: []
+fallback: blocking
+outputs:
+  declared_by_methods: false
+coverage:
+- branch: Workbook factor import
+  state: unsupported
+  note: Factor tables only. Calculation bindings and workbook parity are pending.
