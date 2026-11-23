@@ -10,6 +10,9 @@ Everything needed to rebuild Artin's JADA NPRI workspace on another computer. It
 - Every planning and guideline document, the demo screenshots and the packs.
 - The three databases: users, reports, and your Edmonton test.
 - Uploaded SDS files, client documents, the archive, and the Codex/Claude history.
+- The 7 planning pages from claude.ai (progress report, welding pilot, v0 audit, architecture
+  map, all-industry scope, pack-based architecture, blueprint) in `artifacts/`. Open
+  `artifacts/index.html` in any browser. They work offline, and the diagram library is bundled.
 
 ## Two parts
 

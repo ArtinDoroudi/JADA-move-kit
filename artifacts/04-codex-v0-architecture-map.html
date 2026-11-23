@@ -1,0 +1,488 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Codex V0 Architecture Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column; the architecture map runs full width as stacked layer bands, each band a row of modules sized by line count */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --ink:#1d2321; --muted:#5b6560; --rule:#d8dcd6;
+  --ui:#4c5fd5; --api:#0f8b8d; --svc:#c98a12; --eng:#c2413b; --data:#6b7f2a; --test:#7d6aa8; --db:#56606b;
+  --ok:#2f8a4e; --warn:#c98a12; --bad:#c2413b;
+  --chipText:#ffffff;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141917; --surface:#1c2220; --ink:#e6ebe7; --muted:#9aa59f; --rule:#2f3834;
+  --ui:#7d8cf0; --api:#2fb3b5; --svc:#e0a637; --eng:#e7625b; --data:#9bb04a; --test:#a893d6; --db:#8d97a2;
+  --ok:#55b874; --warn:#e0a637; --bad:#e7625b; --chipText:#101412; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#141917; --surface:#1c2220; --ink:#e6ebe7; --muted:#9aa59f; --rule:#2f3834;
+  --ui:#7d8cf0; --api:#2fb3b5; --svc:#e0a637; --eng:#e7625b; --data:#9bb04a; --test:#a893d6; --db:#8d97a2;
+  --ok:#55b874; --warn:#e0a637; --bad:#e7625b; --chipText:#101412; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:26px;font-weight:700}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+code,.mono{font-family:var(--mono);font-size:.88em}
+.num{font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:18px}
+.lede{font-size:18px;color:var(--ink)}
+.muted{color:var(--muted)}
+.answer{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.answer div{border-top:3px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.answer b{font-family:var(--display);font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.answer span{color:var(--muted);font-size:14px}
+
+/* composition bar */
+.stack{display:flex;height:46px;border-radius:4px;overflow:hidden;width:100%}
+.stack div{display:flex;align-items:center;padding:0 8px;color:var(--chipText);font-family:var(--mono);font-size:12px;white-space:nowrap;overflow:hidden;min-width:0}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 20px}
+.legend div{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:baseline;font-size:14px}
+.sw{width:12px;height:12px;border-radius:2px;transform:translateY(1px)}
+.legend .v{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.note{font-size:13px;color:var(--muted);max-width:80ch}
+
+/* architecture map */
+.map{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px}
+.layer{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:stretch}
+.layer .lab{display:flex;flex-direction:column;justify-content:center;gap:2px;border-left:4px solid var(--c);padding-left:10px}
+.layer .lab strong{font-family:var(--display);font-size:15px}
+.layer .lab span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mods{display:flex;gap:3px;min-width:0}
+.mod{flex-basis:0;min-width:0;border:0;border-radius:3px;background:var(--c);color:var(--chipText);font-family:var(--mono);font-size:11px;
+  padding:8px 6px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden;min-height:58px;opacity:.92}
+.mod:hover{opacity:1}
+.mod:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.mod.on{outline:3px solid var(--ink);outline-offset:1px;opacity:1}
+.mod .n{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mod .l{opacity:.85;white-space:nowrap}
+.mod.ghost{background:transparent;color:var(--muted);border:1px dashed var(--c)}
+.arrow{display:grid;grid-template-columns:150px 1fr;gap:12px}
+.arrow div:last-child{font-family:var(--mono);font-size:11px;color:var(--muted);padding-left:8px;border-left:1px dashed var(--rule);margin-left:8px}
+.detail{border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:6px 16px;min-height:96px}
+.detail h3{font-family:var(--mono);font-size:15px;font-weight:500;word-break:break-all}
+.detail .big{font-family:var(--display);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.detail p{grid-column:1 / -1;color:var(--ink)}
+.detail .tag{grid-column:1 / -1;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mapscroll{overflow-x:auto}
+.mapscroll .map{min-width:720px}
+
+/* flow */
+.flow{display:flex;flex-direction:column;gap:0;counter-reset:s}
+.flow details{border-left:2px solid var(--rule);padding:0 0 14px 22px;position:relative}
+.flow details::before{counter-increment:s;content:counter(s);position:absolute;left:-13px;top:0;width:24px;height:24px;border-radius:50%;
+  background:var(--surface);border:2px solid var(--c,var(--ink));font-family:var(--mono);font-size:12px;display:grid;place-items:center;color:var(--ink)}
+.flow details:last-child{border-left-color:transparent}
+.flow summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.flow summary::-webkit-details-marker{display:none}
+.flow summary h3{font-size:17px}
+.flow summary .who{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.flow summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.flow .body{padding-top:8px;display:flex;flex-direction:column;gap:8px}
+.files{display:flex;flex-wrap:wrap;gap:6px}
+.files span{font-family:var(--mono);font-size:12px;border:1px solid var(--rule);border-radius:3px;padding:2px 6px;background:var(--surface)}
+.engine{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:4px}
+.engine div{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--eng);border-radius:3px;padding:8px 10px;font-size:13px;display:flex;flex-direction:column;gap:2px}
+.engine b{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+
+/* reasons */
+.reasons{display:flex;flex-direction:column;gap:10px}
+.reason{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+.reason>summary{cursor:pointer;list-style:none;padding:14px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.reason>summary::-webkit-details-marker{display:none}
+.reason>summary:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.reason .k{font-family:var(--display);font-size:26px;font-weight:700;color:var(--muted);width:28px}
+.reason .t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.reason .t strong{font-family:var(--display);font-size:18px;font-weight:600}
+.reason .t span{color:var(--muted);font-size:14px}
+.reason .chev{font-family:var(--mono);color:var(--muted);transition:transform .2s}
+.reason[open] .chev{transform:rotate(90deg)}
+.reason .rb{padding:0 18px 18px 60px;display:flex;flex-direction:column;gap:14px}
+.bars{display:flex;flex-direction:column;gap:6px}
+.bar{display:grid;grid-template-columns:150px 1fr 64px;gap:10px;align-items:center;font-size:13px}
+.bar .track{height:16px;background:var(--rule);border-radius:2px;overflow:hidden}
+.bar .fill{height:100%;background:var(--c)}
+.bar .v{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.slice{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-family:var(--mono);font-size:12px}
+.slice span{padding:4px 8px;border-radius:3px;background:var(--c);color:var(--chipText)}
+.slice i{font-style:normal;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.tblwrap{overflow-x:auto}
+
+/* coverage */
+.cov{display:flex;height:30px;border-radius:3px;overflow:hidden}
+.cov div{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--chipText);min-width:0;overflow:hidden}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.ph{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.ph .top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px}
+.ph .track{height:6px;background:var(--rule);border-radius:3px;overflow:hidden}
+.ph .fill{height:100%;background:var(--ink)}
+
+/* compare */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.col{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.col h3{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.col h3 small{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--muted)}
+.col pre{margin:0;font-family:var(--mono);font-size:12px;line-height:1.5;background:var(--bg);border-radius:4px;padding:10px;overflow-x:auto;white-space:pre}
+.col ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px;display:flex;flex-direction:column;gap:6px}
+
+@media (max-width:720px){
+  .layer,.arrow{grid-template-columns:96px 1fr}
+  .compare{grid-template-columns:1fr}
+  .reason .rb{padding-left:18px}
+  .bar{grid-template-columns:110px 1fr 56px}
+  .detail{grid-template-columns:1fr}
+  .detail .big{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:14px">
+  <div class="eyebrow">JADA-NPRI-V0 · branch codex/welding-npri-v0 · uncommitted</div>
+  <h1>Where 17 hours of Codex went</h1>
+  <p class="lede">Codex didn't write too little code. It wrote a lot of code into a design where every small rule needs about eight layers of plumbing. It also spent much of its time on rare branches and on fixing its own regressions. This page maps what exists, how a reporting year moves through it, and why the lines piled up.</p>
+  <div class="answer">
+    <div><b class="num">~17 h</b><span>of file changes, 4 Nov 14:00 → 5 Nov 07:00</span></div>
+    <div><b class="num">104</b><span>checkpoints in the log, about one every 10 minutes</span></div>
+    <div><b class="num">39</b><span>checkpoint titles are repairs, regressions, corrections, recoveries or follow-ups</span></div>
+    <div><b class="num">~127k</b><span>new lines of code, tests and data. Only about half of it is application logic.</span></div>
+  </div>
+</header>
+
+<section id="lines">
+  <div class="eyebrow">1 · What the lines are</div>
+  <h2>About half of the new lines aren't application code</h2>
+  <p>New lines compared with the original JADA-SOLUTIONS clone, measured on disk today. The bar is to scale.</p>
+  <div class="stack" role="img" aria-label="New lines by type: backend logic 35.9k, frontend 28.9k, backend tests 31.0k, JSON data 28.9k, migrations and scripts 1.9k">
+    <div style="flex:35.9;background:var(--eng)">backend 35.9k</div>
+    <div style="flex:28.9;background:var(--ui)">frontend 28.9k</div>
+    <div style="flex:31.0;background:var(--test)">tests 31.0k</div>
+    <div style="flex:28.9;background:var(--data)">data 28.9k</div>
+    <div style="flex:1.9;background:var(--db)"></div>
+  </div>
+  <div class="legend">
+    <div><i class="sw" style="background:var(--eng)"></i><span>Backend logic (app/) · 7.2k → 43.1k</span><span class="v">+35.9k</span></div>
+    <div><i class="sw" style="background:var(--ui)"></i><span>Frontend (src/) · 19.7k → 48.6k</span><span class="v">+28.9k</span></div>
+    <div><i class="sw" style="background:var(--test)"></i><span>Backend tests · 5.1k → 36.1k</span><span class="v">+31.0k</span></div>
+    <div><i class="sw" style="background:var(--data)"></i><span>JSON rule and substance data</span><span class="v">+28.9k</span></div>
+    <div><i class="sw" style="background:var(--db)"></i><span>Migrations and seed scripts</span><span class="v">+1.9k</span></div>
+  </div>
+  <p class="note">The data is mostly pretty-printed JSON, so it's cheap to review. <code>substances_2026.json</code> alone is 18,332 lines: the NPRI substance list at one field per line. What needs human review is the ~65k lines of backend and frontend logic. At the commonly cited careful-review pace of 200–400 lines an hour, that's 160–325 reviewer-hours. My earlier audit said ~146k because it counted every new file, including fixtures and generated files. This page counts only code, tests and data.</p>
+</section>
+
+<section id="map">
+  <div class="eyebrow">2 · Architecture map</div>
+  <h2>Five layers, four giant files</h2>
+  <p>Each band is a layer, and each block is a module with its width scaled to its line count within the band. Click any block to see what it does.</p>
+  <div class="mapscroll"><div class="map" id="map-root"></div></div>
+  <div class="detail" id="detail" aria-live="polite">
+    <h3 id="d-name">app/services/npri_v0/evaluator.py</h3>
+    <div class="big" id="d-lines">5,945</div>
+    <div class="tag" id="d-tag">Engine · rule evaluation</div>
+    <p id="d-text">The rule engine. It takes a frozen snapshot of a facility's answers and produces every threshold result, substance total and reporting duty. Process methods are hard-coded here (for example <code>if electrode_class == "E310"</code>). Its main function, <code>evaluate_frozen_inputs</code>, is 804 lines long by itself.</p>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="eyebrow">3 · Flow of one reporting year</div>
+  <h2>From a client's answers to a filing package</h2>
+  <p>This is the path a reporting year takes through the system. Open a step to see the files involved.</p>
+  <div class="flow">
+    <details style="--c:var(--ui)" open>
+      <summary><h3>Client answers the questionnaire</h3><span class="who">client · browser</span></summary>
+      <div class="body"><p>The client workspace screen renders the G/M/O and process questions from the catalogue. Answers are saved as a draft with <code>PUT /reporting-periods/{id}/workspace/inputs</code>. Last year's answers can be pulled in with <code>/carry-forward</code>, and records can be imported in bulk with <code>/import-records</code>.</p>
+      <div class="files"><span>_client.workspace.tsx 4,846</span><span>workspace-api.ts 2,405</span><span>catalogue_2026.json 2,696</span><span>api/v1/workspace.py</span></div></div>
+    </details>
+    <details style="--c:var(--ui)">
+      <summary><h3>Evidence is attached</h3><span class="who">client · browser</span></summary>
+      <div class="body"><p>Supporting files such as safety data sheets, purchase records and prior reports are uploaded through <code>POST /workspace/evidence</code> and stored on disk. Codex's own test runs left 2,571 evidence files in <code>backend/storage-v0/</code>.</p>
+      <div class="files"><span>api/v1/workspace.py</span><span>storage-v0/workspace-evidence/</span></div></div>
+    </details>
+    <details style="--c:var(--svc)">
+      <summary><h3>JADA reviewer accepts or rejects facts</h3><span class="who">admin · browser + workspace layer</span></summary>
+      <div class="body"><p>Each answer the engine relies on must be accepted by a reviewer, and the acceptance is bound to the answer's exact version. There is a separate review module for each kind of fact: generators (EGU), prior reports, reporting metadata, monthly splits and other processes. This review step is one of the main sources of line count.</p>
+      <div class="files"><span>admin.workspace.tsx 6,004</span><span>egu_details_review.py 682</span><span>prior_reporting_review.py</span><span>reporting_metadata_review.py</span><span>part4_monthly_review.py</span><span>other_process_review.py</span><span>POST /workspace/resolutions</span></div></div>
+    </details>
+    <details style="--c:var(--svc)">
+      <summary><h3>Inputs are frozen and the engine is called</h3><span class="who">workspace layer</span></summary>
+      <div class="body"><p><code>POST /workspace/evaluate</code> calls <code>service.evaluate_workspace</code>, which starts at line 2540 of a 3,632-line file. It copies the accepted inputs, the catalogue version and the method registry into a frozen snapshot. It hashes the snapshot (digests) so that any later edit marks the run as stale.</p>
+      <div class="files"><span>service.py 3,632</span><span>catalogue_snapshot.py 612</span><span>digests.py 692</span><span>method_registry.py</span><span>combustion_snapshot.py</span></div></div>
+    </details>
+    <details style="--c:var(--eng)" open>
+      <summary><h3>Engine runs the rules</h3><span class="who">engine · evaluate_frozen_inputs (804 lines)</span></summary>
+      <div class="body"><p>These are the stages in the order the function runs them. Every one of them lives in or passes through <code>evaluator.py</code>, so every new feature edits the same file.</p>
+      <div class="engine">
+        <div>Estimate releases per process<b>process_methods · organic_methods · combustion_adapter · arc E310 branch</b></div>
+        <div>Decide which of the 28 families apply<b>_family_applicability_issues</b></div>
+        <div>Close each source and reconcile overlaps<b>reconciliation.py 732</b></div>
+        <div>Put contributions into substance slots<b>registry · _bind_contributions_to_slots</b></div>
+        <div>Mark each coverage branch closed or open<b>coverage.py · release_coverage_2026.json</b></div>
+        <div>Total by substance and test thresholds<b>aggregation.py · thresholds.py</b></div>
+        <div>Attach Part 1–5 reporting obligations<b>reporting_obligations 1,031 · reporting_metadata 961</b></div>
+        <div>Extra duties: stacks, generators, monthly split, prior-year<b>stack_reporting · egu_* · part4_*</b></div>
+        <div>Readiness and the annual action<b>readiness · reporting_duties · annual_actions</b></div>
+      </div></div>
+    </details>
+    <details style="--c:var(--svc)">
+      <summary><h3>Run is stored, then open items are resolved</h3><span class="who">workspace layer + admin</span></summary>
+      <div class="body"><p>The run is saved with its digests. Anything the engine couldn't decide comes back as an open item. A reviewer closes each one with a manual figure, a declared method or a "not applicable" with a reason, and then the engine is run again. <code>lifecycle_projection</code> and <code>pending_evaluator</code> track which runs are current.</p>
+      <div class="files"><span>lifecycle_projection.py 556</span><span>pending_evaluator.py</span><span>reporting-closure-editor.tsx 952</span><span>reporting-duty-closure-editor.tsx 947</span></div></div>
+    </details>
+    <details style="--c:var(--api)">
+      <summary><h3>Review is requested and a version is locked</h3><span class="who">client → admin</span></summary>
+      <div class="body"><p><code>POST /workspace/request-review</code> creates an immutable version. Assignment contracts control who can approve which part.</p>
+      <div class="files"><span>assignment_contracts.py 442</span><span>api/v1/workspace.py</span></div></div>
+    </details>
+    <details style="--c:var(--data)">
+      <summary><h3>Filing package is exported</h3><span class="who">workspace layer</span></summary>
+      <div class="body"><p>The locked version is mapped to NPRI filing fields and exported as a package that carries its sources and digests. The package isn't submitted anywhere. It's for a person to file in the government's online reporting system.</p>
+      <div class="files"><span>package_export.py 416</span><span>filing_fields.py 513</span><span>filing_fields_2026.json</span></div></div>
+    </details>
+  </div>
+</section>
+
+<section id="why">
+  <div class="eyebrow">4 · Why the code got so big</div>
+  <h2>Six reasons, with the evidence</h2>
+  <div class="reasons">
+
+    <details class="reason" open>
+      <summary><span class="k">1</span><span class="t"><strong>One rule needs code in eight layers</strong><span>The generator (EGU) feature is about 7,300 lines for a question most welding shops answer "no" to.</span></span><span class="chev">›</span></summary>
+      <div class="rb">
+        <p>The plan says every fact must be frozen, versioned, reviewed by a person and traceable to a source. Codex followed that literally. So each new fact gets a database table, a migration, a Pydantic schema, a pure rule module, a review service, an API route, a frontend editor, a frontend model and tests. Here is the generator (EGU) feature, measured file by file:</p>
+        <div class="bars" role="img" aria-label="EGU feature lines by layer">
+          <div class="bar" style="--c:var(--ui)"><span>Frontend editors + models</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">2,946</span></div>
+          <div class="bar" style="--c:var(--test)"><span>Tests</span><div class="track"><div class="fill" style="width:84.9%"></div></div><span class="v">2,502</span></div>
+          <div class="bar" style="--c:var(--svc)"><span>Review services</span><div class="track"><div class="fill" style="width:28.8%"></div></div><span class="v">848</span></div>
+          <div class="bar" style="--c:var(--api)"><span>Schemas</span><div class="track"><div class="fill" style="width:21.5%"></div></div><span class="v">632</span></div>
+          <div class="bar" style="--c:var(--eng)"><span>Engine rules</span><div class="track"><div class="fill" style="width:13.4%"></div></div><span class="v">396</span></div>
+        </div>
+        <p class="note">Total: 7,324 lines, not counting its API routes, migrations and edits inside <code>evaluator.py</code>. The regulatory rule itself is the 396 red lines. Prior-year comparison follows the same pattern: 3,126 lines across 13 files.</p>
+      </div>
+    </details>
+
+    <details class="reason">
+      <summary><span class="k">2</span><span class="t"><strong>It went deep on rare branches before the common path</strong><span>Generators, monthly splits, prior-year comparison and condensable PM are all built. There are 12 emission-factor rows.</span></span><span class="chev">›</span></summary>
+      <div class="rb">
+        <p>The checkpoint log shows Codex working through the plan's edge cases one by one: individual stacks, EGU screening and details, Part 4 monthly distribution, prior-year comparison and condensable particulate. Meanwhile the thing almost every shop needs, welding fume from common electrodes, has one coded case: SMAW with E310 electrodes. The whole factor table is 12 rows.</p>
+        <div class="tblwrap"><table>
+          <thead><tr><th>Feature</th><th>How often a welding shop needs it</th><th class="r">Lines in dedicated files</th></tr></thead>
+          <tbody>
+            <tr><td>Generator (EGU) screening + details</td><td>Rarely. Most shops have no generator that qualifies.</td><td class="r">~7,300</td></tr>
+            <tr><td>Reporting metadata (Part 1 / Part 4)</td><td>Every filing</td><td class="r">~8,700</td></tr>
+            <tr><td>Material batches + MPO</td><td>Common</td><td class="r">~4,800</td></tr>
+            <tr><td>Prior-year comparison</td><td>Only when last year's report exists</td><td class="r">~3,100</td></tr>
+            <tr><td>Monthly distribution</td><td>Only Part 4 reporters</td><td class="r">~840</td></tr>
+            <tr><td>Welding fume factors (all electrodes)</td><td>Almost every shop</td><td class="r">31 (12 rows, E310 only)</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </details>
+
+    <details class="reason">
+      <summary><span class="k">3</span><span class="t"><strong>A lot of the time went to fixing its own breakage</strong><span>39 of 104 checkpoints are titled as repairs, regressions, corrections or recoveries.</span></span><span class="chev">›</span></summary>
+      <div class="rb">
+        <div class="bars" role="img" aria-label="Checkpoint titles by kind out of 104">
+          <div class="bar" style="--c:var(--bad)"><span>Repair / regression / recovery</span><div class="track"><div class="fill" style="width:37.5%"></div></div><span class="v">39</span></div>
+          <div class="bar" style="--c:var(--api)"><span>Review / proof / contract</span><div class="track"><div class="fill" style="width:51%"></div></div><span class="v">53</span></div>
+          <div class="bar" style="--c:var(--muted)"><span>All checkpoints</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">104</span></div>
+        </div>
+        <p>Some titles count in both groups. Typical titles include "Closure regression repaired and authenticated browser path resumed", "Stale native adapter regression", "G17 frozen dependency repair" and "Mixed fixture batch migration and frontend path corrections". Because each feature edits the same giant files, adding feature N often broke feature N−3. Then the full test suite had to be fixed and re-run. Three backend tests still fail today.</p>
+      </div>
+    </details>
+
+    <details class="reason">
+      <summary><span class="k">4</span><span class="t"><strong>Everything goes through four giant files</strong><span>20,427 lines in four files that every feature touches.</span></span><span class="chev">›</span></summary>
+      <div class="rb">
+        <div class="bars">
+          <div class="bar" style="--c:var(--ui)"><span>admin.workspace.tsx</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">6,004</span></div>
+          <div class="bar" style="--c:var(--eng)"><span>evaluator.py</span><div class="track"><div class="fill" style="width:99%"></div></div><span class="v">5,945</span></div>
+          <div class="bar" style="--c:var(--ui)"><span>_client.workspace.tsx</span><div class="track"><div class="fill" style="width:80.7%"></div></div><span class="v">4,846</span></div>
+          <div class="bar" style="--c:var(--svc)"><span>workspace/service.py</span><div class="track"><div class="fill" style="width:60.5%"></div></div><span class="v">3,632</span></div>
+        </div>
+        <p>A coding agent reads a file before editing it. When the file is 6,000 lines long, each edit costs a lot of context, and the agent forgets earlier decisions sooner. That's how you get bugs like the TypeScript error at <code>admin.workspace.tsx:294</code>, where <code>workspaces</code> is used but never defined.</p>
+      </div>
+    </details>
+
+    <details class="reason">
+      <summary><span class="k">5</span><span class="t"><strong>Methods are code branches, not data</strong><span>Each new electrode, fuel or coating means more Python. It can't scale to oil and gas this way.</span></span><span class="chev">›</span></summary>
+      <div class="rb">
+        <p>The method layer isn't a table of factors run by a few generic calculators. Instead, each case gets its own function. <code>_build_arc_e310_outputs</code> is 322 lines for one electrode class. Adding E308, E316 and E7018 the same way would add hundreds of lines each, plus tests.</p>
+        <div class="compare">
+          <div class="col"><h3>Now <small>code per case</small></h3>
+<pre>if electrode_class == "E310":
+    return _build_arc_e310_outputs(...)  # 322 lines
+# E308? new function
+# E316? new function
+# fuel oil? new adapter
+# measured stack? not built</pre></div>
+          <div class="col"><h3>Lean <small>data per case</small></h3>
+<pre>method: activity_x_factor
+process: P01 SMAW
+activity: kg electrode consumed
+factor: g Cr / kg  ← one CSV row
+source: S07 AP-42 12.19
+# 3 calculators cover most of P01–P28:
+#   activity×factor, composition, mass balance</pre></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="reason">
+      <summary><span class="k">6</span><span class="t"><strong>AI code is verbose by default</strong><span>6,200 lines of schemas and defensive checks repeated in every module.</span></span><span class="chev">›</span></summary>
+      <div class="rb">
+        <p>Codex writes everything out explicitly. That means separate input and output schemas per feature (<code>schemas/workspace.py</code> alone is 2,811 lines), and the same rule split into a "pure" module in <code>npri_v0/</code> plus a "review" module in <code>workspace/</code>. Examples are <code>part4_method_reporting</code> and <code>part4_prior_comparison</code>, which each exist in both folders. It also re-validates identity, version and digest in every function. Each choice is defensible on its own. Together they make the code roughly 2–3× longer than a person would write.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="sixty">
+  <div class="eyebrow">5 · Why only ~60%</div>
+  <h2>The target was much bigger than it looks</h2>
+  <p>"Welding" in the plan isn't one calculation. It's 28 process families, 128 questions, five NPRI Parts, 10 method types and 171 coverage branches, each of which must end in either a number or an explained "not applicable". Here is the coverage register Codex kept:</p>
+  <div class="cov" role="img" aria-label="Coverage branches: 109 implemented, 6 manual, 56 unsupported">
+    <div style="flex:109;background:var(--ok)">109 implemented</div>
+    <div style="flex:6;background:var(--warn)">6</div>
+    <div style="flex:56;background:var(--bad)">56 unsupported</div>
+  </div>
+  <p class="note">Implemented means a route exists. It doesn't mean the numbers are reviewed: all factors are still marked <code>published_unreviewed</code>. The amber 6 are branches handled by manual entry.</p>
+  <div class="phases" id="phases"></div>
+</section>
+
+<section id="takeaway">
+  <div class="eyebrow">6 · What this means</div>
+  <h2>The amount of code is a design problem, not a speed problem</h2>
+  <div class="compare">
+    <div class="col">
+      <h3>Keep</h3>
+      <ul>
+        <li>Freeze → evaluate → review → version → export lifecycle</li>
+        <li>Catalogue, coverage register and substance list as data</li>
+        <li>Threshold engine and Part 1–5 obligations</li>
+        <li>Digests and stale-run detection</li>
+        <li>Tests as a source of examples, after trimming</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Rebuild</h3>
+      <ul>
+        <li>Methods as data rows + 3 generic calculators</li>
+        <li>One generic "fact review" component instead of a reviewer per feature</li>
+        <li>Split <code>evaluator.py</code> into stages with one file each</li>
+        <li>Split the two workspace screens into per-section routes</li>
+        <li>Cut scope to Beta A, then add rare branches behind a feature flag</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>Measured on 9 Nov 2026 from <span class="mono">/Users/artindoroudi/Online/JADA-NPRI-V0</span> against <span class="mono">JADA-SOLUTIONS</span>. Line counts exclude <span class="mono">__pycache__</span>, <span class="mono">.venv</span> and node_modules. Checkpoint counts come from the log appended to <span class="mono">v0-implementation-plan.md</span>. The time window comes from file modification times, so it shows when files were last changed, not every edit.</div>
+</footer>
+</div>
+
+<script>
+(function(){
+  var L = [
+    {k:"Frontend", c:"--ui", total:"48.6k", mods:[
+      ["admin.workspace.tsx",6004,"Admin / reviewer screen","The whole JADA reviewer workspace in one route file: fact acceptance, run results, open items and closures. It currently has a TypeScript error at line 294 (workspaces is undefined), which is likely a crash."],
+      ["_client.workspace.tsx",4846,"Client questionnaire screen","The client's annual workspace: questions, evidence, carry-forward and run status, all in one route."],
+      ["workspace-api.ts",2405,"API client","Typed fetch wrappers and types for all 25 workspace endpoints, written by hand to mirror the backend schemas."],
+      ["reporting-metadata-editor",2292,"Editor component","Part 1 and Part 4 reporting metadata forms: contacts, NAICS, basis of estimate and similar fields."],
+      ["egu-details-editor",1357,"Editor component","Generator (EGU) details. Most welding shops never see this screen."],
+      ["prior-comparison-editor",1097,"Editor component","Explains year-over-year changes against last year's filed report."],
+      ["other workspace UI",7424,"Editors and models","Closure editors, duty editors, batch MPO, prior-report editor, and the TypeScript models behind them."],
+      ["inherited app",19700,"From JADA-SOLUTIONS","The original app: login, facilities, inventory, document upload and reports. Mostly untouched.", true]
+    ]},
+    {k:"API + schemas", c:"--api", total:"9.9k", mods:[
+      ["schemas/workspace.py",2811,"Pydantic schemas","Request and response shapes for the workspace. Every feature adds both input and output models here."],
+      ["other schemas",3389,"Pydantic schemas","Per-feature schemas: reporting metadata, obligations, EGU, prior comparison, method reporting and others."],
+      ["api/v1/workspace.py",755,"Routes","All 18 routes from the spec plus 5 extras: inputs, evidence, evaluate, resolutions, runs, request-review and reviews."],
+      ["other routes",2915,"Routes","Reporting periods, inventory, normalization, matching, SDS, documents, auth and admin. Mostly inherited."]
+    ]},
+    {k:"Workspace layer", c:"--svc", total:"11.1k", mods:[
+      ["service.py",3632,"Orchestration","Saves inputs, freezes snapshots, calls the engine, stores runs, handles resolutions and versions. evaluate_workspace starts at line 2540."],
+      ["part4_method_reporting",747,"Review service","Stores and reviews which estimation method was declared for each Part 4 substance."],
+      ["digests.py",692,"Integrity","Hashes frozen inputs so that any later edit marks a run as stale."],
+      ["egu_details_review",682,"Review service","Reviewer acceptance for generator details, bound to exact versions."],
+      ["catalogue_snapshot",612,"Freezing","Copies the catalogue version into the run so old runs stay reproducible."],
+      ["lifecycle_projection",556,"State","Works out which run is current, stale or superseded."],
+      ["filing_fields",513,"Export mapping","Maps engine results to NPRI filing fields."],
+      ["other workspace",3651,"Reviews and export","Assignment contracts, prior comparison, package export, air context and per-feature review modules."]
+    ]},
+    {k:"Rule engine", c:"--eng", total:"18.5k", mods:[
+      ["evaluator.py",5945,"Rule evaluation","The rule engine. It takes a frozen snapshot of a facility's answers and produces every threshold result, substance total and reporting duty. Process methods are hard-coded here (for example if electrode_class == \"E310\"). Its main function, evaluate_frozen_inputs, is 804 lines long by itself."],
+      ["reporting_obligations",1031,"Parts 1–5","Turns threshold results into which Parts must be reported, and with which fields."],
+      ["organic_methods",980,"Methods","VOC and speciated organics from coatings and solvents, using mass balance."],
+      ["reporting_metadata",961,"Parts 1/4","Rules for which metadata each obligation needs."],
+      ["process_methods",854,"Methods","Process-to-method dispatch, including blasting and the narrow welding path."],
+      ["reconciliation",732,"Source closure","Stops the same release being counted twice across sources and scopes."],
+      ["combustion_adapter",627,"Methods","Natural gas combustion (CACs) from fuel use."],
+      ["readiness",579,"Gate","Decides whether a run is ready for review or filing."],
+      ["other engine",4748,"24 smaller modules","Thresholds, aggregation, coverage, stacks, EGU, monthly, prior comparison, duties, annual actions and more."]
+    ]},
+    {k:"Data + DB", c:"--data", total:"28.9k + 25 tables", mods:[
+      ["substances_2026.json",18332,"Reference data","The NPRI substance list with thresholds and categories, one field per line."],
+      ["release_coverage_2026.json",7610,"Coverage register","171 branches, each marked implemented, manual or unsupported."],
+      ["catalogue_2026.json",2696,"Questions","28 process families and 128 question IDs."],
+      ["factor files",84,"Emission factors","Welding 12 rows (E310, plasma spray, oxy-cutting), blasting and natural gas. This is the thinnest part of the system."],
+      ["25 tables · 23 migrations",925,"PostgreSQL","SQLAlchemy models for workspaces, inputs, evidence, runs, reviews and versions."]
+    ]}
+  ];
+  var root = document.getElementById("map-root");
+  var d = {n:document.getElementById("d-name"),l:document.getElementById("d-lines"),t:document.getElementById("d-tag"),x:document.getElementById("d-text")};
+  var first = null;
+  L.forEach(function(layer, i){
+    var row = document.createElement("div"); row.className="layer"; row.style.setProperty("--c","var("+layer.c+")");
+    row.innerHTML = '<div class="lab"><strong>'+layer.k+'</strong><span>'+layer.total+' lines</span></div>';
+    var mods = document.createElement("div"); mods.className="mods";
+    layer.mods.forEach(function(m){
+      var b = document.createElement("button"); b.type="button"; b.className="mod"+(m[4]?" ghost":"");
+      b.style.flexGrow = Math.max(m[1], 400);
+      b.innerHTML = '<span class="n">'+m[0]+'</span><span class="l">'+m[1].toLocaleString()+'</span>';
+      b.title = m[0]+" · "+m[1].toLocaleString()+" lines";
+      b.addEventListener("click", function(){
+        document.querySelectorAll(".mod.on").forEach(function(x){x.classList.remove("on")});
+        b.classList.add("on");
+        d.n.textContent = m[0]; d.l.textContent = m[1].toLocaleString();
+        d.t.textContent = layer.k+" · "+m[2]; d.x.textContent = m[3];
+      });
+      if (m[0]==="evaluator.py") first = b;
+      mods.appendChild(b);
+    });
+    row.appendChild(mods); root.appendChild(row);
+    if (i < L.length-1){
+      var a = document.createElement("div"); a.className="arrow";
+      var labels = ["HTTP · 25 workspace endpoints","route → service call","freeze snapshot → evaluate_frozen_inputs()","reads catalogue, coverage, factors · writes runs"];
+      a.innerHTML = '<div></div><div>↓ '+labels[i]+'</div>'; root.appendChild(a);
+    }
+  });
+  if (first) first.classList.add("on");
+
+  var P = [["V00 Setup",100],["V01 Catalogue",80],["V02 Facts",85],["V03 Engine",80],["V04 Methods",65],["V05 Thresholds",45],["V06 Reporting",40],["V07 Review UI",75],["V08 Pilot",10]];
+  var ph = document.getElementById("phases");
+  P.forEach(function(p){
+    var e = document.createElement("div"); e.className="ph";
+    e.innerHTML = '<div class="top"><span>'+p[0]+'</span><span>'+p[1]+'%</span></div><div class="track"><div class="fill" style="width:'+p[1]+'%"></div></div>';
+    ph.appendChild(e);
+  });
+})();
+</script>
+
+</body></html>

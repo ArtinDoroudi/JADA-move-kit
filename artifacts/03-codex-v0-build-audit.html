@@ -1,0 +1,326 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Codex v0 Build Audit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single-column inspection sheet. Summary first, then phase bars, flow, family grid, gates and the remaining work. */
+:root{
+  --bg:#f2f4f7; --panel:#ffffff; --ink:#15202b; --muted:#5b6876; --line:#d9dee5;
+  --arc:#4a4fd1; --arc-soft:#e6e7fb;
+  --ok:#23865a; --ok-soft:#dcf1e6; --warn:#b07a06; --warn-soft:#f8ecd0; --bad:#c03c13; --bad-soft:#f9e0d6; --none:#c3cad3;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10151c; --panel:#18202a; --ink:#e4e9ef; --muted:#9aa6b4; --line:#2b3542;
+  --arc:#8d90ff; --arc-soft:#262a55;
+  --ok:#4cc58c; --ok-soft:#173a2b; --warn:#e2ad3c; --warn-soft:#3d3015; --bad:#f07a52; --bad-soft:#47231a; --none:#3a4552; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151c; --panel:#18202a; --ink:#e4e9ef; --muted:#9aa6b4; --line:#2b3542;
+  --arc:#8d90ff; --arc-soft:#262a55;
+  --ok:#4cc58c; --ok-soft:#173a2b; --warn:#e2ad3c; --warn-soft:#3d3015; --bad:#f07a52; --bad-soft:#47231a; --none:#3a4552; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:.01em;text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(34px,6vw,52px)}
+h2{font-size:28px;display:flex;align-items:baseline;gap:12px}
+h2 .tag{font:500 12px var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+h3{font-size:20px}
+p{margin:0;max-width:68ch}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-size:.92em}
+section{display:flex;flex-direction:column;gap:16px}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--arc)}
+header{display:flex;flex-direction:column;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:22px}
+.verdict{font-size:17px;max-width:72ch}
+.verdict b{color:var(--arc)}
+/* headline gauge */
+.gauge{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.g{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.g .big{font:600 44px/1 var(--display);font-variant-numeric:tabular-nums}
+.g .lbl{font-size:13px;color:var(--muted)}
+.track{height:10px;border-radius:5px;background:var(--none);overflow:hidden;display:flex}
+.track i{display:block;height:100%}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.stat{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font:600 26px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+.stat.alert b{color:var(--bad)}
+/* phase bars */
+.phases{display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
+.ph{display:grid;grid-template-columns:minmax(0,260px) 1fr 48px;gap:14px;align-items:center}
+.ph .nm{font-size:14px;min-width:0}
+.ph .nm .mono{color:var(--muted);margin-right:6px}
+.ph .pct{font:500 13px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:14px;background:var(--none);border-radius:3px;overflow:hidden;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:3px}
+.hi{background:var(--ok)} .mid{background:var(--warn)} .lo{background:var(--bad)}
+.ph small{grid-column:1/-1;color:var(--muted);font-size:12.5px;margin-top:-6px}
+@media (max-width:560px){.ph{grid-template-columns:1fr 44px}.ph .bar{grid-column:1/-1;grid-row:2}.ph small{grid-row:3}}
+/* flow */
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.node{flex:1 1 150px;min-width:0;border-radius:6px;padding:10px 12px;border:1.5px solid;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.node b{font:600 16px/1.15 var(--display);letter-spacing:.01em}
+.node.ok{border-color:var(--ok);background:var(--ok-soft)}
+.node.warn{border-color:var(--warn);background:var(--warn-soft)}
+.node.bad{border-color:var(--bad);background:var(--bad-soft)}
+.arrow{align-self:center;color:var(--muted);font:500 18px var(--mono)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+/* families */
+.fam{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.f{border-radius:5px;padding:9px 10px;font-size:12.5px;line-height:1.3;border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:3px;min-width:0}
+.f code{font:600 12px var(--mono);color:var(--muted)}
+.f.auto{background:var(--ok-soft);border-color:var(--ok)}
+.f.auto code{color:var(--ok)}
+.f.man{background:var(--panel)}
+/* coverage stacked */
+.cov{display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
+.cv{display:grid;grid-template-columns:140px 1fr 70px;gap:12px;align-items:center;font-size:13.5px}
+.cv .n{font:500 12.5px var(--mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.stack{display:flex;height:16px;border-radius:3px;overflow:hidden;background:var(--none)}
+.stack i{display:block;height:100%}
+.s-ok{background:var(--ok)} .s-man{background:var(--warn)} .s-un{background:var(--bad)}
+@media (max-width:560px){.cv{grid-template-columns:1fr 60px}.cv .stack{grid-column:1/-1;grid-row:2}}
+/* tables */
+.tbl{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+tr:last-child td{border-bottom:none}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font:500 11.5px var(--mono);padding:2px 8px;border-radius:10px;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}
+/* callouts */
+.risks{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.risk{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:4px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.risk.w{border-left-color:var(--warn)}
+.risk h3{font-size:18px}
+.risk p{font-size:14px}
+.note{font-size:13px;color:var(--muted);max-width:80ch}
+footer{border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">JADA NPRI · welding v0 · audit of 2026-11-09</div>
+  <h1>Codex v0 Build Audit</h1>
+  <p class="verdict">Codex built roughly <b>60% of the v0 software contract</b> in <span class="mono">JADA-NPRI-V0</span>. The architecture, data model, API, questionnaire, review lifecycle and package export are largely in place. Whole-facility closure, several regulatory branches, three automatic methods, numerical validation and the release checks are not finished. The full backend suite is 1,350 passed and 3 failed. All 3 failures trace to work that was unfinished when the session stopped. <b>None of the work is committed.</b></p>
+</header>
+
+<section>
+  <div class="gauge">
+    <div class="g">
+      <div class="lbl">v0 contract (phases V00–V08, effort-weighted)</div>
+      <div class="big">~60%</div>
+      <div class="track"><i class="hi" style="width:60%"></i></div>
+      <div class="lbl">Spec: <span class="mono">v0-implementation-plan.md</span></div>
+    </div>
+    <div class="g">
+      <div class="lbl">Process families with an automatic method</div>
+      <div class="big">7 / 28</div>
+      <div class="track"><i class="hi" style="width:25%"></i><i class="mid" style="width:75%"></i></div>
+      <div class="lbl">Each is a narrow slice: welding factors are 12 rows, 9 of them for one electrode (E310)</div>
+    </div>
+    <div class="g">
+      <div class="lbl">Regulatory branches in Codex's own register</div>
+      <div class="big">109 / 171</div>
+      <div class="track"><i class="s-ok" style="width:63.7%"></i><i class="s-man" style="width:3.5%"></i><i class="s-un" style="width:32.8%"></i></div>
+      <div class="lbl">implemented · 6 manual · 56 unsupported</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>~146k</b><span>new lines (backend 113k incl. 34k data, frontend 33k)</span></div>
+    <div class="stat"><b>14k → 76k</b><span>backend Python lines, base → v0</span></div>
+    <div class="stat"><b>1,018</b><span>backend test functions (base had 234)</span></div>
+    <div class="stat"><b>18 / 18</b><span>spec API routes present, plus 5 extra</span></div>
+    <div class="stat"><b>128 / 128</b><span>questionnaire IDs catalogued (95 Pxx, 17 G, 8 M, 8 O)</span></div>
+    <div class="stat"><b>1,350 / 1,353</b><span>backend tests passing (full DB suite, run today)</span></div>
+    <div class="stat alert"><b>0</b><span>git commits. All work is uncommitted.</span></div>
+    <div class="stat alert"><b>6 + 68</b><span>TypeScript errors + lint errors in the frontend</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Phase progress <span class="tag">V00–V08 from the plan</span></h2>
+  <div class="phases">
+    <div class="ph"><div class="nm"><span class="mono">V00</span>Isolate and baseline</div><div class="bar"><i class="hi" style="width:100%"></i></div><div class="pct">100%</div>
+      <small>Worktrees on <span class="mono">codex/welding-npri-v0</span>, isolated Compose/ports/DB. Original repos verified clean.</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V01</span>Source baseline and contract</div><div class="bar"><i class="hi" style="width:80%"></i></div><div class="pct">80%</div>
+      <small>2026 substance registry (493 rows, digest-checked), catalogue, filing-field map, typed DTOs. Coverage register exists but isn't wired into runtime.</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V02</span>Discovery and facts</div><div class="bar"><i class="hi" style="width:85%"></i></div><div class="pct">85%</div>
+      <small>All 28 screens + G17, Yes/No/Not sure/Someone else, materials, allocations, batches, controls, outlets, streams. Seven client sections built.</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V03</span>Decisions and manual workflow</div><div class="bar"><i class="hi" style="width:80%"></i></div><div class="pct">80%</div>
+      <small>Resolutions, separate-reviewer acceptance, dependency digests, staleness. Manual MPO completion was mid-repair.</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V04</span>Deterministic rule engine</div><div class="bar"><i class="mid" style="width:65%"></i></div><div class="pct">65%</div>
+      <small>Thresholds, identity, Parts 1A/4 well covered. Unsupported: employee-hours gate, Part 1B group rules, VOC eligibility, nested PM.</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V05</span>Automatic method modules</div><div class="bar"><i class="mid" style="width:45%"></i></div><div class="pct">45%</div>
+      <small>7 of 10 target methods coded. Every factor is still <span class="mono">published_unreviewed</span>. No method has been promoted.</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V06</span>Whole-facility consolidation</div><div class="bar"><i class="mid" style="width:40%"></i></div><div class="pct">40%</div>
+      <small>Aggregation and reconciliation exist. The mixed-facility proof was broken at shutdown (coating chemistry rewrite).</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V07</span>Review, export and filing history</div><div class="bar"><i class="hi" style="width:75%"></i></div><div class="pct">75%</div>
+      <small>Immutable runs/revisions, review, certification, filing record, JSON/CSV/HTML export. Carry-forward is API-only, with no UI.</small></div>
+    <div class="ph"><div class="nm"><span class="mono">V08</span>Pilot candidate acceptance</div><div class="bar"><i class="lo" style="width:10%"></i></div><div class="pct">10%</div>
+      <small>No green full regression, no independent numerical audit, lint/type errors open, nothing committed.</small></div>
+  </div>
+  <p class="note">The percentages are my estimates. I based them on the code, the tests I ran, and Codex's own checkpoint log (lines 298–1554 of the plan). Weights: V05 20%, V04 and V06 15% each, V02 and V03 12% each, V07 10%, V01 8%, V08 5%, V00 3%.</p>
+</section>
+
+<section>
+  <h2>Runtime pipeline <span class="tag">status by stage</span></h2>
+  <div class="flow">
+    <div class="node ok"><b>Facility and year</b>Workspace per reporting period, versioned inputs, 409 on conflicts</div>
+    <div class="arrow">→</div>
+    <div class="node ok"><b>Discovery</b>28 families, G17 other-process, 128 questions</div>
+    <div class="arrow">→</div>
+    <div class="node ok"><b>Facts and evidence</b>Import from SDS/purchases, SHA-256 evidence, ranges and unknowns</div>
+    <div class="arrow">→</div>
+    <div class="node warn"><b>Decisions and methods</b>7 auto methods, factors unreviewed; gaps in Part 1B, VOC, hours</div>
+    <div class="arrow">→</div>
+    <div class="node warn"><b>Calculations</b>Decimal math, traced contributions; manual MPO mid-repair</div>
+    <div class="arrow">→</div>
+    <div class="node bad"><b>Facility aggregation</b>Mixed-facility proof failing at shutdown</div>
+    <div class="arrow">→</div>
+    <div class="node ok"><b>Review and package</b>Approve, certify, file record, export</div>
+    <div class="arrow">→</div>
+    <div class="node warn"><b>Carry-forward</b>Backend endpoint only</div>
+  </div>
+  <div class="legend"><span><i class="sw" style="background:var(--ok)"></i>Built and tested</span><span><i class="sw" style="background:var(--warn)"></i>Built with gaps</span><span><i class="sw" style="background:var(--bad)"></i>Broken or unproven</span></div>
+</section>
+
+<section>
+  <h2>The 28 process families <span class="tag">discovery 28/28 · auto 7/28</span></h2>
+  <p>Every family can be discovered, persisted and routed to a structured manual calculation. Green families also have automatic calculation code. The factors behind that code have not been independently audited yet.</p>
+  <div class="fam">
+    <div class="f auto"><code>P01 · auto</code>Arc welding (stick E310 electrode only)</div>
+    <div class="f man"><code>P02</code>TIG / plasma welding</div>
+    <div class="f man"><code>P03</code>Spot, laser, friction joining</div>
+    <div class="f man"><code>P04</code>Gas welding, brazing, soldering</div>
+    <div class="f auto"><code>P05 · auto</code>Thermal cutting</div>
+    <div class="f man"><code>P06</code>Mechanical cutting</div>
+    <div class="f man"><code>P07</code>Grinding and finishing</div>
+    <div class="f auto"><code>P08 · auto</code>Abrasive blasting</div>
+    <div class="f auto"><code>P09 · auto</code>Thermal spray</div>
+    <div class="f man"><code>P10</code>Machining</div>
+    <div class="f man"><code>P11</code>Bending, forming, forging</div>
+    <div class="f auto"><code>P12 · auto</code>Cleaning / degreasing</div>
+    <div class="f auto"><code>P13 · auto</code>Liquid paint and coatings</div>
+    <div class="f man"><code>P14</code>Powder coating</div>
+    <div class="f man"><code>P15</code>Coating removal</div>
+    <div class="f man"><code>P16</code>Pickling, etching</div>
+    <div class="f man"><code>P17</code>Plating, anodizing</div>
+    <div class="f man"><code>P18</code>Hot-dip metal coating</div>
+    <div class="f man"><code>P19</code>Heat treating</div>
+    <div class="f auto"><code>P20 · auto</code>Fuel burning (natural-gas heaters only)</div>
+    <div class="f man"><code>P21</code>Adhesives, dyes, anti-spatter</div>
+    <div class="f man"><code>P22</code>Bulk storage, tanks, gas</div>
+    <div class="f man"><code>P23</code>Scrap and waste</div>
+    <div class="f man"><code>P24</code>Process water / wastewater</div>
+    <div class="f man"><code>P25</code>Yard dust, unpaved roads</div>
+    <div class="f man"><code>P26</code>Specialist (melting, casting…)</div>
+    <div class="f man"><code>P27</code>Maintenance, incidents</div>
+    <div class="f man"><code>P28</code>Outsourced / mobile work</div>
+  </div>
+  <div class="legend"><span><i class="sw" style="background:var(--ok)"></i>Automatic method coded (7)</span><span><i class="sw" style="background:var(--none)"></i>Manual route only (21), acceptable for v0 under the plan</span></div>
+</section>
+
+<section>
+  <h2>Regulatory coverage register <span class="tag">171 branches, Codex's own manifest</span></h2>
+  <div class="cov">
+    <div class="cv"><span>Discovery</span><div class="stack"><i class="s-ok" style="width:100%"></i></div><span class="n">29/29</span></div>
+    <div class="cv"><span>Threshold</span><div class="stack"><i class="s-ok" style="width:78.4%"></i><i class="s-un" style="width:21.6%"></i></div><span class="n">29/37</span></div>
+    <div class="cv"><span>Identity</span><div class="stack"><i class="s-ok" style="width:75.7%"></i><i class="s-un" style="width:24.3%"></i></div><span class="n">28/37</span></div>
+    <div class="cv"><span>Annual workflow</span><div class="stack"><i class="s-ok" style="width:63.6%"></i><i class="s-un" style="width:36.4%"></i></div><span class="n">7/11</span></div>
+    <div class="cv"><span>Reporting</span><div class="stack"><i class="s-ok" style="width:32%"></i><i class="s-man" style="width:20%"></i><i class="s-un" style="width:48%"></i></div><span class="n">8+5/25</span></div>
+    <div class="cv"><span>Method</span><div class="stack"><i class="s-ok" style="width:25%"></i><i class="s-man" style="width:3.1%"></i><i class="s-un" style="width:71.9%"></i></div><span class="n">8+1/32</span></div>
+  </div>
+  <div class="legend"><span><i class="sw" style="background:var(--ok)"></i>Implemented</span><span><i class="sw" style="background:var(--warn)"></i>Manual-supported</span><span><i class="sw" style="background:var(--bad)"></i>Unsupported</span></div>
+  <p class="note">The register labels itself a "disconnected, partial review register", so it has no runtime or readiness authority. It is still Codex's most honest self-assessment. Unsupported branches include the employee-hours and Part 1/2 gates, Part 1B group rules, Part 2/3/5 reporting detail, VOC ingredient eligibility, nested PM non-additivity, the "update" filing action, deadlines and record retention.</p>
+</section>
+
+<section>
+  <h2>Automatic method targets <span class="tag">7 of 10 coded</span></h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Method (plan ID)</th><th>Covers</th><th>Status</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">arc-listed-v1</td><td>P01</td><td><span class="pill p-warn">coded</span></td><td>Only SMAW E310 is wired (9 factor rows, a hard-coded 322-line function). Factors still <span class="mono">published_unreviewed</span>.</td></tr>
+      <tr><td class="mono">arc-composition-v1</td><td>P01/P02</td><td><span class="pill p-bad">missing</span></td><td>Only a generic <span class="mono">material-composition-v1</span> exists. P02 is unsupported.</td></tr>
+      <tr><td class="mono">cutting-listed-v1</td><td>P05</td><td><span class="pill p-warn">coded</span></td><td>Active-hours path with UI</td></tr>
+      <tr><td class="mono">spray-listed-v1</td><td>P09</td><td><span class="pill p-warn">coded</span></td><td>Chromium speciation basis unsupported</td></tr>
+      <tr><td class="mono">blast-dry-sand-v1</td><td>P08</td><td><span class="pill p-warn">coded</span></td><td>Implemented as <span class="mono">abrasive-blast-v1</span>; balances verified in fixture</td></tr>
+      <tr><td class="mono">solvent-balance-v1</td><td>P12</td><td><span class="pill p-warn">coded</span></td><td>Mass-balance contract</td></tr>
+      <tr><td class="mono">liquid-coating-balance-v1</td><td>P13</td><td><span class="pill p-warn">coded</span></td><td>VOC chemistry was under redesign when the session ended</td></tr>
+      <tr><td class="mono">external-natural-gas-v1</td><td>P20</td><td><span class="pill p-warn">coded</span></td><td>AP-42 1.4 source PDF vendored</td></tr>
+      <tr><td class="mono">fuel-oil-heater-v1</td><td>P20</td><td><span class="pill p-bad">missing</span></td><td>Blocked on issue I05 in the plan</td></tr>
+      <tr><td class="mono">measured-stream-v1</td><td>P23/P24</td><td><span class="pill p-bad">missing</span></td><td>Waste and water quantities are manual only</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">The plan says "coded" is not the same as "promoted". A method counts as done only after its factors pass an independent numerical audit. None of them has.</p>
+</section>
+
+<section>
+  <h2>Acceptance gates <span class="tag">C1–C12 from the plan</span></h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Gate</th><th>Status</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>C1 Source / version coverage</td><td><span class="pill p-warn">partial</span></td><td>Register exists but is disconnected. Codex's reviewer said it is "not C1 completeness".</td></tr>
+      <tr><td>C2 Discovery</td><td><span class="pill p-ok">mostly</span></td><td>28 + G17 screens, 128 questions, unknown and third-party answers</td></tr>
+      <tr><td>C3 Facts and allocations</td><td><span class="pill p-ok">mostly</span></td><td>Splits, batch lineage, ranges vs unknown vs zero</td></tr>
+      <tr><td>C4 Automatic calculations</td><td><span class="pill p-bad">not passed</span></td><td>No independently audited factors, 3 methods missing</td></tr>
+      <tr><td>C5 Manual calculations</td><td><span class="pill p-ok">mostly</span></td><td>Typed contract, separate reviewer, stale-on-change</td></tr>
+      <tr><td>C6 Regulatory decisions</td><td><span class="pill p-warn">partial</span></td><td>Employee-hours gate and Part 1B groups unsupported</td></tr>
+      <tr><td>C7 Whole facility</td><td><span class="pill p-bad">failing</span></td><td>Mixed-facility fixture broken mid-rewrite</td></tr>
+      <tr><td>C8 Review / freshness</td><td><span class="pill p-warn">partial</span></td><td>Lifecycle proven in browser; source freshness noted as unverified</td></tr>
+      <tr><td>C9 Package</td><td><span class="pill p-ok">mostly</span></td><td>JSON/CSV/HTML export, versioned filing-field map</td></tr>
+      <tr><td>C10 Tenant / actor security</td><td><span class="pill p-warn">partial</span></td><td>Signup escalation fixed. Cross-tenant suite needs a DB run.</td></tr>
+      <tr><td>C11 Application quality</td><td><span class="pill p-bad">failing</span></td><td>6 TS errors, 68 lint errors, 3 of 1,353 backend tests failing (mixed facility, organic routing, G17)</td></tr>
+      <tr><td>C12 Handoff</td><td><span class="pill p-bad">not done</span></td><td>Nothing committed; README written</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>What's left <span class="tag">estimate</span></h2>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Work item</th><th>Gates</th><th>Senior dev + AI</th><th>Agent hours</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td><b>Save and stabilize.</b> Commit in logical chunks, fix the broken fixture (<span class="mono">completed_mixed_facility_fixture.py:319/615</span>), fix 6 TS errors (one is the admin queue crash)</td><td>C11 C12</td><td class="num">1–2 days</td><td class="num">1–2 h</td></tr>
+      <tr><td class="num">2</td><td><b>Finish whole-facility closure.</b> Manual MPO completion, coating VOC chemistry, mixed fixture to only the release gate</td><td>C5 C7</td><td class="num">1.5–2 wk</td><td class="num">4–6 h</td></tr>
+      <tr><td class="num">3</td><td><b>Close regulatory gaps.</b> Employee-hours/Part 1–2 gates, Part 1B groups, VOC eligibility, nested PM, Part 2/3/5 reporting, update action</td><td>C1 C6</td><td class="num">2–3 wk</td><td class="num">5–8 h</td></tr>
+      <tr><td class="num">4</td><td><b>Remaining methods.</b> arc-composition (P02), fuel-oil heater, measured-stream</td><td>C4</td><td class="num">1–2 wk</td><td class="num">3–5 h</td></tr>
+      <tr><td class="num">5</td><td><b>Numerical validation.</b> Factor import audit plus independent worked examples for all 10 methods</td><td>C4</td><td class="num">1–2 wk</td><td class="num">2–4 h + JADA time</td></tr>
+      <tr><td class="num">6</td><td><b>Frontend finish.</b> Carry-forward UI, lint, split the 5–6k-line route files</td><td>C11</td><td class="num">~1 wk</td><td class="num">2–3 h</td></tr>
+      <tr><td class="num">7</td><td><b>Pilot acceptance.</b> Full DB regression, 20 mandatory scenarios, cross-tenant checks, browser walkthroughs</td><td>C8–C12</td><td class="num">1–2 wk</td><td class="num">3–5 h</td></tr>
+      <tr><td></td><td><b>Total to a v0 pilot candidate</b></td><td></td><td class="num"><b>8–13 wk</b></td><td class="num"><b>20–33 h</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Agent hours are scaled from Codex's own pace of about 20 hours for about 60%. The remaining 40% is mostly integration and validation work, which is slower per line than scaffolding, so I didn't scale it linearly. Practitioner sign-off on interpretations and real filing authority is outside the software and isn't counted here. Automating the other 21 families is year-one expansion beyond v0. It's roughly another 1–2 weeks per family, depending on method quality.</p>
+</section>
+
+<section>
+  <h2>Risks to act on first</h2>
+  <div class="risks">
+    <div class="risk"><h3>20 hours of work, zero commits</h3><p>About 150k lines exist only as uncommitted files in two worktrees on <span class="mono">codex/welding-npri-v0</span>. One <span class="mono">git clean</span> or disk problem would lose all of it. Codex's 1,250-line progress log in the plan doc is also untracked: the whole <span class="mono">welding-roadmap-2026/</span> folder is untracked in the JADA-SOLUTIONS repo.</p></div>
+    <div class="risk"><h3>Admin queue page likely crashes</h3><p><span class="mono">admin.workspace.tsx:294</span> references an undefined <span class="mono">workspaces</span> variable. Vite builds anyway, but the page throws at render. Plus 2 type errors in <span class="mono">admin.reports.$id.tsx</span>.</p></div>
+    <div class="risk w"><h3>Depth over breadth</h3><p>Large effort went into Part 4 edge metadata (EGU details, monthly distributions, prior-year comparison, condensable PM) while 3 core methods and the employee-hours gate are still missing.</p></div>
+    <div class="risk w"><h3>Very large files</h3><p><span class="mono">evaluator.py</span> 5,945 lines, <span class="mono">service.py</span> 3,632, <span class="mono">admin.workspace.tsx</span> 6,004, <span class="mono">_client.workspace.tsx</span> 4,846. Hard for people or agents to keep working on.</p></div>
+    <div class="risk w"><h3>Original project is safe</h3><p>The JADA-SOLUTIONS backend and frontend repos have zero modified files. Codex only edited docs in the workspace root.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div>Spec read: <span class="mono">documents/project-planning/welding-roadmap-2026/</span> (README, v0-implementation-plan, v0-closure-design, v0-regulatory-inventory, questionnaire, catalogue). Base: backend <span class="mono">ca29307</span>, frontend <span class="mono">efe0928</span>.</div>
+  <div>Checks run on 2026-11-09, no source files changed: full backend pytest against the isolated <span class="mono">npri_v0_test</span> DB (1,350 passed, 3 failed, 8 min), <span class="mono">bun test</span> (150 passed, 3 skipped, 1 failed because it needs a live API), <span class="mono">tsc --noEmit</span> (6 errors).</div>
+</footer>
+
+</div>
+
+</body></html>

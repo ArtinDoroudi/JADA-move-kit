@@ -1,0 +1,1110 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>NPRI Welding Pilot 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column with a sticky section bar. Each section pairs a short plain-language lead with one interactive or expandable visual. */
+:root{
+  --bg:#f3f6f4; --surface:#ffffff; --ink:#15211c; --muted:#56675f; --line:#d6dfda;
+  --accent:#1c6a54; --accent-soft:#dcebe4;
+  --spark:#b87300; --spark-soft:#f6e9cf;
+  --rose:#a83f56; --rose-soft:#f5dfe4;
+  --blue:#3a68a8; --blue-soft:#dfe8f5;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1512; --surface:#16201b; --ink:#e2ebe6; --muted:#9bb0a6; --line:#29372f;
+  --accent:#5fc6a1; --accent-soft:#173a2e; --spark:#e8a943; --spark-soft:#3a2c13;
+  --rose:#e57b92; --rose-soft:#43222b; --blue:#86abe8; --blue-soft:#1d2b45; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1512; --surface:#16201b; --ink:#e2ebe6; --muted:#9bb0a6; --line:#29372f;
+  --accent:#5fc6a1; --accent-soft:#173a2e; --spark:#e8a943; --spark-soft:#3a2c13;
+  --rose:#e57b92; --rose-soft:#43222b; --blue:#86abe8; --blue-soft:#1d2b45; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 80px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:72px}
+h1,h2,h3,h4{font-family:var(--display);font-stretch:82%;margin:0;line-height:1.08;text-wrap:balance}
+h1{font-size:clamp(40px,7.4vw,76px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(28px,4vw,40px);font-weight:750}
+h3{font-size:22px;font-weight:700}
+h4{font-size:18px;font-weight:700}
+p{margin:0;max-width:66ch}
+a{color:var(--accent);text-underline-offset:2px}
+:focus-visible{outline:3px solid var(--spark);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--mono);font-size:.82em;letter-spacing:.01em}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lead{font-size:19px;color:var(--muted)}
+.muted{color:var(--muted)}
+section{display:flex;flex-direction:column;gap:22px}
+.sec-head{display:flex;flex-direction:column;gap:10px}
+
+/* hero */
+.hero{padding-block:44px 8px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:40px;align-items:end}
+.hero-text{display:flex;flex-direction:column;gap:18px;min-width:0}
+.hero h1 span{color:var(--accent)}
+.deadline{background:var(--ink);color:var(--bg);border-radius:10px;padding:22px 24px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.deadline .lbl{font:500 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.deadline .days{font:800 64px/1 var(--display);font-stretch:75%;font-variant-numeric:tabular-nums}
+.deadline .sub{font-size:15px;opacity:.85}
+.deadline .bar{height:6px;border-radius:3px;background:color-mix(in srgb,var(--bg) 25%,transparent);overflow:hidden;margin-top:8px}
+.deadline .bar i{display:block;height:100%;background:var(--spark)}
+@media (max-width:760px){.hero{grid-template-columns:1fr;gap:24px}}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.fact{padding:14px 12px 16px 0;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact b{font:800 36px/1 var(--display);font-stretch:75%;font-variant-numeric:tabular-nums}
+.fact span{font-size:14px;color:var(--muted);line-height:1.35}
+
+/* sticky nav */
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-left,0px))}
+nav.toc .in{max-width:1080px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav.toc a{flex:none;font:600 14px var(--body);color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:999px;border:1px solid transparent}
+nav.toc a:hover{color:var(--ink);border-color:var(--line)}
+nav.toc a.on{color:var(--bg);background:var(--accent)}
+
+/* how it works band */
+.band{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:18px}
+.pipeline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;counter-reset:st}
+.pipe{position:relative;display:flex;flex-direction:column;gap:6px;padding:14px 12px;border-radius:8px;background:var(--bg);min-width:0}
+.pipe::before{counter-increment:st;content:counter(st);font:500 11px var(--mono);color:var(--accent)}
+.pipe b{font:700 17px/1.15 var(--display);font-stretch:85%}
+.pipe span{font-size:14px;color:var(--muted);line-height:1.4}
+.pipe:not(:last-child)::after{content:"";position:absolute;right:-9px;top:50%;width:8px;height:2px;background:var(--line)}
+@media (max-width:860px){.pipeline{grid-template-columns:repeat(2,minmax(0,1fr))}.pipe::after{display:none}}
+.who{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.who div{border-left:3px solid var(--accent);padding:4px 0 4px 14px;min-width:0}
+.who div.j{border-left-color:var(--spark)}
+.who b{display:block;font:700 16px var(--display);font-stretch:85%;margin-bottom:2px}
+.who span{font-size:15px;color:var(--muted)}
+@media (max-width:620px){.who{grid-template-columns:1fr}}
+
+/* checker */
+.checker{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.checker{grid-template-columns:1fr}}
+.controls{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field > label,.field > .lab{font:700 15px var(--display);font-stretch:85%}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:600 14px var(--body);padding:6px 12px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.hours-val{font:800 30px/1 var(--display);font-stretch:75%;font-variant-numeric:tabular-nums}
+.hours-val small{font:500 13px var(--mono);color:var(--muted);margin-left:6px}
+.tick{display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.35;cursor:pointer}
+.chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent);flex:none}
+.results{display:flex;flex-direction:column;gap:8px}
+.res{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.res .pt{font:800 22px/1 var(--display);font-stretch:75%}
+.res .pt small{display:block;font:500 11px var(--mono);color:var(--muted);margin-top:3px;letter-spacing:.04em}
+.res .msg{font-size:15px;line-height:1.4;min-width:0}
+.pill{font:500 11.5px var(--mono);padding:4px 9px;border-radius:999px;white-space:nowrap;letter-spacing:.02em}
+.p-open{background:var(--accent-soft);color:var(--accent)}
+.p-limited{background:var(--spark-soft);color:var(--spark)}
+.p-closed{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.p-pending{background:var(--rose-soft);color:var(--rose)}
+.p-activity{background:var(--blue-soft);color:var(--blue)}
+@media (max-width:520px){.res{grid-template-columns:1fr auto}.res .msg{grid-column:1/-1;grid-row:2}}
+.note{font-size:14px;color:var(--muted);max-width:80ch}
+
+/* threshold ladder */
+.ladder{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 22px 14px;display:flex;flex-direction:column;gap:6px;overflow-x:auto}
+.lrow{display:grid;grid-template-columns:minmax(150px,240px) minmax(260px,1fr);gap:16px;align-items:center;min-height:34px}
+.lrow .nm{font-size:14.5px;line-height:1.25}
+.lrow .nm small{display:block;font:500 11px var(--mono);color:var(--muted)}
+.ltrack{position:relative;height:22px}
+.ltrack .grid{position:absolute;inset:0}
+.ltrack .grid i{position:absolute;top:-6px;bottom:-6px;width:1px;background:var(--line)}
+.ltrack .b{position:absolute;left:0;top:4px;height:14px;border-radius:0 4px 4px 0}
+.ltrack .v{position:absolute;top:1px;font:500 12px var(--mono);white-space:nowrap;color:var(--ink)}
+.b-mpo{background:var(--accent)} .b-air{background:var(--blue)} .b-tot{background:var(--spark)}
+.laxis{display:grid;grid-template-columns:minmax(150px,240px) minmax(260px,1fr);gap:16px}
+.laxis .ax{position:relative;height:18px;font:500 11px var(--mono);color:var(--muted)}
+.laxis .ax span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;gap:7px;align-items:center}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}
+
+/* details / accordions */
+details.acc{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+details.acc + details.acc{margin-top:-12px}
+details.acc > summary{list-style:none;cursor:pointer;padding:16px 18px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}
+details.acc > summary::-webkit-details-marker{display:none}
+details.acc > summary .tag{font:800 20px/1 var(--display);font-stretch:75%;min-width:56px;text-align:center;padding:8px 6px;border-radius:6px;color:var(--bg)}
+details.acc > summary .t{display:flex;flex-direction:column;gap:2px;min-width:0}
+details.acc > summary .t b{font:700 19px/1.2 var(--display);font-stretch:85%}
+details.acc > summary .t span{font-size:14.5px;color:var(--muted);line-height:1.35}
+details.acc > summary .chev{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:transform .2s;color:var(--muted);font:600 16px var(--mono)}
+details.acc[open] > summary .chev{transform:rotate(45deg)}
+details.acc[open] > summary{border-bottom:1px solid var(--line)}
+.acc-body{padding:18px 18px 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.acc-body > div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.acc-body h4{font-size:13px;font-family:var(--mono);font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.acc-body p,.acc-body li{font-size:15.5px;line-height:1.5}
+.acc-body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.acc-body .wide{grid-column:1/-1;background:var(--bg);border-radius:8px;padding:12px 14px}
+@media (max-width:760px){.acc-body{grid-template-columns:1fr}}
+.c1{background:var(--accent)} .c2{background:var(--spark)} .c3{background:var(--rose)} .c4{background:var(--blue)} .c5{background:var(--ink)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+td.n{font-family:var(--mono);font-size:13.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.stacked{display:flex;flex-direction:column;gap:12px}
+
+/* process explorer */
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{font:600 14px var(--body);padding:6px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.explorer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+@media (max-width:880px){.explorer{grid-template-columns:1fr}}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 10px 11px;display:flex;flex-direction:column;gap:4px;min-height:92px;position:relative;transition:border-color .15s,transform .15s}
+.tile:hover{border-color:var(--ink)}
+.tile:focus-visible{outline:3px solid var(--spark);outline-offset:2px}
+.tile[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.tile .id{font:500 12px var(--mono);color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.tile .dot{width:10px;height:10px;border-radius:50%}
+.tile .nm{font-size:14px;line-height:1.25;font-weight:600}
+.tile.dim{opacity:.28}
+.pl-auto{background:var(--accent)} .pl-staged{background:var(--spark)} .pl-spec{background:var(--rose)} .pl-ledger{background:var(--blue)}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:16px;position:sticky;top:76px;min-width:0}
+@media (max-width:880px){.detail{position:static}}
+.detail .top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.detail .top h3{font-size:28px}
+.detail .top .id{font:500 13px var(--mono);color:var(--muted)}
+.plan-chip{font:600 13px var(--body);padding:5px 11px;border-radius:999px;color:var(--bg);white-space:nowrap}
+.dl{display:flex;flex-direction:column;gap:4px}
+.dl h4{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dl p,.dl li{font-size:15.5px;line-height:1.5}
+.dl ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:3px}
+.dl ol li::marker{font:500 12px var(--mono);color:var(--muted)}
+.watch{background:var(--spark-soft);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.watch h4{color:var(--spark)}
+.example{background:var(--accent-soft);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.example h4{color:var(--accent)}
+.srcs{display:flex;gap:6px;flex-wrap:wrap}
+.srcs a{font:500 12px var(--mono);padding:3px 8px;border-radius:5px;background:var(--bg);text-decoration:none;color:var(--muted);border:1px solid var(--line)}
+.srcs a:hover{color:var(--ink)}
+
+/* routing demo */
+.demo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch}
+@media (max-width:820px){.demo{grid-template-columns:1fr}}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.qcard .q{font:700 22px/1.2 var(--display);font-stretch:85%}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.answers button{font:600 15px var(--body);padding:12px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;text-align:left}
+.answers button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.outcome{background:var(--ink);color:var(--bg);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.outcome h4{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.outcome .big{font:700 22px/1.25 var(--display);font-stretch:85%}
+.outcome ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:15.5px}
+.outcome .owner{font:500 12.5px var(--mono);opacity:.75}
+
+/* journey */
+.journey{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.journey{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.journey{grid-template-columns:1fr}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.step .n{font:500 12px var(--mono);color:var(--accent);display:flex;justify-content:space-between}
+.step b{font:700 18px/1.15 var(--display);font-stretch:85%}
+.step p{font-size:14.5px;line-height:1.45;color:var(--muted)}
+.step .stop{font-size:13.5px;line-height:1.4;border-top:1px dashed var(--line);padding-top:8px;color:var(--ink)}
+.step .stop::before{content:"Stops if: ";font-weight:700;color:var(--rose)}
+.loop{font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.loop i{flex:none;width:28px;height:2px;background:var(--spark)}
+
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:start}
+@media (max-width:980px){.road{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:540px){.road{grid-template-columns:1fr}}
+.phase{display:flex;flex-direction:column;gap:8px;min-width:0}
+.phase .ph{border-top:4px solid var(--c);padding-top:10px;display:flex;flex-direction:column;gap:3px}
+.phase .ph b{font:800 20px/1.1 var(--display);font-stretch:80%}
+.phase .ph span{font-size:14px;color:var(--muted);line-height:1.35}
+details.cyc{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+details.cyc summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+details.cyc summary::-webkit-details-marker{display:none}
+details.cyc summary .cid{font:500 12px var(--mono);color:var(--muted);display:flex;justify-content:space-between}
+details.cyc summary .cid::after{content:"+";font-size:15px}
+details.cyc[open] summary .cid::after{content:"–"}
+details.cyc summary b{font-size:15.5px;line-height:1.3}
+details.cyc .cb{padding:0 12px 12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45}
+details.cyc .cb .pr{background:var(--bg);border-radius:6px;padding:8px 10px}
+details.cyc .cb .pr::before{content:"Proof before moving on";display:block;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chips span{font:500 11.5px var(--mono);padding:2px 6px;border-radius:4px;background:var(--bg);border:1px solid var(--line)}
+
+/* myths */
+.myths{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.myth{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:16px 18px;min-height:150px;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);transition:background .2s}
+.myth:focus-visible{outline:3px solid var(--spark);outline-offset:2px}
+.myth .k{font:500 11.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--rose)}
+.myth .say{font:700 19px/1.25 var(--display);font-stretch:85%}
+.myth .rule{display:none;font-size:15px;line-height:1.45}
+.myth .hint{margin-top:auto;font:500 12px var(--mono);color:var(--muted)}
+.myth[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.myth[aria-pressed="true"] .k{color:var(--accent)}
+.myth[aria-pressed="true"] .say{display:none}
+.myth[aria-pressed="true"] .rule{display:block}
+.myth[aria-pressed="true"] .hint{display:none}
+
+/* filing outcomes */
+.outcomes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.oc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.oc .if{font-size:14px;color:var(--muted);line-height:1.4}
+.oc b{font:700 18px/1.2 var(--display);font-stretch:85%}
+.oc .then{font-size:14.5px;line-height:1.4}
+
+/* open questions */
+.qs{display:flex;flex-direction:column;gap:12px}
+.oq{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--rose);border-radius:8px;padding:14px 16px}
+.oq .id{font:500 13px var(--mono);color:var(--rose)}
+.oq b{font:700 18px/1.25 var(--display);font-stretch:85%;display:block;margin-bottom:4px}
+.oq p{font-size:15.5px;line-height:1.5}
+.oq .ask{margin-top:6px;font-size:15px;color:var(--ink);font-weight:600}
+@media (max-width:520px){.oq{grid-template-columns:1fr;gap:4px}}
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px 24px;padding:0;margin:0;list-style:none;counter-reset:sc}
+.scen li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;font-size:15.5px;line-height:1.45;padding:8px 0;border-bottom:1px solid var(--line)}
+.scen li::before{counter-increment:sc;content:counter(sc,decimal-leading-zero);font:500 12px/1.9 var(--mono);color:var(--accent)}
+
+/* sources */
+.srcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.srcgrid > div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.srcgrid h4{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.srcgrid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.srcgrid li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;font-size:15px;line-height:1.4}
+.srcgrid li .mono{color:var(--muted);padding-top:2px}
+footer{border-top:1px solid var(--line);padding-top:18px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+</style>
+
+<div class="wrap">
+
+<header class="hero" id="top">
+  <div class="hero-text">
+    <div class="eyebrow">JADA Solutions · first-year industry · reporting year 2026</div>
+    <h1>NPRI for welding and <span>fabrication shops</span></h1>
+    <p class="lead">How we will help welding and metal fabrication shops decide whether they must report to Canada's National Pollutant Release Inventory, and how to report correctly. It covers the rules we apply, the 28 shop processes we screen, what we ask clients, and the build plan for the first year.</p>
+  </div>
+  <div class="deadline" aria-live="polite">
+    <div class="lbl">2026 reports due to ECCC</div>
+    <div class="days" id="days">June 1, 2027</div>
+    <div class="sub" id="daysSub">Deadline for the 2026 reporting year</div>
+    <div class="bar"><i id="yearBar" style="width:0%"></i></div>
+  </div>
+</header>
+
+<div class="facts" style="margin-top:-40px">
+  <div class="fact"><b>28</b><span>shop process families screened at every client</span></div>
+  <div class="fact"><b>5</b><span>substance Parts in the 2025–2027 Notice</span></div>
+  <div class="fact"><b>17</b><span>common questions asked of every facility</span></div>
+  <div class="fact"><b>20,000</b><span>employee hours: the main Part 1 and 2 trigger</span></div>
+  <div class="fact"><b>25</b><span>sources reviewed: Gazette, ECCC, AP-42 and others</span></div>
+</div>
+
+<nav class="toc" aria-label="Sections"><div class="in" id="toc">
+  <a href="#how">How it works</a>
+  <a href="#who">Who reports</a>
+  <a href="#parts">The five Parts</a>
+  <a href="#processes">28 processes</a>
+  <a href="#questions">Client questions</a>
+  <a href="#journey">Annual journey</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#rules">Ground rules</a>
+  <a href="#open">Open questions</a>
+  <a href="#sources">Sources</a>
+</div></nav>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="sec-head">
+    <div class="eyebrow">The service</div>
+    <h2>A facility reporting workspace, reviewed and filed by JADA</h2>
+    <p class="lead">We screen the whole facility, not only the welding bay. Common cases are calculated automatically once each method is validated. Everything else gets an evidenced calculation from a JADA practitioner. A package can't be called complete while any activity is still unknown or unsupported.</p>
+  </div>
+  <div class="band">
+    <div class="pipeline">
+      <div class="pipe"><b>Facility and year</b><span>Boundary, ownership, employee hours, prior filings</span></div>
+      <div class="pipe"><b>Discover activities</b><span>All 28 process screens, plus "anything else?"</span></div>
+      <div class="pipe"><b>Records and facts</b><span>SDS, purchases, stock, logs; purchases reconciled to use</span></div>
+      <div class="pipe"><b>Rules and methods</b><span>Which Parts apply; which method fits each source</span></div>
+      <div class="pipe"><b>Calculate and total</b><span>Releases, disposals and recycling by substance and destination</span></div>
+      <div class="pipe"><b>Review and file</b><span>JADA review, client certification, filing, records kept</span></div>
+    </div>
+    <div class="who">
+      <div><b>The client provides observable facts</b><span>What they do, what they buy and use, where fumes, waste and water go, and their records. They never pick an emission factor or decide which Part applies.</span></div>
+      <div class="j"><b>JADA makes the technical decisions</b><span>Facility boundary, employee-hour categories, substance identity, method choice, controls credit, destinations, final review, and the certification handoff.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO REPORTS -->
+<section id="who">
+  <div class="sec-head">
+    <div class="eyebrow">Facility gates · Schedule 3 of the Notice</div>
+    <h2>Which Parts could apply to a shop?</h2>
+    <p class="lead">Before looking at any substance, the facility itself passes or fails some gates. Try a shop below. This is a simplified illustration of the gates, not a reporting determination.</p>
+  </div>
+  <div class="checker">
+    <div class="controls">
+      <div class="field">
+        <div class="lab" id="typeLab">Facility type</div>
+        <div class="seg" role="group" aria-labelledby="typeLab" id="ftype">
+          <button type="button" data-v="contiguous" aria-pressed="true">Fixed site</button>
+          <button type="button" data-v="portable" aria-pressed="false">Portable</button>
+          <button type="button" data-v="pipeline" aria-pressed="false">Pipeline</button>
+          <button type="button" data-v="offshore" aria-pressed="false">Offshore</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="hours">Employee hours in 2026</label>
+        <div class="hours-val" id="hoursOut">24,000<small>hours</small></div>
+        <input type="range" id="hours" min="0" max="60000" step="500" value="24000" aria-describedby="hoursHelp">
+        <div class="tick"><span>0</span><span>20,000</span><span>40,000</span><span>60,000</span></div>
+        <p class="note" id="hoursHelp">Total hours, not headcount: overtime, paid vacation and sick leave, onsite owner hours and contractor hours count. 20,000 hours is roughly 10 full-time people.</p>
+        <label class="chk"><input type="checkbox" id="hoursUnknown"> Hours not confirmed yet</label>
+      </div>
+      <div class="field">
+        <div class="lab">Special situations</div>
+        <label class="chk"><input type="checkbox" id="exempt"> An activity that removes the hours gate occurs (e.g. waste incineration, wood preservation)</label>
+        <label class="chk"><input type="checkbox" id="chrome"> Subject to the federal chromium electroplating / anodizing regulations</label>
+      </div>
+    </div>
+    <div class="results" id="results" aria-live="polite"></div>
+  </div>
+  <p class="note">Simplified from the 2025–2027 Notice, Schedule 3 §§1, 6, 8, 10, 11–13 and 15–16. Real cases also check exclusions, the oil and gas branches, and evidence for the facility type.</p>
+</section>
+
+<!-- THE FIVE PARTS -->
+<section id="parts">
+  <div class="sec-head">
+    <div class="eyebrow">Substance thresholds</div>
+    <h2>The five Parts, and how big each trigger is</h2>
+    <p class="lead">Each Part has its own trigger and its own basis. Some count the material a shop handles. Others count only what is released to air. The scale below is logarithmic: each gridline is ten times the last.</p>
+  </div>
+  <div class="ladder" id="ladder" role="img" aria-label="Threshold sizes from 1 kilogram for each PFAS to 20 tonnes for carbon monoxide, nitrogen oxides, sulphur dioxide and total particulate matter"></div>
+  <div class="legend">
+    <span><i class="sw b-mpo"></i>Material handled (manufactured, processed or otherwise used)</span>
+    <span><i class="sw b-air"></i>Released to air</span>
+    <span><i class="sw b-tot"></i>Released, disposed or sent for recycling</span>
+  </div>
+
+  <div class="stacked" id="partCards">
+    <details class="acc" open>
+      <summary><span class="tag c1">1A</span><span class="t"><b>Part 1A: core substances (Group A)</b><span>10 tonnes handled, at 1% concentration or more</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>Who</h4><p>Fixed sites and offshore installations with 20,000+ employee hours, or with an activity that removes the hours gate.</p></div>
+        <div><h4>Trigger</h4><p>10 tonnes manufactured, processed or otherwise used, counted only where concentration is at least 1%. By-products count at any concentration. Equal to the threshold counts.</p></div>
+        <div><h4>Then report</h4><p>Releases, disposals and transfers for recycling, in tonnes, <b>even if they are zero</b>.</p></div>
+        <div class="wide"><h4>In a welding shop</h4><p>Metals in electrodes, wire and steel stock, such as manganese, nickel and chromium compounds. Stock that passes through cutting, grinding and welding is counted once, not once per operation.</p></div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="tag c1">1B</span><span class="t"><b>Part 1B: lower thresholds for specific substances</b><span>For example 50 kg for cobalt, lead and hexavalent chromium; 5 kg for mercury</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>Who</h4><p>Same facility gates as Part 1A. Exception: facilities under the chromium electroplating, anodizing and reverse-etching regulations report hexavalent chromium regardless of hours, quantity or concentration.</p></div>
+        <div><h4>Trigger</h4><p>Each row has its own values. Cobalt, lead and hexavalent chromium are 50 kg at 0.1%. Mercury is 5 kg with no concentration test. Some groups are totalled, such as 20 benzothiazoles (100 kg) and cyanides (1,000 kg).</p></div>
+        <div><h4>Then report</h4><p>Releases, disposals and transfers for recycling in kilograms.</p></div>
+        <div class="wide"><h4>In a welding shop</h4><p>Stainless electrodes produce hexavalent chromium fume. Lead in stainless steel, brass and bronze is excluded from the lead threshold. Older ECCC material calls cobalt Part 1A, but the current list puts it in 1B.</p></div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="tag c1">1C</span><span class="t"><b>Part 1C: PFAS, new since 2025</b><span>1 kg at 0.1%, for each of 163 listed PFAS separately</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>Who</h4><p>Same Part 1 facility gates.</p></div>
+        <div><h4>Trigger</h4><p>Each listed PFAS on its own: 1 kg at 0.1% or more. Two PFAS below 1 kg each are not added together.</p></div>
+        <div><h4>Then report</h4><p>Releases, disposals and recycling transfers in kg, even if zero.</p></div>
+        <div class="wide"><h4>In a welding shop</h4><p>Check mist suppressants in plating, firefighting foams and some specialty coatings or lubricants. An SDS that doesn't mention PFAS is not proof of absence. Unresolved formulations stay pending.</p></div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="tag c2">2</span><span class="t"><b>Part 2: PAHs</b><span>50 kg total across all listed PAHs, incidentally made and released</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>Who</h4><p>Fixed, portable and offshore facilities with 20,000+ hours or an hours-exempt activity. Creosote wood preservation is a separate branch with no threshold.</p></div>
+        <div><h4>Trigger</h4><p>Total mass of all listed PAHs released, disposed or recycled because of incidental manufacture reaches 50 kg. This is a total, not 50 kg per PAH.</p></div>
+        <div><h4>Then report</h4><p>Individual PAHs at 5 kg or more are reported separately; the rest as unspeciated total. Naphthalene is Part 1A, not Part 2.</p></div>
+        <div class="wide"><h4>In a welding shop</h4><p>Rare. The welding calculator has no Part 2 data, but that doesn't prove Part 2 is absent. Combustion and burning-off of coatings are the usual places to look.</p></div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="tag c3">3</span><span class="t"><b>Part 3: dioxins, furans and hexachlorobenzene</b><span>Triggered by specific activities only, regardless of quantity</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>Who</h4><p>Facilities doing a listed activity, such as waste incineration, base-metal or secondary aluminum smelting, steelmaking electric arc furnaces, cement, or pentachlorophenol wood preservation.</p></div>
+        <div><h4>Trigger</h4><p>The activity itself. Some activities apply regardless of hours; others also need 20,000 hours.</p></div>
+        <div><h4>Then report</h4><p>Individual congeners if known, otherwise a toxic-equivalent total. If it truly cannot be determined, "no information available", never zero.</p></div>
+        <div class="wide"><h4>In a welding shop</h4><p>An arc welder is not a steelmaking electric arc furnace. We screen for real specialist operations (P26) instead of matching on the word "arc".</p></div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="tag c4">4</span><span class="t"><b>Part 4: criteria air contaminants</b><span>Air releases: PM2.5 0.3 t, PM10 0.5 t, total VOC 10 t, CO, NOx, SO2 and TPM 20 t</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>Who</h4><p>All facility types. No 20,000-hour precondition. Below 20,000 hours (with no exempt activity), only stationary fuel-combustion releases count toward the threshold.</p></div>
+        <div><h4>Trigger</h4><div class="tbl"><table><thead><tr><th>Contaminant</th><th>To air</th></tr></thead><tbody>
+          <tr><td>PM2.5</td><td class="n">0.3 t</td></tr><tr><td>PM10</td><td class="n">0.5 t</td></tr><tr><td>Total VOC</td><td class="n">10 t</td></tr><tr><td>CO, NOx, SO2, TPM</td><td class="n">20 t each</td></tr></tbody></table></div></div>
+        <div><h4>Then report</h4><p>Air releases by category and method, monthly shares, whether particulate includes condensable PM, operating schedule, and shutdowns longer than a week.</p></div>
+        <div class="wide"><h4>In a welding shop</h4><p>Welding fume, blasting dust, heaters and paint solvents all feed Part 4. TPM, PM10 and PM2.5 are nested sizes of the same dust, not three amounts to add. Unpaved-road dust counts above 10,000 vehicle-km a year. Small external-combustion equipment (under 10 million BTU/h, natural gas, propane or No. 1–2 oil only) can be exempt, but only when that is the substance's only source.</p></div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="tag c5">5</span><span class="t"><b>Part 5: individual VOCs</b><span>1 tonne released to air, for each listed VOC or group</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>Who</h4><p>All facility types, with the same low-hours rule as Part 4 (combustion only below 20,000 hours).</p></div>
+        <div><h4>Trigger</h4><p>Each listed VOC or group: 1 tonne released to air. It is not conditional on meeting the total-VOC threshold.</p></div>
+        <div><h4>Then report</h4><p>Tonnes per substance, methods, monthly shares and reasons for change. The same quantity may also appear under Part 1.</p></div>
+        <div class="wide"><h4>In a welding shop</h4><p>Solvents in paints, thinners and degreasers. A booth filter catches paint particles but does not reduce solvent vapour.</p></div>
+      </div>
+    </details>
+    <details class="acc">
+      <summary><span class="tag c5" style="background:var(--muted)">Stk</span><span class="t"><b>Individual stacks</b><span>Extra detail only for tall, hot, vertical stacks</span></span><span class="chev" aria-hidden="true">+</span></summary>
+      <div class="acc-body">
+        <div><h4>When</h4><p>Vertical stacks at least 25 m above grade, with measured annual exit temperature above 50 °C, and stack releases above the Notice Table 4 minimums.</p></div>
+        <div><h4>Not included</h4><p>Horizontal outlets, rain-capped stacks and tank vents don't get individual stack fields, but their releases still count in the air totals.</p></div>
+        <div><h4>Our approach</h4><p>Every client gets a basic map of where air goes. Detailed stack assessment starts as a JADA manual task, because the Notice and the Guide disagree on two points (see open questions).</p></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- PROCESSES -->
+<section id="processes">
+  <div class="sec-head">
+    <div class="eyebrow">Process catalogue</div>
+    <h2>28 process families we screen at every shop</h2>
+    <p class="lead">A "welding shop" often also blasts, paints, degreases, heats and ships waste. Every family is screened every year. Pick one to see what we ask, what it can release, and the common mistakes.</p>
+  </div>
+  <div class="filters" id="groupFilters" role="group" aria-label="Filter by group"></div>
+  <div class="legend" id="planLegend"></div>
+  <div class="explorer">
+    <div class="tiles" id="tiles"></div>
+    <article class="detail" id="detail" aria-live="polite"></article>
+  </div>
+</section>
+
+<!-- QUESTIONS -->
+<section id="questions">
+  <div class="sec-head">
+    <div class="eyebrow">Conditional questionnaire</div>
+    <h2>Plain questions, four honest answers</h2>
+    <p class="lead">Clients see ordinary wording such as "Do you sandblast?", never "Does Part 1B apply?". Every screen offers four answers, and there is no pre-selected "No". Try one:</p>
+  </div>
+  <div class="demo">
+    <div class="qcard">
+      <div class="eyebrow">Activity screen · P08</div>
+      <div class="q">Did anyone do sand, grit, shot, bead or wet blasting at this location in 2026, even occasionally?</div>
+      <div class="answers" id="answers">
+        <button type="button" data-a="yes" aria-pressed="true">Yes</button>
+        <button type="button" data-a="no" aria-pressed="false">No</button>
+        <button type="button" data-a="unsure" aria-pressed="false">Not sure</button>
+        <button type="button" data-a="other" aria-pressed="false">Done by someone else</button>
+      </div>
+      <p class="note">Quantities are stored with unit, period and basis (used, purchased or estimated). "Records unavailable" and "ask JADA for help" are always allowed. A missing quantity is never filled in as zero.</p>
+    </div>
+    <div class="outcome" id="outcome"></div>
+  </div>
+
+  <details class="acc">
+    <summary><span class="tag c1">G</span><span class="t"><b>17 common questions for every facility</b><span>Boundary, hours, materials, air, waste, water, incidents, contacts</span></span><span class="chev" aria-hidden="true">+</span></summary>
+    <div class="acc-body" style="grid-template-columns:1fr"><div class="tbl"><table><thead><tr><th>ID</th><th>We ask</th><th>It decides</th></tr></thead><tbody id="gtable"></tbody></table></div></div>
+  </details>
+  <details class="acc">
+    <summary><span class="tag c2">M</span><span class="t"><b>Materials: asked once per product</b><span>8 questions shared across every process that uses it</span></span><span class="chev" aria-hidden="true">+</span></summary>
+    <div class="acc-body" style="grid-template-columns:1fr"><ol class="dl" style="margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px" id="mlist"></ol></div>
+  </details>
+  <details class="acc">
+    <summary><span class="tag c4">O</span><span class="t"><b>Controls and air outlets: asked once per system</b><span>Where fumes go, what captures them, when it was off</span></span><span class="chev" aria-hidden="true">+</span></summary>
+    <div class="acc-body" style="grid-template-columns:1fr"><ol class="dl" style="margin:0;padding-left:22px;display:flex;flex-direction:column;gap:5px" id="olist"></ol>
+    <p class="note">Stack dimensions and temperature (O07) are asked only when a stack assessment needs them. A client doesn't have to measure every roof vent to get started.</p></div>
+  </details>
+  <details class="acc">
+    <summary><span class="tag c3">Ex</span><span class="t"><b>Worked routing examples</b><span>What happens in four situations we expect to see</span></span><span class="chev" aria-hidden="true">+</span></summary>
+    <div class="acc-body">
+      <div><h4>Blasting found late</h4><p>P08 flips to Yes after approval. The blasting questions open, the facility particulate and metals totals update, and the approved package becomes a new draft.</p></div>
+      <div><h4>No chimney</h4><p>We still ask about extractors, booths and heaters. If no outlet exists, fugitive releases from each activity are still assessed. No tall stack doesn't mean no emissions.</p></div>
+      <div><h4>Unknown powder chemistry</h4><p>Powder use is known but curing emissions aren't. A supplier evidence task opens. Other calculations continue, and affected conclusions stay pending.</p></div>
+      <div class="wide"><h4>Offsite painting</h4><p>If parts are painted by another company at its own site, JADA documents the boundary decision and onsite paint calculations may not apply. Contractor painting on the client's own property follows a different path and stays in.</p></div>
+    </div>
+  </details>
+</section>
+
+<!-- JOURNEY -->
+<section id="journey">
+  <div class="sec-head">
+    <div class="eyebrow">Annual runtime · R01–R10</div>
+    <h2>What happens for each client, every year</h2>
+    <p class="lead">Ten steps from opening the year to carrying it forward. Each step has a condition that pauses the case for follow-up.</p>
+  </div>
+  <div class="journey" id="journeyGrid"></div>
+  <div class="loop"><i></i>Steps R04 to R07 repeat: some thresholds need estimated releases first, and others start from material quantities.</div>
+
+  <h3 style="margin-top:12px">Which filing does the year end in?</h3>
+  <div class="outcomes">
+    <div class="oc"><div class="if">One or more Part criteria met</div><b>Substance report</b><div class="then">For each qualifying substance, by June 1, 2027. Zero releases still require the report.</div></div>
+    <div class="oc"><div class="if">Reported for 2025, but no criterion met in 2026</div><b>Does Not Meet Criteria</b><div class="then">Filed with the reason. If it's due to pollution prevention, say so.</div></div>
+    <div class="oc"><div class="if">Sold, closed or bought during the year</div><b>Sale / closure / purchase</b><div class="then">The December 31 owner reports the full year; a closing operator reports its operating period.</div></div>
+    <div class="oc"><div class="if">Never reported, nothing met</div><b>No filing, documented</b><div class="then">A substantiated no-filing decision is kept on record. We don't fabricate a "zero report".</div></div>
+    <div class="oc"><div class="if">Nothing met, client chooses to report</div><b>Voluntary report</b><div class="then">Flagged as voluntary, kept separate from mandatory decisions.</div></div>
+  </div>
+  <p class="note">More than one outcome can apply in the same year. Supporting records are kept for three years from the due date. Client certification is a separate step from JADA's internal review.</p>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="sec-head">
+    <div class="eyebrow">Development cycles · C00–C13</div>
+    <h2>The first-year roadmap</h2>
+    <p class="lead">Each cycle is a deliverable with a proof gate, not a date. Foundations come first. Process cycles are then picked to match the first clients' real activities. Open any cycle for details.</p>
+  </div>
+  <div class="road" id="road"></div>
+  <details class="acc">
+    <summary><span class="tag c1">6</span><span class="t"><b>The six steps inside every process cycle</b><span>How one method goes from a source document to something we trust</span></span><span class="chev" aria-hidden="true">+</span></summary>
+    <div class="acc-body">
+      <div><h4>1 · Specify</h4><p>One source-backed method card with boundaries and exclusions. Name the quantity being assessed or reported.</p></div>
+      <div><h4>2 · Ask</h4><p>Switch on only the client questions and evidence this method needs. Separate a factual gap from a software gap.</p></div>
+      <div><h4>3 · Implement</h4><p>Typed inputs, factor lookup, unit conversion and a deterministic calculation with a full trace.</p></div>
+      <div><h4>4 · Exceptions</h4><p>Unknown type, missing factor, inconsistent units, concentration ranges, partial year, controls, unsupported materials.</p></div>
+      <div><h4>5 · Benchmark</h4><p>Compare against a separately worked case or the official ECCC tool, and investigate any difference.</p></div>
+      <div><h4>6 · Integrate</h4><p>Combine with another process sharing a substance, attach controls and destinations, and show the review trace.</p></div>
+    </div>
+  </details>
+</section>
+
+<!-- RULES -->
+<section id="rules">
+  <div class="sec-head">
+    <div class="eyebrow">Ground rules</div>
+    <h2>Twelve shortcuts we will not take</h2>
+    <p class="lead">These come straight from the source review. Tap a card to see the rule.</p>
+  </div>
+  <div class="myths" id="myths"></div>
+</section>
+
+<!-- OPEN QUESTIONS -->
+<section id="open">
+  <div class="sec-head">
+    <div class="eyebrow">Your expertise needed</div>
+    <h2>Open questions for environmental and HSE review</h2>
+    <p class="lead">The sources disagree or are silent on these points. Until a practitioner decides, the software routes them to manual review instead of guessing.</p>
+  </div>
+  <div class="qs">
+    <div class="oq"><span class="id">I03</span><div><b>Individual-stack NOx threshold: 10 t or 20 t?</b><p>The Notice (Schedule 4, Table 4) says 10 tonnes. The Guide (Appendix D, Table 18) says 20 tonnes. The Notice prevails, but we want a recorded interpretation before automating it.</p><p class="ask">Do we apply 10 t, and should we seek ECCC clarification?</p></div></div>
+    <div class="oq"><span class="id">I04</span><div><b>Stack temperature: unmeasured, and exactly 50 °C</b><p>The Notice says "measured to be above 50 °C". The Guide says unmeasured stacks qualify and uses "50 °C or more". These treat both unknown and equal values differently.</p><p class="ask">How should we treat a stack with only a permit or estimated temperature?</p></div></div>
+    <div class="oq"><span class="id">Cr</span><div><b>Chromium basis in the ECCC welding calculator</b><p>The calculator has separate chromium and hexavalent chromium rows. It doesn't say whether its "chromium" factor means total chromium or chromium excluding Cr(VI). The NPRI list treats them as different substances.</p><p class="ask">Which basis do the welding factors use, and how do we split them?</p></div></div>
+    <div class="oq"><span class="id">Pb</span><div><b>Lead in stainless steel after it becomes fume</b><p>Lead contained in stainless steel, brass and bronze is excluded from the lead threshold. It's unclear whether that exclusion still applies once the alloy is welded into fume.</p><p class="ask">Does the alloy exclusion survive the welding transformation?</p></div></div>
+    <div class="oq"><span class="id">1B</span><div><b>Group concentration when one product has several members</b><p>For groups such as benzothiazoles or cyanides, an SDS may give one concentration for a mixture of members. The source text doesn't settle whether the 0.1% test applies per member or to the mixture.</p><p class="ask">Per member or combined?</p></div></div>
+    <div class="oq"><span class="id">I05</span><div><b>Fuel-oil heater calculator units</b><p>The ECCC boiler and heater calculator shows a factor per thousand US gallons. The unit scale needs a dimensional check before we port it.</p><p class="ask">Can someone verify the calculator's conversion against AP-42?</p></div></div>
+    <div class="oq"><span class="id">I07</span><div><b>Solvent evaporation shortcut</b><p>Our internal VOC note uses "use × VOC content × evaporation fraction". There is no sourced, universal evaporation fraction. We plan a balance instead: input minus stock change, waste, recovery and product retention.</p><p class="ask">Is a mass balance acceptable as our default for degreasing and paint solvent?</p></div></div>
+    <div class="oq"><span class="id">I11</span><div><b>Blasting beyond open dry sand</b><p>ECCC defaults are uncontrolled dry sand on mild steel, varying with wind speed. Cabinets, recycled shot and wet blasting are not represented.</p><p class="ask">What evidence would you accept for an enclosed or recycled-media blaster?</p></div></div>
+  </div>
+
+  <h3 style="margin-top:12px">Pilot scenarios every package type must survive</h3>
+  <ol class="scen">
+    <li>Arc welding with known consumables, then an unknown electrode to test the fallback</li>
+    <li>Welding plus cutting sharing an alloy and a dust collector, with no double counting</li>
+    <li>One stock batch cut, ground and welded, keeping its lineage with no duplicate purchase</li>
+    <li>Welding, blasting, coating, cleaning and gas heating, totalled across processes</li>
+    <li>A low-hours shop with fuel-burning equipment, testing the branches instead of a headcount shortcut</li>
+    <li>Painting outsourced offsite, but contractor blasting onsite</li>
+    <li>A positive specialist screen, an unknown composition and a missing method, so the package can't close early</li>
+    <li>Captured dust, waste solvent, wastewater and an air outlet, testing destinations</li>
+    <li>A stack/source conflict and a changed control configuration, testing review and revision</li>
+    <li>A prior reporter that no longer meets any criteria: Does Not Meet Criteria workflow</li>
+    <li>A Part 1 threshold met with zero releases, which still requires a report</li>
+  </ol>
+</section>
+
+<!-- SOURCES -->
+<section id="sources">
+  <div class="sec-head">
+    <div class="eyebrow">Source register · S01–S25</div>
+    <h2>What the plan is built on</h2>
+    <p class="lead">The Canada Gazette Notice controls. ECCC guidance explains it. Calculators supply methods within their stated scope. US, UK and occupational sources help us discover processes, but their limits and exemptions are not Canadian NPRI rules.</p>
+  </div>
+  <div class="srcgrid" id="srcgrid"></div>
+</section>
+
+<footer>
+  <div>Based on <span class="mono">JADA-SOLUTIONS/documents/project-planning/welding-roadmap-2026/</span>: roadmap README, process catalogue, conditional questionnaire, sources and decisions, and the v0 regulatory inventory. Prepared 2026-11-04 and summarized 2026-11-09.</div>
+  <div>This page summarizes a proposed plan. It is not legal advice or an approved JADA ruleset. Recheck the official notices index before rule release and before filing.</div>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var S = {
+    S01:["Canada Gazette Notice for 2025–2027","https://gazette.gc.ca/rp-pr/p1/2025/2025-03-08/html/sup1-eng.html","law"],
+    S02:["Guide for reporting to the NPRI 2025–2027","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/reporting-guide.html","law"],
+    S03:["2025–2027 NPRI substance list workbook","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/substances-list.html","law"],
+    S04:["ECCC arc welding, cutting and spraying guidance","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/tools-calculating-emissions/arc-welding-cutting-spraying-calculator.html","eccc"],
+    S05:["ECCC welding, cutting and spraying calculator","https://www.canada.ca/content/dam/eccc/documents/xlsx/inrp-npri/2023/Electric%20Arc%20Welding%2C%20Cutting%20and%20Spraying%20Calculator_2022_10_26.xlsx","eccc"],
+    S06:["EPA AP-42 §12.19 electric arc welding","https://www.epa.gov/sites/default/files/2020-11/documents/c12s19.pdf","eng"],
+    S07:["ECCC abrasive blasting guidance","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/tools-calculating-emissions/fugitive-dust-emissions-abrasive-blasting.html","eccc"],
+    S08:["EPA surface-coating emissions estimation","https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P101GJ20.txt","eng"],
+    S09:["ECCC solvent degreasing sector","https://www.canada.ca/en/environment-climate-change/services/management-toxic-substances/sources/solvent-degreasing-sector.html","eccc"],
+    S10:["CCOHS heat treating","https://www.ccohs.ca/oshanswers/safety_haz/metalworking/heat_treating.html","occ"],
+    S11:["UK hot-dip galvanizing process guidance","https://www.gov.uk/government/publications/hot-dip-galvanizing-processes-process-guidance-note-202","occ"],
+    S12:["ECCC boilers and heaters calculator","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/tools-calculating-emissions/boiler-heaters-emissions-calculator.html","eccc"],
+    S13:["EPA AP-42 external and internal combustion","https://www.epa.gov/air-emissions-factors-and-quantification/ap-42-fifth-edition-volume-i-chapter-1-external-0","eng"],
+    S14:["ECCC unpaved road dust guide","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/sector-specific-tools-calculate-emissions/road-dust-unpaved-surfaces-guide.html","eccc"],
+    S15:["ECCC storage-tank guidance","https://publications.gc.ca/site/eng/9.929296/publication.html?wbdisable=true","eccc"],
+    S16:["EPA metal finishing overview","https://www.epa.gov/eg/metal-finishing-effluent-guidelines","eng"],
+    S17:["EPA metal finishing development document","https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=40000SGR.TXT","eng"],
+    S18:["ECCC PFAS reporting guidance","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/pfas.html","law"],
+    S19:["EPA metal fabrication and finishing categories","https://www.epa.gov/stationary-sources-air-pollution/metal-fabrication-and-finishing-source-categories-national","eng"],
+    S20:["EPA capture systems explanation","https://www.epa.gov/air-emissions-monitoring-knowledge-base/monitoring-control-technique-capture-systems","eng"],
+    S21:["UK HSE metalworking-fluid guidance","https://www.hse.gov.uk/coshh/essentials/direct-advice/metalworking-fluids.htm","occ"],
+    S22:["EPA misc. metal and plastic parts coating CTG","https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P1001JAL.TXT","eng"],
+    S23:["ECCC legal notices and deadlines","https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/legal-requirements-gazette-notices.html","law"],
+    S24:["2022–2024 NPRI Guide PDF (historical, internal copy)","","int"],
+    S25:["Internal note: Steps to report VOCs","","int"]
+  };
+
+  var PLANS = {
+    auto:{label:"Automate first",cls:"pl-auto",desc:"Automatic calculation once its method is validated"},
+    staged:{label:"Staged",cls:"pl-staged",desc:"Manual first; a validated subtype is automated later"},
+    spec:{label:"Specialist manual",cls:"pl-spec",desc:"JADA practitioner calculation throughout the beta"},
+    ledger:{label:"Always-on ledger",cls:"pl-ledger",desc:"Shared accounting every facility completes"}
+  };
+  var GROUPS = ["All","Joining","Cutting and machining","Surface treatment","Coatings and chemicals","Energy and heat","Storage, yard and incidents","Waste, water and boundary","Specialist"];
+
+  var P = [
+    {id:"P01",g:"Joining",plan:"auto",cyc:"C04",nm:"Consumable arc welding",
+     scope:"Stick (SMAW), MIG/MAG (GMAW), flux-core (FCAW) and submerged arc (SAW), including robotic work and hardfacing.",
+     ask:["Which processes and machines use each rod or wire?","What electrode or wire classifications are on the packaging, and how much of each did each process use?","Was welding done inside, outside, in booths or robot cells, and which extraction served it?","What happened to stubs, slag, collected fume and scrap?","Which metals and coatings are welded? Are separate fluxes or shielding gases used?"],
+     out:"Metals such as manganese, chromium and nickel; particulate (TPM, PM10, PM2.5); slag and collected fume.",
+     watch:"An invoice product name isn't enough to choose a factor: the electrode classification decides it. We start with one known electrode, then add unknown-electrode alternatives only where their conditions are met.",
+     src:["S04","S05","S06"]},
+    {id:"P02",g:"Joining",plan:"auto",cyc:"C04",nm:"TIG and plasma welding",
+     scope:"GTAW (TIG) and plasma arc welding, with or without added filler.",
+     ask:["Which jobs add filler and which don't?","Which filler products and quantities belong to each process?","Which metals or coated parts are joined, and what records exist for no-filler jobs?"],
+     out:"Metals and particulate where filler is used; generated fume from the base metal.",
+     watch:"A no-filler station must not disappear just because there is no matching purchase. Having no applicable factor doesn't mean zero emissions; it means a manual task.",
+     src:["S04","S05"]},
+    {id:"P03",g:"Joining",plan:"spec",cyc:"C10",nm:"Spot, laser and other joining",
+     scope:"Resistance spot or seam, laser and electron beam, friction stir, ultrasonic and other specialist joining.",
+     ask:["Describe the joining equipment and how it works.","What materials, coatings, oils, adhesives or consumables are involved?","What production records or test data exist, and where do emissions and residues go?"],
+     out:"Depends on the materials and surface coatings; no standard factors were found.",
+     watch:"Choosing \"other welding\" creates a specific review task. It never falls back to the arc-welding default.",
+     src:["S17"]},
+    {id:"P04",g:"Joining",plan:"spec",cyc:"C10 / C08",nm:"Gas welding, brazing, soldering",
+     scope:"Flame welding, brazing, silver brazing and soldering.",
+     ask:["Which process, filler or solder and flux are used on which materials?","How much filler, flux and fuel was used? Is fuel shared with cutting or heating?","How are joints cleaned, and what residues or used cleaning materials are collected?"],
+     out:"Metals from filler and flux; combustion products from the fuel; cleaning residues.",
+     watch:"Fuel is counted once, at its combustion source. Solder never appears in the arc-welding factor list, so it needs its own method.",
+     src:["S04","S17"]},
+    {id:"P05",g:"Cutting and machining",plan:"auto",cyc:"C05",nm:"Thermal cutting and gouging",
+     scope:"Oxy-fuel, plasma, laser and air-carbon arc cutting and gouging.",
+     ask:["Which equipment does flame, plasma, laser or air-carbon cutting?","Which metals, thicknesses and coatings were cut?","How many hours was each process actually cutting, by material if known?","What material, fuel, electrode, dross and dust records exist?"],
+     out:"Metals and particulate from the cut material; fuel-related emissions; dross.",
+     watch:"Cutting factors are per minute of active cutting. Machine-on time or paid shift hours overstate it.",
+     src:["S04","S05"]},
+    {id:"P06",g:"Cutting and machining",plan:"staged",cyc:"C05 / C06",nm:"Saws, shears and waterjet",
+     scope:"Band, circular and abrasive saws, shears, punching, press cutting, waterjet and abrasive waterjet.",
+     ask:["What exact machine and method is used? Dry, lubricated or water-based?","Which materials, coatings, abrasives or cutting fluids are involved?","What happens to chips, offcuts, water and sludge?"],
+     out:"Chips and sludge; dust where dry; contaminated water from waterjet.",
+     watch:"Don't apply a thermal-cutting method just because metal is removed. The ECCC calculator says it doesn't cover press cutting and similar cold methods. Waterjet routes to water (P24).",
+     src:["S04","S05","S17"]},
+    {id:"P07",g:"Cutting and machining",plan:"staged",cyc:"C06",nm:"Grinding and finishing",
+     scope:"Grinding, sanding, polishing, buffing, deburring, tumbling, burnishing and peening.",
+     ask:["Is the tool cutting, removing a coating, or finishing? Which machines do each?","Wet or dry? Which metals, coatings and abrasives?","What records exist, and how are dust and residue collected?"],
+     out:"Particulate and metals from the workpiece and coatings; spent abrasive.",
+     watch:"A grinder used both for cutting and for polishing must not have its annual hours counted twice. No universal grinding factor exists.",
+     src:["S19","S17"]},
+    {id:"P08",g:"Surface treatment",plan:"auto",cyc:"C06",nm:"Abrasive blasting",
+     scope:"Sand, grit, shot, slag and glass bead; dry, wet or vapour; cabinet, room or outdoor.",
+     ask:["What media is used, and is blasting dry, wet or vapour-assisted?","Cabinet, room or outdoors? What equipment?","How much media: new purchased, fed through the machine, or discarded? Is it recycled?","Which surfaces and coatings are removed, and what is known about them?","Where do dust, spent media and dirty water go?"],
+     out:"Particulate (TPM, PM10, PM2.5); metals from the media, substrate and old coatings; spent media and slurry.",
+     ex:"Open dry sand, 10 tonnes a year, nearest wind class 8 km/h: TPM 270 kg, PM10 130 kg, PM2.5 13 kg, before any justified control credit.",
+     watch:"ECCC default factors are for uncontrolled dry sand on mild steel and depend on wind speed. They can't be reused for a recycled-shot cabinet or wet blasting. Painted surfaces add metals.",
+     src:["S07"]},
+    {id:"P09",g:"Surface treatment",plan:"auto",cyc:"C05",nm:"Thermal metal spraying",
+     scope:"Plasma, flame wire or powder, electric arc and HVOF metal spraying. This is not paint spraying.",
+     ask:["Is the sprayed material molten metal or powder, or ordinary paint?","Which feedstocks and how much per process? Is overspray reclaimed?","What composition, collector and waste records exist?"],
+     out:"Metal and particulate emissions; overspray and collector residue.",
+     watch:"Particulate factors use the feedstock mass, but metal factors use the mass of each metal in it. Composition is applied once, never twice. Paint answers route to P13.",
+     src:["S04","S05"]},
+    {id:"P10",g:"Cutting and machining",plan:"staged",cyc:"C06 / C10",nm:"Machining and fluids",
+     scope:"Turning, milling, drilling, boring, CNC and EDM, including coolant mixing, sumps and cleanouts.",
+     ask:["Which machines run dry or with coolant or cutting oil?","Which concentrates and dilution ratios? How much fresh concentrate, makeup water and replacement fluid?","Are fluids recirculated? What leaves in chips, sludge, mist or spent fluid?","What production, sump-change and waste records exist?"],
+     out:"Fluid constituents; mist; chips, sludge and spent fluid.",
+     watch:"Litres of diluted coolant are not litres of concentrate. Recirculated fluid isn't new use every cycle.",
+     src:["S21","S17"]},
+    {id:"P11",g:"Cutting and machining",plan:"staged",cyc:"C06 / C10",nm:"Forming and forging",
+     scope:"Bending, rolling, stamping, drawing, punching, and cold or hot forging.",
+     ask:["What forming happens, and is the metal heated?","Which lubricants, release agents or coated materials are used?","What scale, dust, scrap or fluid waste results?"],
+     out:"Lubricant constituents; scale and dust; furnace combustion for hot work.",
+     watch:"\"We only change the shape\" is something to check, not an exemption. Hot forging brings in furnaces and fuel (P19, P20).",
+     src:["S17","S19"]},
+    {id:"P12",g:"Coatings and chemicals",plan:"auto",cyc:"C07",nm:"Cleaning and degreasing",
+     scope:"Wipes, sprays, parts washers, immersion, vapour degreasing, aqueous, pressure and ultrasonic cleaning.",
+     ask:["How are parts and tools cleaned?","Which products? Diluted or heated? Open or closed systems?","How much was used, recovered, retained or sent away as waste?","Where does used wash water go? Does a contractor do any cleaning?"],
+     out:"Solvent constituents to air; spent solvent and sludge; dirty water.",
+     ex:"A closed balance: 100 kg solvent in, 10 kg added to stock, 20 kg in disposed waste, 5 kg recovered, 15 kg retained in product leaves 50 kg to air, and only if the balance boundary is accepted.",
+     watch:"Not everything purchased evaporates. Air release is what is left after stock, waste, recovery and retention are accounted for.",
+     src:["S09","S02","S25"]},
+    {id:"P13",g:"Coatings and chemicals",plan:"auto",cyc:"C07",nm:"Liquid paint and coatings",
+     scope:"Primers, paints and protective coatings applied by spray, brush, roller or dip, including touch-up and electrocoat.",
+     ask:["Which products and components, applied how?","Which hardeners, thinners and additives, at what ratios and quantities?","What supplier data show density, volatile content and ingredients? How are guns cleaned?","Air-dried or heated? What overspray, waste and recovered solvent is collected?"],
+     out:"Total VOC; individual VOCs and listed ingredients; pigment-bearing overspray; coating waste.",
+     watch:"A booth filter catches paint particles, not solvent vapour. Particulate collection never counts as VOC removal. Gun cleaning routes to P12, curing fuel to P20.",
+     src:["S08","S22"]},
+    {id:"P14",g:"Coatings and chemicals",plan:"staged",cyc:"C07 / C10",nm:"Powder coating",
+     scope:"Powder application, recovery and reuse, pretreatment and curing.",
+     ask:["Which powders? Can the supplier give composition and curing-emission data?","How much is new, applied, reclaimed, reused and discarded?","How is powder captured and cured? Electric or fuel-fired oven?"],
+     out:"Powder losses; curing emissions; oven combustion; spent powder.",
+     watch:"No liquid solvent doesn't mean zero VOC: curing can release emissions. Reclaimed powder isn't new input each time it circulates.",
+     src:["S22"]},
+    {id:"P15",g:"Surface treatment",plan:"staged",cyc:"C07 / C10",nm:"Coating removal",
+     scope:"Chemical stripping, mechanical removal and thermal burn-off.",
+     ask:["How are coatings removed: chemicals, blasting or grinding, heat?","What is known about the old coating, the stripper and the amount of work?","What happens to removed material, spent bath, fumes and waste?"],
+     out:"Stripper constituents; legacy coating chemistry; decomposition products from heat.",
+     watch:"Old coatings can contain unknown legacy chemistry. Mechanical stripping is counted once, under blasting or grinding. Thermal stripping goes to specialist review.",
+     src:["S17","S08"]},
+    {id:"P16",g:"Surface treatment",plan:"spec",cyc:"C10",nm:"Pickling, passivation, etching",
+     scope:"Acid pickling, stainless passivation, phosphating and chromating, etching, chemical milling and descaling.",
+     ask:["Do you use baths or sprays for pickling, passivation, etching or descaling? Describe each.","Which chemicals, bath volumes and additions, conditions and workpiece materials?","How are baths changed, parts rinsed, air extracted, liquids treated and sludge removed?"],
+     out:"Bath chemistry and reaction products to air, water and sludge; dissolved metals.",
+     watch:"Reactions can create substances that are on no incoming SDS, and dissolved workpiece metal ends up in the bath.",
+     src:["S16"]},
+    {id:"P17",g:"Surface treatment",plan:"spec",cyc:"C10",nm:"Plating and anodizing",
+     scope:"Electroplating, electroless plating, anodizing, reverse etching and electropolishing.",
+     ask:["Which processes happen onsite, and which metals?","Which bath chemicals and mist suppressants? Do chromium-related permits apply?","What production, testing, rinse, scrubber and sludge records exist?"],
+     out:"Metals including hexavalent chromium; rinse water; sludge; possible PFAS.",
+     watch:"Facilities under the chromium electroplating regulations report hexavalent chromium regardless of hours or quantity. Mist suppressants may contain PFAS; we investigate instead of assuming.",
+     src:["S16","S18","S01"]},
+    {id:"P18",g:"Surface treatment",plan:"spec",cyc:"C10",nm:"Hot-dip galvanizing",
+     scope:"Onsite molten zinc, tin or other metal baths, with their pickling, fluxing and dross.",
+     ask:["Do you run a molten metal bath here, or only work on parts coated elsewhere?","What bath additions, fluxes, acids, throughput and heating records exist?","How are fumes, dross and spent liquids handled?"],
+     out:"Metal fume; flux and acid emissions; dross and ash; combustion.",
+     watch:"Welding galvanized steel is not running a galvanizing line. Routing these two the same way is a classic error.",
+     src:["S11","S16"]},
+    {id:"P19",g:"Energy and heat",plan:"staged",cyc:"C08 / C10",nm:"Heat treatment and quenching",
+     scope:"Pre- and post-weld heating, stress relief, annealing, hardening, furnaces, salt baths and quenching.",
+     ask:["What heating, stress relief, hardening or quenching occurs? Electric or fuel-fired?","Which oils, salts, gases or coated parts are heated?","What operating, bath replacement, extraction and waste records exist? Is there cleaning afterwards?"],
+     out:"Combustion emissions; quench oil and bath constituents; burned-off surface residues.",
+     watch:"An electric oven removes the fuel source, but not the process emissions such as burned-off surface oils.",
+     src:["S10"]},
+    {id:"P20",g:"Energy and heat",plan:"auto",cyc:"C08",nm:"Fuel-burning equipment",
+     scope:"Space heaters, boilers, ovens, dryers, stationary engines and generators, engine-driven compressors.",
+     ask:["List every heater, boiler, oven and generator, including rarely used backups.","Fuel, rated capacity and equipment type for each?","How much fuel did each use? How are shared bills split?","What controls, service records and operating loads exist?"],
+     out:"CO, NOx, SO2, particulate and VOC (Part 4); some Part 5 VOCs and metals.",
+     watch:"\"Backup\" or \"small\" is not an automatic exemption. A heater factor can't be used for an engine. The small external-combustion exemption has strict conditions.",
+     src:["S12","S13"]},
+    {id:"P21",g:"Coatings and chemicals",plan:"staged",cyc:"C07 / C10",nm:"Adhesives, inspection, anti-spatter",
+     scope:"Adhesives, sealants, anti-spatter, marking inks, penetrant inspection, corrosion protectants and leak-test chemicals.",
+     ask:["List adhesives, sealants, anti-spatter, inks, penetrants and other process sprays.","How are they applied, cured, cleaned up, recovered or retained?","What annual use and waste records exist?"],
+     out:"Solvents and other constituents to air; empty containers and used wipes as waste.",
+     watch:"These often hide under a \"welding supplies\" purchasing category. A product used in two places (say inspection and assembly) is counted once.",
+     src:["S17"]},
+    {id:"P22",g:"Storage, yard and incidents",plan:"staged",cyc:"C09",nm:"Tanks, transfer and gases",
+     scope:"Bulk fuel, solvent and process-liquid tanks; filling, emptying, venting and leaks; gas handling.",
+     ask:["What is stored and transferred? Bulk tanks, drums, cylinders or process containers?","For relevant tanks: capacity, type, contents, deliveries and venting?","Are losses measured or estimated? Do another process's records already include them?"],
+     out:"Vapour losses from tanks and transfers.",
+     watch:"One fuel delivery feeds both storage and combustion. The same fuel isn't counted as both vapour loss and burned fuel.",
+     src:["S15"]},
+    {id:"P23",g:"Waste, water and boundary",plan:"ledger",cyc:"C03 / C11",nm:"Scrap and waste streams",
+     scope:"Scrap and offcuts, stubs, slag, collected dust, filters, spent abrasive, slurry, solvent, paint and oily waste, stockpiles.",
+     ask:["Name each waste or recycling stream and the processes that feed it.","How much was generated, stored and shipped in 2026?","What is known about its composition and moisture? Are analyses available?","Who received it, at which site, and for recycling, treatment or disposal?"],
+     out:"Disposals and transfers for recycling, by substance and recipient.",
+     watch:"The weight of a waste is not the weight of each NPRI substance in it. A recycler's name alone doesn't establish the destination category.",
+     src:["S02"]},
+    {id:"P24",g:"Waste, water and boundary",plan:"ledger",cyc:"C03 / C11",nm:"Process water and runoff",
+     scope:"Parts wash and rinse water, waterjet and blast water, wet collectors, cooling water, floor wash and exposed stormwater.",
+     ask:["List each process, wash, rinse, scrubber and cooling water stream, and any exposed runoff.","Is it reused, sent to sewer, surface or ground, or collected by a contractor?","What flow, sampling, lab and treatment records cover 2026, including detection limits?","What sludge leaves treatment, and where does it go?"],
+     out:"Releases to water; transfers to sewage treatment; sludge.",
+     watch:"One grab sample multiplied by annual flow isn't a justified estimate. A municipal sewer is not the same as direct release to a river or lake.",
+     src:["S02","S16","S17"]},
+    {id:"P25",g:"Storage, yard and incidents",plan:"staged",cyc:"C09",nm:"Yard traffic and outdoor dust",
+     scope:"Unpaved routes, dusty stockpiles, loading and unloading, outdoor material handling.",
+     ask:["Which unpaved routes are used, by which vehicles, and how far per year?","What vehicle weights, surface silt, weather and dust-suppression records exist?","Are dusty materials stored, moved or loaded outdoors?"],
+     out:"Particulate (TPM, PM10, PM2.5) from roads and handling.",
+     watch:"Road dust counts toward Part 4 only above 10,000 vehicle-km a year on unpaved roads. Stockpile dust is not forced into the road formula.",
+     src:["S14"]},
+    {id:"P26",g:"Specialist",plan:"spec",cyc:"C10",nm:"Melting, casting and specialist work",
+     scope:"Melting, casting, smelting, foundries, metal powders, additive manufacturing, vacuum coating, chemical recovery and waste burning.",
+     ask:["Do you melt, cast or smelt metal, make powders, 3D print metal, apply vacuum coatings, recover chemicals or burn waste?","Are there foundry or steelmaking furnaces, chemical production or incineration?","What feedstock, production, fuel, test and waste records exist?"],
+     out:"Potentially Part 2 PAHs and Part 3 dioxins and furans, plus metals and combustion products.",
+     watch:"An arc welder is not a steelmaking electric arc furnace. Some of these activities trigger Part 3 and remove the employee-hours gate, so a positive answer stays blocking until JADA resolves it.",
+     src:["S01","S17","S19"]},
+    {id:"P27",g:"Storage, yard and incidents",plan:"staged",cyc:"C09 / C10",nm:"Maintenance and incidents",
+     scope:"Maintenance chemicals, lubricants, refrigeration servicing, batteries, firefighting foam, spills, leaks and fires.",
+     ask:["Which maintenance chemicals, refrigerants, batteries or foams were used or handled?","For each spill, leak or fire: what substance, how much, how much recovered, and where did the rest go?","What service, incident and cleanup records exist?"],
+     out:"Event releases to air, water or land; recovered material as waste.",
+     watch:"Not every refrigerant or maintenance product is an NPRI substance. Firefighting foams need PFAS screening.",
+     src:["S18","S02"]},
+    {id:"P28",g:"Waste, water and boundary",plan:"ledger",cyc:"C01 / C10",nm:"Contractor and offsite work",
+     scope:"Parts sent elsewhere, contractors working on the property, crews at customer or temporary sites.",
+     ask:["What work is sent offsite, and what contractor work happens here?","Do your crews work at customer or temporary sites? Where, when, with what?","Who owns the equipment and holds the records? Has another party reported it?"],
+     out:"No emissions of its own: it decides which facility each activity belongs to.",
+     watch:"A contractor blasting on your property doesn't vanish because you didn't buy the abrasive. Offsite painting by another company follows a different path.",
+     src:["S01","S02"]}
+  ];
+
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+  function srcLinks(ids){return ids.map(function(i){var s=S[i];return s&&s[1]?'<a href="'+s[1]+'" target="_blank" rel="noopener" title="'+esc(s[0])+'">'+i+'</a>':'<a title="'+esc(s?s[0]:i)+'">'+i+'</a>';}).join("");}
+
+  /* deadline */
+  try{
+    var now=new Date(), due=new Date(2027,5,1), start=new Date(2026,0,1);
+    var d=Math.ceil((due-now)/86400000);
+    if(d>0){
+      document.getElementById("days").textContent=d+" days";
+      document.getElementById("daysSub").textContent="until June 1, 2027, the deadline for the 2026 reporting year";
+      var pct=Math.max(0,Math.min(100,(now-start)/(due-start)*100));
+      document.getElementById("yearBar").style.width=pct.toFixed(1)+"%";
+    }
+  }catch(e){}
+
+  /* checker */
+  var state={type:"contiguous",hours:24000,unknown:false,exempt:false,chrome:false};
+  var hoursEl=document.getElementById("hours");
+  function fmt(n){return n.toLocaleString("en-CA");}
+  function renderChecker(){
+    var t=state.type, h=state.hours, unk=state.unknown, ex=state.exempt;
+    var hoursOK = ex || (!unk && h>=20000);
+    var hoursPending = !ex && unk;
+    var part1Types = t==="contiguous"||t==="offshore";
+    var p23Types = t==="contiguous"||t==="portable"||t==="offshore";
+    var rows=[];
+    function gated(name,sub,okText,typeOK){
+      if(!typeOK) return [name,sub,"Doesn't apply to this facility type.","Not applicable","p-closed"];
+      if(hoursPending) return [name,sub,"Can't decide until employee hours are confirmed. Unknown is not below 20,000.","Pending","p-pending"];
+      if(hoursOK) return [name,sub,okText,"Check substances","p-open"];
+      return [name,sub,"Closed: under 20,000 employee hours and no exempt activity.","Gate closed","p-closed"];
+    }
+    var r1=gated("1A–1C","core, alternate, PFAS","Facility gate passed. Each substance is now tested: 10 t (1A), row values (1B), 1 kg per PFAS (1C).",part1Types);
+    if(state.chrome && part1Types && r1[3]!=="Check substances"){r1[2]="Hours gate closed for other substances, but hexavalent chromium must be reported regardless, because the chromium plating regulations apply.";r1[3]="Cr(VI) required";r1[4]="p-limited";}
+    else if(state.chrome && part1Types){r1[2]+=" Hexavalent chromium must be reported regardless of thresholds.";}
+    rows.push(r1);
+    rows.push(gated("2","PAHs","Facility gate passed. Test whether total PAHs released, disposed or recycled reach 50 kg.",p23Types));
+    rows.push(p23Types?["3","dioxins, furans, HCB","Only if a listed activity happens here (incineration, smelting, steelmaking furnace, cement…). Ordinary welding isn't one.","Activity test","p-activity"]:["3","dioxins, furans, HCB","Doesn't apply to this facility type.","Not applicable","p-closed"]);
+    var combOnly = t==="pipeline" || (!ex && !unk && h<20000);
+    var p45Pending = !ex && unk && t!=="pipeline";
+    function air(name,sub,thr){
+      if(p45Pending) return [name,sub,"Applies either way. Whether all sources or only fuel combustion count depends on the hours, which are still unconfirmed.","Pending","p-pending"];
+      if(combOnly) return [name,sub,"Applies, but only stationary fuel-combustion releases count toward the "+thr+" threshold.","Combustion only","p-limited"];
+      return [name,sub,"Applies with no hours precondition. All air releases from all sources count toward "+thr+".","Check air releases","p-open"];
+    }
+    rows.push(air("4","air contaminants","PM2.5 0.3 t, PM10 0.5 t, VOC 10 t, others 20 t"));
+    rows.push(air("5","individual VOCs","1 t per VOC"));
+    document.getElementById("results").innerHTML=rows.map(function(r){
+      return '<div class="res"><div class="pt">Part '+r[0]+'<small>'+r[1]+'</small></div><div class="msg">'+esc(r[2])+'</div><span class="pill '+r[4]+'">'+r[3]+'</span></div>';
+    }).join("");
+    document.getElementById("hoursOut").innerHTML=(unk?"Unknown":fmt(h))+'<small>'+(unk?"not confirmed":"hours")+'</small>';
+    hoursEl.disabled=unk;
+  }
+  document.getElementById("ftype").addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    state.type=b.dataset.v;
+    this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    renderChecker();
+  });
+  hoursEl.addEventListener("input",function(){state.hours=+this.value;renderChecker();});
+  document.getElementById("hoursUnknown").addEventListener("change",function(){state.unknown=this.checked;renderChecker();});
+  document.getElementById("exempt").addEventListener("change",function(){state.exempt=this.checked;renderChecker();});
+  document.getElementById("chrome").addEventListener("change",function(){state.chrome=this.checked;renderChecker();});
+  renderChecker();
+
+  /* ladder */
+  var L=[
+    [1,"Each listed PFAS","Part 1C","mpo","1 kg"],
+    [5,"Mercury","Part 1B","mpo","5 kg"],
+    [50,"Cobalt, lead, hexavalent chromium","Part 1B","mpo","50 kg"],
+    [50,"All listed PAHs combined","Part 2","tot","50 kg"],
+    [300,"PM2.5","Part 4","air","0.3 t"],
+    [500,"PM10","Part 4","air","0.5 t"],
+    [1000,"Each listed VOC","Part 5","air","1 t"],
+    [10000,"Core substances, e.g. manganese","Part 1A","mpo","10 t"],
+    [10000,"Total VOC","Part 4","air","10 t"],
+    [20000,"CO, NOx, SO2, TPM","Part 4","air","20 t"]
+  ];
+  var lo=Math.log10(0.5), hi=Math.log10(40000);
+  function pos(x){return (Math.log10(x)-lo)/(hi-lo)*100;}
+  var ticks=[[1,"1 kg"],[10,"10 kg"],[100,"100 kg"],[1000,"1 t"],[10000,"10 t"]];
+  var grid='<div class="grid">'+ticks.map(function(t){return '<i style="left:'+pos(t[0]).toFixed(2)+'%"></i>';}).join("")+'</div>';
+  var lh=L.map(function(r){
+    var w=pos(r[0]);
+    var labelLeft = w>82 ? 'right:'+(100-w+1.2).toFixed(2)+'%' : 'left:calc('+w.toFixed(2)+'% + 8px)';
+    var labelColor = w>82 ? 'color:var(--bg);' : '';
+    return '<div class="lrow"><div class="nm">'+esc(r[1])+'<small>'+r[2]+'</small></div><div class="ltrack">'+grid+'<span class="b b-'+r[3]+'" style="width:'+w.toFixed(2)+'%"></span><span class="v" style="'+labelLeft+';'+labelColor+'">'+r[4]+'</span></div></div>';
+  }).join("");
+  lh+='<div class="laxis"><div></div><div class="ax">'+ticks.map(function(t){return '<span style="left:'+pos(t[0]).toFixed(2)+'%">'+t[1]+'</span>';}).join("")+'</div></div>';
+  document.getElementById("ladder").innerHTML=lh;
+
+  /* process explorer */
+  var gf=document.getElementById("groupFilters"), tilesEl=document.getElementById("tiles"), detailEl=document.getElementById("detail");
+  var activeGroup="All", selected="P01";
+  gf.innerHTML=GROUPS.map(function(g){return '<button type="button" data-g="'+esc(g)+'" aria-pressed="'+(g==="All")+'">'+esc(g)+'</button>';}).join("");
+  document.getElementById("planLegend").innerHTML=Object.keys(PLANS).map(function(k){var p=PLANS[k];var n=P.filter(function(x){return x.plan===k;}).length;return '<span><i class="sw '+p.cls+'"></i><b>'+p.label+'</b>&nbsp;('+n+'): '+p.desc+'</span>';}).join("");
+  tilesEl.innerHTML=P.map(function(p){return '<button type="button" class="tile" data-id="'+p.id+'" aria-pressed="'+(p.id===selected)+'"><span class="id">'+p.id+'<i class="dot '+PLANS[p.plan].cls+'"></i></span><span class="nm">'+esc(p.nm)+'</span></button>';}).join("");
+  function renderDetail(){
+    var p=P.filter(function(x){return x.id===selected;})[0]; var pl=PLANS[p.plan];
+    var h='<div class="top"><div><div class="id">'+p.id+' · '+esc(p.g)+' · cycle '+p.cyc+'</div><h3>'+esc(p.nm)+'</h3></div><span class="plan-chip '+pl.cls+'">'+pl.label+'</span></div>';
+    h+='<div class="dl"><h4>What it covers</h4><p>'+esc(p.scope)+'</p></div>';
+    h+='<div class="dl"><h4>What we ask the client</h4><ol>'+p.ask.map(function(q,i){return '<li value="'+(i+1)+'">'+esc(q)+' <span class="mono muted">'+p.id+'-'+(i+1)+'</span></li>';}).join("")+'</ol></div>';
+    h+='<div class="dl"><h4>What it can release or produce</h4><p>'+esc(p.out)+'</p></div>';
+    if(p.ex) h+='<div class="example"><h4>Worked example</h4><p>'+esc(p.ex)+'</p></div>';
+    h+='<div class="watch"><h4>Watch out</h4><p>'+esc(p.watch)+'</p></div>';
+    h+='<div class="dl"><h4>Sources</h4><div class="srcs">'+srcLinks(p.src)+'</div></div>';
+    detailEl.innerHTML=h;
+  }
+  tilesEl.addEventListener("click",function(e){
+    var b=e.target.closest(".tile"); if(!b) return;
+    selected=b.dataset.id;
+    tilesEl.querySelectorAll(".tile").forEach(function(t){t.setAttribute("aria-pressed",t===b?"true":"false");});
+    renderDetail();
+    if(window.matchMedia("(max-width:880px)").matches){detailEl.scrollIntoView({block:"start"});}
+  });
+  gf.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    activeGroup=b.dataset.g;
+    gf.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    tilesEl.querySelectorAll(".tile").forEach(function(t){
+      var p=P.filter(function(x){return x.id===t.dataset.id;})[0];
+      t.classList.toggle("dim",activeGroup!=="All"&&p.g!==activeGroup);
+    });
+    var first=P.filter(function(x){return activeGroup==="All"||x.g===activeGroup;})[0];
+    if(first && activeGroup!=="All"){selected=first.id;tilesEl.querySelectorAll(".tile").forEach(function(t){t.setAttribute("aria-pressed",t.dataset.id===selected?"true":"false");});renderDetail();}
+  });
+  renderDetail();
+
+  /* routing demo */
+  var OUT={
+    yes:["The blasting branch opens","Questions P08-1 to P08-5 appear, plus the shared materials, extraction and waste questions.","A blasting activity is recorded for 2026, with its equipment and location.","JADA picks a method that matches the setup. Open dry sand has ECCC defaults; cabinets and wet blasting go to a manual calculation.","Owner: client supplies facts · JADA classifies"],
+    no:["Recorded as absent, for 2026 only","The answer is saved with who confirmed it and when.","Detailed blasting questions stay hidden.","If purchase records later show blasting media, a reviewer follows up.","Owner: client · JADA checks for contradictions"],
+    unsure:["An identification task opens","The client can upload photos, equipment labels or a short description.","Nothing gets a default emission factor while the type is unknown.","Related results stay pending, so the package can't close early.","Owner: JADA"],
+    other:["Location and contractor questions open","We ask where the work happened and who did it (P28).","Contractor blasting on this property still belongs to this facility's report.","Work at another company's own site follows a boundary decision that JADA documents.","Owner: client supplies facts · JADA resolves the boundary"]
+  };
+  function renderOutcome(a){
+    var o=OUT[a];
+    document.getElementById("outcome").innerHTML='<h4>What the system does</h4><div class="big">'+esc(o[0])+'</div><ul><li>'+esc(o[1])+'</li><li>'+esc(o[2])+'</li><li>'+esc(o[3])+'</li></ul><div class="owner">'+esc(o[4])+'</div>';
+  }
+  document.getElementById("answers").addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});
+    renderOutcome(b.dataset.a);
+  });
+  renderOutcome("yes");
+
+  /* G, M, O */
+  var G=[
+    ["G01","Name and address of the location, including attached buildings and outdoor work or storage areas","Facility boundary"],
+    ["G02","Does this cover all work here from January 1 to December 31, 2026? Any openings, closures or ownership changes?","Annual coverage and responsibility"],
+    ["G03","Was an NPRI report filed for this location last year? Are corrections or notifications needed?","Which filing applies"],
+    ["G04","What does this location make, repair or do, including occasional work?","Activity discovery"],
+    ["G05","2026 employee hours, including overtime and paid vacation and sick leave; onsite owner hours; contractor hours","The 20,000-hour gate"],
+    ["G06","Which of the 28 activities happened here, even occasionally?","Opens P01–P28"],
+    ["G07","Which equipment or activities were added, removed or changed in 2026?","Operating periods"],
+    ["G08","What materials and chemicals were used, including those bought by contractors or customers?","Material inventory"],
+    ["G09","Do purchases represent what was used? What was left in stock, returned or moved?","Purchase-to-use reconciliation"],
+    ["G10","Where do fumes, dust and vapours go? Vents, booths, collectors, air returned indoors?","Source-to-outlet map"],
+    ["G11","What leaves as scrap, dust, filters, spent grit, liquids or sludge?","Waste destinations (P23)"],
+    ["G12","Is water used in any process or exposed to work materials outdoors? Where does it go?","Water routes (P24)"],
+    ["G13","Do permits call for measurements? What test reports already exist?","Existing measurements and methods"],
+    ["G14","Any spills, leaks, fires, unusual releases, or periods when extraction was off?","Incidents and control downtime"],
+    ["G15","Was a pollution prevention plan prepared? What changed from last year and why?","Prevention fields and explanations"],
+    ["G16","Who answers operational questions, confirms the information and authorizes certification?","Contacts and certification"],
+    ["G17","Is there any other work, equipment, chemical, waste or emission source we haven't asked about?","Mandatory catch-all review"]
+  ];
+  document.getElementById("gtable").innerHTML=G.map(function(r){return '<tr><td class="n">'+r[0]+'</td><td>'+esc(r[1])+'</td><td class="muted">'+esc(r[2])+'</td></tr>';}).join("");
+  var M=["Product name, supplier and code, with the label and SDS or TDS","How much was used in 2026, and in what unit? Starting and ending stock if only purchases are known","Which operations used it, and in what split? Or which batch moved through successive operations?","Is it a concentrate, mixture, diluted solution, wire, powder or solid? What was mixed in?","Did composition, supplier or formulation change during the year?","Was any of it supplied by customers or contractors, reused or recovered onsite?","Are there supplier statements or analyses beyond the SDS? (only when a decision needs them)","Are any quantities estimates? How were they estimated?"];
+  var O=["Which machines or work areas connect to this extractor, booth or collector?","Does it discharge outside, return air inside, or both? Where is each outlet?","What equipment removes dust or vapour? Make, model, specifications, performance reports","Is every relevant operation captured, or only some stations and jobs?","When did it run, change, get bypassed or fail?","What happens to captured dust, liquid, filters or recovered product?","Outlet height, orientation, cap, dimensions, flow and temperature, if the stack assessment needs them","Are outlets shared between processes?"];
+  document.getElementById("mlist").innerHTML=M.map(function(q,i){return '<li>'+esc(q)+' <span class="mono muted">M0'+(i+1)+'</span></li>';}).join("");
+  document.getElementById("olist").innerHTML=O.map(function(q,i){return '<li>'+esc(q)+' <span class="mono muted">O0'+(i+1)+'</span></li>';}).join("");
+
+  /* journey */
+  var R=[
+    ["R01","Open the year","Client confirms facility, year, ownership, history, hours and contacts.","The boundary is unclear or hours are missing"],
+    ["R02","Discover","Client answers the activity screen and lists equipment and processes.","An answer is \"Not sure\": a classification task opens"],
+    ["R03","Reconcile records","Client uploads purchases and SDS; extracted matches are reviewed.","Composition is missing, purchases are duplicated, or splits don't add up"],
+    ["R04","Select methods","The system proposes supported methods; JADA confirms alternatives.","No valid method exists or a required measurement is missing"],
+    ["R05","Request facts","Client answers the targeted questions or accepts a documented estimate.","We never invent sampling requirements or apply unsupported defaults"],
+    ["R06","Calculate","Approved methods run with a full trace.","Incomplete inputs block any negative conclusion"],
+    ["R07","Consolidate","All activities are combined into facility totals by substance and destination.","Duplicates, missing destinations or unresolved stacks remain"],
+    ["R08","Review","JADA resolves flags, manual cases and year-over-year changes.","Changed evidence reopens any affected approval"],
+    ["R09","File and retain","Authorized client staff certify; the filing is recorded with an exact snapshot.","An export alone is not evidence of filing"],
+    ["R10","Carry forward","Next year starts from last year's case, with every activity reconfirmed.","Nothing is reused automatically: quantities, exemptions and absences are reconfirmed"]
+  ];
+  document.getElementById("journeyGrid").innerHTML=R.map(function(r){return '<div class="step"><div class="n"><span>'+r[0]+'</span></div><b>'+esc(r[1])+'</b><p>'+esc(r[2])+'</p><div class="stop">'+esc(r[3])+'</div></div>';}).join("");
+
+  /* roadmap */
+  var PH=[
+    {nm:"Foundations",c:"var(--ink)",sub:"Shared base for every client",cy:[
+      ["C00","Source and rule baseline","Register the 2026 Notice, the substance list, method editions and known conflicts.","Every source is versioned. No old threshold is treated as universal.",[]],
+      ["C01","Facility discovery","Common questions, all 28 activity screens, and records for activities, sources, materials and destinations.","A mixed shop can select activities, mark unknowns and flag outsourced work. No branch disappears silently.",["P01–P28"]],
+      ["C02","Facts and allocations","Reuse SDS and purchase extraction; reconcile purchases to use; split consumables; link stock through operations.","Purchases and use are distinct. Splits reconcile. Repeat processing of the same stock isn't double counted.",[]],
+      ["C03","Assessment and method rules","Decisions, method prerequisites, Part 1 rules, the manual path, and controls, outlets and residues.","Part 1 cases tested; other Parts have explicit coverage states. Unknown never becomes zero.",["P23","P24"]]]},
+    {nm:"Beta A",c:"var(--accent)",sub:"Welding first, everything else manual",cy:[
+      ["C04","Core arc welding","Known electrode classes first, then approved alternatives for unknown electrodes.","Results match independent worked cases and official ECCC calculator outputs.",["P01","P02"]]]},
+    {nm:"Beta B",c:"var(--spark)",sub:"A wider fabrication shop",cy:[
+      ["C05","Cutting and thermal spray","Supported cutting variants, metal spraying, and grinder overlap.","Hours and mass inputs tested; no cold-cutting fallback; no double-counted grinder.",["P05","P06","P07","P09"]],
+      ["C06","Blasting and finishing","Abrasive blasting, grinding, and bounded machining and forming cases.","Sand vs shot and substrate distinguished; wet and enclosed blasting routed explicitly.",["P07","P08","P10","P11"]],
+      ["C07","Cleaning and coatings","Degreasing, paints, powder coating, stripping and related products.","Ingredients, total VOC, individual VOCs, overspray and curing treated separately.",["P12","P13","P14","P15","P21"]],
+      ["C08","Energy and heat","Heaters, boilers, engines and the fuel used inside other processes.","Fuel counted once; equipment-specific methods; exemptions tested.",["P19","P20"]]]},
+    {nm:"Year-one expansion",c:"var(--rose)",sub:"Driven by real pilot demand",cy:[
+      ["C09","Yard and storage","Tanks and transfers, unpaved roads, maintenance and incidents.","Tank and dust pathways distinct; purchased fuel not duplicated.",["P22","P25","P27"]],
+      ["C10","Specialist intake","Positive specialist screens become named JADA tasks.","Manual results use the same trace and totals as automatic ones.",["P03","P04","P16","P17","P18","P26","P28"]]]},
+    {nm:"Every release",c:"var(--blue)",sub:"Required to file a complete package",cy:[
+      ["C11","Whole-facility completion","Waste, water, all outlets and controls, cross-process totals, stacks, and all Parts.","Facility coverage reconciles. No unexplained missing branch.",["P23","P24"]],
+      ["C12","Review and report package","Filing fields, facility details, reviewer workflow, certification, export and filing record.","A reviewer can trace any filed value back to its facts, decisions and method.",[]],
+      ["C13","Pilot regression and next year","Representative cases, rule updates, client usability testing, carry-forward.","Complete packages independently reviewed; next year requires reconfirmation.",[]]]}
+  ];
+  document.getElementById("road").innerHTML=PH.map(function(ph){
+    return '<div class="phase"><div class="ph" style="--c:'+ph.c+'"><b>'+esc(ph.nm)+'</b><span>'+esc(ph.sub)+'</span></div>'+ph.cy.map(function(c){
+      return '<details class="cyc"><summary><span class="cid">'+c[0]+'</span><b>'+esc(c[1])+'</b></summary><div class="cb"><div>'+esc(c[2])+'</div>'+(c[4].length?'<div class="chips">'+c[4].map(function(x){return '<span>'+x+'</span>';}).join("")+'</div>':'')+'<div class="pr">'+esc(c[3])+'</div></div></details>';
+    }).join("")+'</div>';
+  }).join("");
+
+  /* myths */
+  var MY=[
+    ["Missing data means zero.","Unknown is never zero. A missing quantity stays visibly unknown and blocks any \"below threshold\" conclusion."],
+    ["No tall stack, no air emissions.","Fugitive and vented releases from every activity are still assessed. \"No individually reportable stack\" is a separate question."],
+    ["What we bought is what we used.","Purchases are reconciled with opening and closing stock, returns and transfers before they count as use."],
+    ["The waste weighed 2 tonnes, so we report 2 tonnes.","Waste weight isn't substance weight. We report the mass of each NPRI substance in the stream, and where it went."],
+    ["Our filter is 99% efficient.","Capture, removal, bypass and downtime are separate. A filter rating alone isn't whole-source efficiency, and a particulate filter doesn't remove VOCs."],
+    ["We arc weld, so we have an electric arc furnace.","Ordinary arc welding is not the steelmaking furnace activity listed in Part 3. We classify the real operation."],
+    ["We met the threshold but released nothing, so no report.","Once a threshold is met, the substance report is required, with zero releases if that's the case."],
+    ["We don't qualify this year, so we do nothing.","A facility that reported last year must file Does Not Meet Criteria, with the reason."],
+    ["We have 8 employees, so we're under 20,000 hours.","Headcount isn't hours. Overtime, paid leave, onsite owners and contractors all count."],
+    ["Our IH air samples give us the emissions.","Occupational exposure samples aren't source-emission measurements. They can support review but not replace a method."],
+    ["The air goes back inside, so it's a zero release.","Indoor recirculation isn't a documented zero environmental release. It needs its own evidence."],
+    ["ECCC published the factor, so it's approved.","A published factor is a candidate. It's used only when its process, substance, units and conditions match the case and a reviewer accepts it."]
+  ];
+  var my=document.getElementById("myths");
+  my.innerHTML=MY.map(function(m,i){return '<button type="button" class="myth" aria-pressed="false" id="myth'+i+'"><span class="k">Shortcut</span><span class="say">'+esc(m[0])+'</span><span class="rule">'+esc(m[1])+'</span><span class="hint">Tap for the rule →</span></button>';}).join("");
+  my.addEventListener("click",function(e){
+    var b=e.target.closest(".myth"); if(!b) return;
+    var on=b.getAttribute("aria-pressed")==="true";
+    b.setAttribute("aria-pressed",on?"false":"true");
+    b.querySelector(".k").textContent=on?"Shortcut":"Our rule";
+  });
+
+  /* sources */
+  var SG=[["law","Canadian authority"],["eccc","ECCC methods and calculators"],["eng","Engineering references (US EPA)"],["occ","Process discovery (occupational, UK)"],["int","Internal and historical"]];
+  document.getElementById("srcgrid").innerHTML=SG.map(function(g){
+    var items=Object.keys(S).filter(function(k){return S[k][2]===g[0];});
+    return '<div><h4>'+g[1]+'</h4><ul>'+items.map(function(k){var s=S[k];return '<li><span class="mono">'+k+'</span><span>'+(s[1]?'<a href="'+s[1]+'" target="_blank" rel="noopener">'+esc(s[0])+'</a>':esc(s[0]))+'</span></li>';}).join("")+'</ul></div>';
+  }).join("");
+
+  /* toc highlight */
+  try{
+    var links=[].slice.call(document.querySelectorAll("#toc a"));
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if(en.isIntersecting){
+          links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id);});
+          var on=document.querySelector("#toc a.on"); if(on&&on.scrollIntoView){var p=on.parentNode;p.scrollLeft=on.offsetLeft-p.offsetWidth/2+on.offsetWidth/2;}
+        }
+      });
+    },{rootMargin:"-30% 0px -60% 0px"});
+    document.querySelectorAll("section[id]").forEach(function(s){io.observe(s);});
+  }catch(e){}
+})();
+</script>
+
+</body></html>

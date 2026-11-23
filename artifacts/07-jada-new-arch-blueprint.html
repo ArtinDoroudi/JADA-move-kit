@@ -1,0 +1,1302 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>JADA New-Arch Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a technical spec binder. Sticky section index on the left, one reading column on the right,
+   diagrams drawn as measured schematics; "measured" vs "estimate" tags carry the document's evidence convention. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --sunk: #e9edf3;
+  --ink: #111923;
+  --muted: #586474;
+  --line: #d6dde6;
+  --accent: #2246c4;
+  --accent-soft: #e3e9fb;
+  --heat: #b8530c;
+  --heat-soft: #fbeadc;
+  --ok: #16744a;
+  --ok-soft: #dff2e8;
+  --st-a: #2246c4;
+  --st-b: #0d7480;
+  --st-m: #a86b0c;
+  --st-s: #6a7686;
+  --bad: #b42335;
+  --code-bg: #0f1722;
+  --code-ink: #dbe4ef;
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1218; --surface: #151c25; --sunk: #1b2430; --ink: #e5eaf1; --muted: #97a3b4; --line: #27323f;
+    --accent: #85a2ff; --accent-soft: #1c2848; --heat: #f2a35c; --heat-soft: #3a2614; --ok: #52c58f; --ok-soft: #12301f;
+    --st-a: #85a2ff; --st-b: #44bcc6; --st-m: #e4b155; --st-s: #8e9aab; --bad: #ff7a88; --code-bg: #0a0f15; --code-ink: #d3dce8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1218; --surface: #151c25; --sunk: #1b2430; --ink: #e5eaf1; --muted: #97a3b4; --line: #27323f;
+  --accent: #85a2ff; --accent-soft: #1c2848; --heat: #f2a35c; --heat-soft: #3a2614; --ok: #52c58f; --ok-soft: #12301f;
+  --st-a: #85a2ff; --st-b: #44bcc6; --st-m: #e4b155; --st-s: #8e9aab; --bad: #ff7a88; --code-bg: #0a0f15; --code-ink: #d3dce8;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 15.5px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--accent); text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+code { background: var(--sunk); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+.shell { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; padding-block: 40px 80px; }
+@media (max-width: 900px) { .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 0 64px; } }
+
+/* index */
+.index { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; max-height: calc(100vh - 48px); overflow: auto; }
+.index h2 { font-family: var(--f-display); font-stretch: 85%; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.index ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; counter-reset: none; }
+.index a { display: grid; grid-template-columns: 26px 1fr; gap: 6px; padding: 5px 8px; border-radius: 5px; color: var(--muted); text-decoration: none; font-size: 13.5px; line-height: 1.35; }
+.index a span { font-family: var(--f-mono); font-size: 11.5px; padding-top: 1px; }
+.index a:hover { background: var(--sunk); color: var(--ink); }
+.index a.on { background: var(--accent-soft); color: var(--accent); }
+@media (max-width: 900px) {
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+  .index { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; max-height: none; background: var(--bg); border-bottom: 1px solid var(--line); margin-inline: -16px; padding: 10px 16px; }
+  .index h2 { display: none; }
+  .index ol { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .index a { display: flex; white-space: nowrap; padding: 6px 10px; }
+}
+
+main { min-width: 0; }
+section { padding-block: 44px 8px; border-top: 1px solid var(--line); scroll-margin-top: 70px; }
+section:first-of-type { border-top: 0; padding-top: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; color: var(--muted); letter-spacing: .04em; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.eyebrow a { color: var(--muted); }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; letter-spacing: -0.01em; margin: 0; }
+h1 { font-size: clamp(34px, 5.2vw, 54px); font-weight: 800; font-stretch: 82%; line-height: 1.02; margin-top: 14px; }
+h2 { font-size: clamp(24px, 3vw, 31px); font-weight: 750; font-stretch: 88%; line-height: 1.12; margin-top: 8px; }
+h3 { font-size: 17px; font-weight: 700; font-stretch: 95%; margin-top: 26px; }
+p { margin: 12px 0 0; max-width: 68ch; }
+.lead { font-size: 17.5px; color: var(--ink); max-width: 62ch; }
+.note { color: var(--muted); font-size: 13.5px; }
+ul.plain { margin: 12px 0 0; padding-left: 20px; max-width: 68ch; }
+ul.plain li { margin-top: 4px; }
+
+.tag { display: inline-flex; align-items: center; gap: 5px; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: .03em; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; vertical-align: 2px; white-space: nowrap; }
+.tag.meas { color: var(--ok); background: var(--ok-soft); border-color: transparent; }
+.tag.est { color: var(--heat); background: var(--heat-soft); border-color: transparent; }
+.tag.prop { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+
+.statusbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.statusbar .tag { font-size: 12px; padding: 3px 10px; }
+
+/* split diagram in hero */
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 26px; }
+@media (max-width: 640px) { .trio { grid-template-columns: minmax(0, 1fr); } }
+.trio > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+.trio b { font-family: var(--f-display); font-stretch: 90%; font-size: 17px; display: block; }
+.trio .who { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.trio p { font-size: 14px; margin-top: 8px; }
+.trio .k { font-family: var(--f-mono); font-size: 12px; color: var(--accent); margin-top: 10px; display: block; overflow-wrap: anywhere; }
+
+/* figures */
+.figs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; margin-top: 22px; }
+@media (max-width: 760px) { .figs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.figs > div { background: var(--surface); padding: 14px 16px; min-width: 0; }
+.figs .n { font-family: var(--f-display); font-stretch: 80%; font-weight: 800; font-size: 30px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.figs .l { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; margin-top: 18px; min-width: 0; }
+.panel h4 { margin: 0; font-family: var(--f-display); font-stretch: 92%; font-size: 15px; }
+.panel .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* waffle */
+.waffle { display: grid; grid-template-columns: repeat(auto-fill, minmax(9px, 1fr)); gap: 2px; margin-top: 14px; }
+.waffle i { aspect-ratio: 1; border-radius: 1.5px; background: var(--sunk); display: block; max-width: 100%; }
+.waffle i.hit { background: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+.stack { display: flex; height: 26px; border-radius: 4px; overflow: hidden; margin-top: 14px; gap: 2px; }
+.stack > div { min-width: 2px; }
+.stackkeys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 10px; font-size: 12.5px; }
+@media (max-width: 640px) { .stackkeys { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stackkeys b { display: block; font-family: var(--f-mono); font-size: 14px; font-variant-numeric: tabular-nums; }
+.stackkeys div { border-top: 3px solid; padding-top: 6px; color: var(--muted); }
+
+/* bars */
+.bars { display: grid; gap: 10px; margin-top: 14px; }
+.bar { display: grid; grid-template-columns: 170px minmax(0, 1fr) 80px; gap: 12px; align-items: center; font-size: 13.5px; }
+@media (max-width: 560px) { .bar { grid-template-columns: minmax(0, 1fr) 70px; } .bar .track { grid-column: 1 / -1; grid-row: 2; } }
+.bar .track { height: 18px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
+.bar .fill { height: 100%; border-radius: 3px; }
+.bar .v { font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; }
+
+/* causes */
+.causes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+@media (max-width: 680px) { .causes { grid-template-columns: minmax(0, 1fr); } }
+.causes > div { border-left: 3px solid var(--heat); padding: 2px 0 2px 14px; min-width: 0; }
+.causes b { font-family: var(--f-display); font-stretch: 92%; font-size: 15.5px; }
+.causes p { font-size: 14px; margin-top: 4px; color: var(--muted); }
+
+/* slice diagram */
+.slice { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+.slice span { font-family: var(--f-mono); font-size: 11.5px; padding: 4px 8px; background: var(--heat-soft); color: var(--heat); border-radius: 4px; }
+.slice span.arrow { background: none; color: var(--muted); padding: 4px 0; }
+
+/* layers */
+.layers { display: grid; gap: 6px; margin-top: 18px; }
+.layer { display: grid; grid-template-columns: 180px minmax(0, 1fr) 150px; gap: 16px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 16px; position: relative; }
+.layer::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 4px; border-radius: 0 3px 3px 0; background: var(--lc, var(--line)); }
+.layer b { font-family: var(--f-display); font-stretch: 90%; font-size: 15.5px; }
+.layer .what { font-size: 13.5px; color: var(--muted); min-width: 0; }
+.layer .size { font-family: var(--f-mono); font-size: 12px; text-align: right; }
+.layer .size small { display: block; color: var(--muted); font-size: 11px; }
+@media (max-width: 680px) { .layer { grid-template-columns: minmax(0, 1fr); gap: 4px; } .layer .size { text-align: left; } }
+.layer.code { --lc: var(--accent); }
+.layer.data { --lc: var(--ok); }
+.layer.kept { --lc: var(--st-s); }
+
+/* rules */
+.rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+@media (max-width: 700px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+.rule .rn { font-family: var(--f-mono); font-size: 11.5px; color: var(--accent); }
+.rule b { display: block; font-family: var(--f-display); font-stretch: 92%; font-size: 16px; line-height: 1.25; margin-top: 2px; }
+.rule p { font-size: 13.8px; margin-top: 8px; }
+.rule .no { font-size: 13px; color: var(--bad); margin-top: 8px; padding-left: 18px; position: relative; }
+.rule .no::before { content: "×"; position: absolute; left: 2px; font-weight: 700; }
+.rule .doc { font-family: var(--f-mono); font-size: 11.5px; margin-top: 10px; display: block; }
+
+/* pipeline */
+.pipe { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0; margin-top: 20px; position: relative; }
+.pipe button { appearance: none; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-left-width: 0; padding: 12px 8px 10px; text-align: left; cursor: pointer; min-width: 0; position: relative; }
+.pipe button:first-child { border-left-width: 1px; border-radius: var(--r) 0 0 var(--r); }
+.pipe button:last-child { border-radius: 0 var(--r) var(--r) 0; }
+.pipe button .sn { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.pipe button .st { display: block; font-family: var(--f-display); font-stretch: 85%; font-weight: 700; font-size: 15px; line-height: 1.2; }
+.pipe button .sz { display: block; height: 4px; margin-top: 8px; background: var(--sunk); border-radius: 2px; overflow: hidden; }
+.pipe button .sz i { display: block; height: 100%; background: var(--muted); }
+.pipe button:hover { background: var(--sunk); }
+.pipe button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+.pipe button[aria-pressed="true"] .st { color: var(--accent); }
+.pipe button.calc .sn::after { content: " · quantities"; color: var(--accent); }
+@media (max-width: 760px) {
+  .pipe { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .pipe button, .pipe button:first-child, .pipe button:last-child { border-left-width: 1px; border-radius: var(--r); }
+}
+.pipe-io { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); margin-top: 8px; gap: 12px; flex-wrap: wrap; }
+.stage-detail { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; }
+@media (max-width: 760px) { .stage-detail { grid-template-columns: minmax(0, 1fr); } }
+.stage-detail h4 { font-size: 20px; }
+.stage-detail .job { font-size: 15px; margin-top: 6px; }
+.stage-detail ul { margin: 10px 0 0; padding-left: 18px; font-size: 14px; }
+.stage-detail ul li { margin-top: 4px; }
+.kv { display: grid; gap: 10px; font-size: 13.5px; align-content: start; }
+.kv > div { border-top: 1px solid var(--line); padding-top: 8px; }
+.kv dt { font-family: var(--f-mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.kv dd { margin: 2px 0 0; }
+.cmp { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cmp .from { font-family: var(--f-mono); color: var(--heat); text-decoration: line-through; text-decoration-thickness: 1px; }
+.cmp .to { font-family: var(--f-display); font-stretch: 80%; font-size: 24px; font-weight: 800; color: var(--accent); }
+
+table.t { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.tw { overflow-x: auto; margin-top: 16px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table.t th { text-align: left; font-family: var(--f-mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--line); background: var(--sunk); white-space: nowrap; }
+table.t td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.t tr:last-child td { border-bottom: 0; }
+table.t td.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+table.t tr.hl td { background: var(--accent-soft); }
+table.t td code { white-space: nowrap; }
+
+/* fact funnel */
+.funnel { display: grid; grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr); gap: 12px; align-items: center; margin-top: 18px; }
+@media (max-width: 680px) { .funnel { grid-template-columns: minmax(0, 1fr); } .funnel .arr { transform: rotate(90deg); justify-self: center; } }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chips span { font-family: var(--f-mono); font-size: 11.5px; padding: 3px 7px; border-radius: 4px; background: var(--heat-soft); color: var(--heat); }
+.chips.ok span { background: var(--accent-soft); color: var(--accent); }
+.arr { font-family: var(--f-display); font-size: 30px; color: var(--muted); text-align: center; }
+.factcard { background: var(--code-bg); color: var(--code-ink); border-radius: var(--r); padding: 16px; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.55; overflow-x: auto; min-width: 0; }
+.factcard .c { color: #7f8ea3; }
+.factcard .k { color: #9fb6ff; }
+.factcard .s { color: #9fe0b8; }
+
+.entities { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+@media (max-width: 680px) { .entities { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.entities div { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 8px 10px; font-size: 12.5px; color: var(--muted); min-width: 0; }
+.entities code { background: none; padding: 0; color: var(--ink); font-size: 12.5px; display: block; }
+
+pre.mermaid { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; overflow-x: auto; margin-top: 16px; text-align: center; }
+
+/* outcomes */
+.outcomes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+@media (max-width: 760px) { .outcomes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .outcomes { grid-template-columns: minmax(0, 1fr); } }
+.outcomes > div { background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--oc); border-radius: var(--r); padding: 12px 14px; min-width: 0; }
+.outcomes code { background: none; padding: 0; color: var(--oc); font-weight: 500; font-size: 13px; }
+.outcomes p { font-size: 13px; margin-top: 6px; }
+.outcomes .who { font-family: var(--f-mono); font-size: 11px; color: var(--muted); margin-top: 8px; display: block; }
+
+/* calc trace */
+.trace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+@media (max-width: 760px) { .trace { grid-template-columns: minmax(0, 1fr); } }
+.calcrows { display: grid; gap: 0; font-size: 13.5px; }
+.calcrows > div { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--line); align-items: baseline; }
+.calcrows > div:last-child { border-bottom: 0; }
+.calcrows .f { font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+.calcrows .q { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-weight: 500; text-align: right; min-width: 64px; }
+.calcrows .pend { color: var(--heat); }
+
+/* tree */
+.tree { font-family: var(--f-mono); font-size: 12.5px; line-height: 1.65; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; overflow-x: auto; margin: 0; white-space: pre; }
+.tree .d { color: var(--accent); font-weight: 500; }
+.tree .c { color: var(--muted); }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+@media (max-width: 760px) { .two { grid-template-columns: minmax(0, 1fr); } }
+pre.code { background: var(--code-bg); color: var(--code-ink); border-radius: var(--r); padding: 14px 16px; font-family: var(--f-mono); font-size: 12.3px; line-height: 1.55; overflow-x: auto; margin: 0; }
+pre.code .c { color: #7f8ea3; }
+pre.code .k { color: #9fb6ff; }
+
+/* grammar */
+.ops { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ops code { font-size: 12.5px; padding: 3px 8px; }
+.ops code.x { background: var(--heat-soft); color: var(--heat); text-decoration: line-through; }
+
+/* families */
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.filters button { appearance: none; font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 5px 11px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+.filters button i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.filters button[aria-pressed="true"] { border-color: var(--ink); background: var(--sunk); font-weight: 600; }
+.fam { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+@media (max-width: 860px) { .fam { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .fam { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fam button { appearance: none; font: inherit; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 8px 9px 9px; cursor: pointer; min-width: 0; color: var(--ink); position: relative; border-top: 4px solid var(--sc); transition: opacity .15s; }
+.fam button .id { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); display: flex; justify-content: space-between; }
+.fam button .id b { color: var(--sc); font-weight: 600; }
+.fam button .nm { display: block; font-size: 12.5px; line-height: 1.3; margin-top: 3px; }
+.fam button.dim { opacity: .28; }
+.fam button[aria-pressed="true"] { outline: 2px solid var(--sc); outline-offset: 1px; }
+.famdetail { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 14px; align-items: start; }
+.famdetail .big { font-family: var(--f-display); font-stretch: 80%; font-weight: 800; font-size: 40px; line-height: 1; color: var(--sc); }
+.famdetail dl { margin: 6px 0 0; display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 4px 12px; font-size: 13.5px; }
+.famdetail dt { color: var(--muted); font-family: var(--f-mono); font-size: 11.5px; padding-top: 2px; }
+.famdetail dd { margin: 0; min-width: 0; }
+@media (max-width: 520px) { .famdetail { grid-template-columns: minmax(0, 1fr); } .famdetail dl { grid-template-columns: minmax(0, 1fr); } .famdetail dt { padding-top: 6px; } }
+
+/* screens */
+.qtypes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+@media (max-width: 680px) { .qtypes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.qtypes div { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 10px 12px; font-size: 13px; min-width: 0; }
+.qtypes code { background: none; padding: 0; color: var(--accent); font-weight: 500; display: block; margin-bottom: 2px; }
+.qtypes span { color: var(--muted); }
+
+/* promotion */
+.steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; margin-top: 16px; counter-reset: st; }
+@media (max-width: 760px) { .steps { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
+.steps > div { background: var(--surface); border: 1px solid var(--line); padding: 12px; font-size: 13px; position: relative; min-width: 0; counter-increment: st; }
+.steps > div + div { border-left: 0; }
+@media (max-width: 760px) { .steps > div + div { border-left: 1px solid var(--line); } .steps > div { border-radius: 5px; } }
+.steps > div:first-child { border-radius: var(--r) 0 0 var(--r); }
+.steps > div:last-child { border-radius: 0 var(--r) var(--r) 0; background: var(--accent-soft); }
+.steps > div::before { content: counter(st); font-family: var(--f-mono); font-size: 11px; color: var(--muted); display: block; }
+.steps b { display: block; font-size: 13.5px; }
+.steps code { font-size: 11px; }
+
+/* migration */
+.mig { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
+@media (max-width: 860px) { .mig { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .mig { grid-template-columns: minmax(0, 1fr); } }
+.mig > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; border-top: 4px solid var(--mc); }
+.mig h4 { margin: 0; font-family: var(--f-display); font-stretch: 88%; font-size: 18px; color: var(--mc); }
+.mig .lines { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.mig ul { margin: 8px 0 0; padding-left: 16px; font-size: 12.8px; }
+.mig li { margin-top: 3px; overflow-wrap: anywhere; }
+
+/* timeline */
+.tl { margin-top: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; overflow-x: auto; }
+.tl-inner { min-width: 680px; position: relative; }
+.tl-axis { position: relative; height: 20px; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.tl-axis span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.tl-rows { position: relative; padding-top: 8px; display: grid; gap: 6px; }
+.tl-row { position: relative; height: 34px; }
+.tl-row button { appearance: none; font: inherit; position: absolute; top: 0; height: 34px; border-radius: 4px; border: 1px solid transparent; background: var(--accent-soft); color: var(--accent); font-size: 12.5px; font-weight: 600; padding: 0 8px; text-align: left; cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tl-row button.freeze { background: var(--heat-soft); color: var(--heat); }
+.tl-row button.now { background: var(--accent); color: var(--surface); }
+.tl-row button[aria-pressed="true"] { border-color: currentColor; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px currentColor; }
+.tl-mark { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px dashed var(--bad); pointer-events: none; }
+.tl-mark span { position: absolute; top: -2px; left: 4px; font-family: var(--f-mono); font-size: 10.5px; color: var(--bad); white-space: nowrap; background: var(--surface); padding: 0 3px; }
+.cyc-detail h4 { font-size: 19px; }
+.cyc-detail .when { font-family: var(--f-mono); font-size: 12px; color: var(--muted); margin-top: 2px; }
+.cyc-detail .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; margin-top: 10px; }
+@media (max-width: 680px) { .cyc-detail .cols { grid-template-columns: minmax(0, 1fr); } }
+.cyc-detail h5 { margin: 0; font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 500; }
+.cyc-detail ul { margin: 6px 0 0; padding-left: 18px; font-size: 13.8px; }
+.cyc-detail li { margin-top: 3px; }
+
+/* pq */
+.pq { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+@media (max-width: 700px) { .pq { grid-template-columns: minmax(0, 1fr); } }
+.pq > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; min-width: 0; }
+.pq h4 { margin: 0; font-size: 14px; font-family: var(--f-display); font-stretch: 92%; }
+.pq .cnt { font-family: var(--f-display); font-stretch: 80%; font-weight: 800; font-size: 32px; line-height: 1; margin-top: 6px; }
+.pq .mods { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.pq .mods code { font-size: 11.5px; }
+
+/* risk */
+.riskgrid { display: grid; grid-template-columns: 70px repeat(3, minmax(0, 1fr)); grid-template-rows: auto repeat(3, minmax(64px, auto)); gap: 4px; margin-top: 16px; font-size: 12px; }
+.riskgrid .h { font-family: var(--f-mono); font-size: 11px; color: var(--muted); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; text-align: center; }
+.riskgrid .vh { justify-content: flex-end; align-items: center; padding: 0 6px 0 0; text-align: right; }
+.riskgrid .cell { border-radius: 4px; padding: 6px; display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; background: var(--sunk); }
+.riskgrid .cell.hot { background: var(--heat-soft); }
+.riskgrid .cell.warm { background: color-mix(in srgb, var(--heat-soft) 55%, var(--sunk)); }
+.riskgrid button { appearance: none; font: inherit; font-family: var(--f-mono); font-size: 12px; font-weight: 500; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 3px 7px; cursor: pointer; }
+.riskgrid button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.riskbox { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 760px) { .riskbox { grid-template-columns: minmax(0, 1fr); } }
+.riskdetail b { font-family: var(--f-display); font-stretch: 90%; font-size: 16px; display: block; }
+.riskdetail p { font-size: 13.8px; }
+
+details.adr { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; margin-top: 6px; }
+details.adr summary { cursor: pointer; padding: 10px 14px; font-size: 14px; display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 8px; list-style: none; }
+details.adr summary::-webkit-details-marker { display: none; }
+details.adr summary span { font-family: var(--f-mono); font-size: 12px; color: var(--accent); padding-top: 2px; }
+details.adr summary b { font-weight: 600; }
+details.adr[open] summary { border-bottom: 1px solid var(--line); }
+details.adr div { padding: 10px 14px 12px 96px; font-size: 13.5px; color: var(--muted); }
+@media (max-width: 520px) { details.adr div { padding-left: 14px; } }
+details.adr div p { margin-top: 4px; }
+
+.qlist td:first-child { font-family: var(--f-mono); font-size: 12px; color: var(--accent); white-space: nowrap; }
+.qlist tr.you td { background: var(--heat-soft); }
+
+.files { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; margin-top: 14px; }
+@media (max-width: 680px) { .files { grid-template-columns: minmax(0, 1fr); } }
+.files div { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; min-width: 0; }
+.files span { font-family: var(--f-mono); font-size: 12px; color: var(--muted); padding-top: 1px; }
+.files code { background: none; padding: 0; font-size: 12px; color: var(--accent); display: block; overflow-wrap: anywhere; }
+.pathbox { font-family: var(--f-mono); font-size: 12.5px; background: var(--sunk); border-radius: 5px; padding: 10px 12px; margin-top: 12px; overflow-wrap: anywhere; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.pathbox button { appearance: none; font: inherit; font-family: var(--f-body); font-size: 12.5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+footer { margin-top: 48px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+footer ul { padding-left: 18px; margin: 6px 0 0; }
+</style>
+
+<div class="shell">
+  <nav class="index" aria-label="Sections">
+    <h2>Blueprint</h2>
+    <ol id="nav"></ol>
+  </nav>
+
+  <main>
+    <!-- ============ OVERVIEW ============ -->
+    <section id="overview">
+      <div class="eyebrow"><span>JADA NPRI · welding-roadmap-2026/new-arch</span><span>Prepared 2026-11-09</span></div>
+      <h1>Pack-based architecture for JADA NPRI</h1>
+      <p class="lead">Build the reporting engine once, and add industries as reviewed data. Welding becomes the first <em>pack</em> instead of the shape of the codebase.</p>
+      <div class="statusbar">
+        <span class="tag prop">Proposed, not approved</span>
+        <span class="tag prop">No code changed</span>
+        <span class="tag meas">measured = read from v0 or the ECCC workbook</span>
+        <span class="tag est">estimate = planning judgement</span>
+      </div>
+
+      <div class="trio">
+        <div>
+          <b>Engine</b><span class="who">written once · developers</span>
+          <p>Eight small, pure stages and a registry of about 14 calculators. It never names a welding process, substance or question.</p>
+          <span class="k">core/engine · core/calculators</span>
+        </div>
+        <div>
+          <b>Industry packs</b><span class="who">versioned folders · practitioners + a developer</span>
+          <p>Questions, method bindings, factor tables and signed sample facilities. Built from shared modules that other industries reuse.</p>
+          <span class="k">packs/shared/* · packs/metal_fab</span>
+        </div>
+        <div>
+          <b>Regulation data</b><span class="who">one folder per Gazette notice</span>
+          <p>Substances, thresholds, Part rules, exemptions, stack criteria, obligations and filing fields. Rules are named functions plus parameters.</p>
+          <span class="k">regulation/notice_2025_2027/</span>
+        </div>
+      </div>
+
+      <h3>What stays the same</h3>
+      <ul class="plain">
+        <li>Reporting year 2026 under the 2025–2027 Notice, due <b>June 1, 2027</b>. The Notice prevails over the Guide.</li>
+        <li>Unknown is never zero, missing coverage is never "below threshold", and a published factor is not a JADA-approved method.</li>
+        <li>Manual results get the same trace and review as automatic ones. Approval, certification and filing stay separate human events.</li>
+        <li>The C1–C12 gates, the closure rules and the regulatory inventory still apply. v0's lifecycle, digest, export and threshold code is kept.</li>
+      </ul>
+    </section>
+
+    <!-- ============ WHY ============ -->
+    <section id="why">
+      <div class="eyebrow"><span>01</span><a href="#files">01-why-change-v0-diagnosis.md</a></div>
+      <h2>Why change: v0 has a coverage problem, not a code-quality problem</h2>
+      <p>v0's lifecycle and safety rules are good. The trouble is shape: each new electrode, fuel or duty became new code. That made v0 large while it covered only part of welding.</p>
+
+      <div class="figs">
+        <div><div class="n">~127k</div><div class="l">new lines across backend, tests, frontend and data <span class="tag meas">measured</span></div></div>
+        <div><div class="n">5,945</div><div class="l">lines in <code>evaluator.py</code>; its entry point alone is 804 <span class="tag meas">measured</span></div></div>
+        <div><div class="n">39 / 104</div><div class="l">implementation checkpoints that repaired earlier work <span class="tag meas">measured</span></div></div>
+        <div><div class="n">~3.9k</div><div class="l">application lines per finished process family <span class="tag est">estimate</span></div></div>
+      </div>
+
+      <div class="panel">
+        <h4>The coverage paradox: 12 of 733 workbook factor positions loaded</h4>
+        <div class="sub">Each square is one factor position in the official ECCC welding, cutting and spraying calculator (2022-10-26, SHA-256 4c3e6f6a…aa93). Blue squares are the 12 rows v0 loaded in <code>welding_candidate_factors.json</code>. <span class="tag meas">measured</span></div>
+        <div class="waffle" id="waffle" role="img" aria-label="733 squares, 12 highlighted"></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Loaded by v0 (12)</span><span><i style="background:var(--sunk);outline:1px solid var(--line)"></i>Not loaded (721)</span></div>
+
+        <h4 style="margin-top:22px">What those 733 positions are</h4>
+        <div class="stack" id="stack" role="img" aria-label="319 non-zero numeric, 178 published zero, 89 conditional, derived or reference, 147 formula-driven NA"></div>
+        <div class="stackkeys">
+          <div style="border-color:var(--accent)"><b>319</b>non-zero numeric factors</div>
+          <div style="border-color:var(--ok)"><b>178</b>published zeros (still evidence)</div>
+          <div style="border-color:var(--st-m)"><b>89</b>method-conditional, derived or reference cells</div>
+          <div style="border-color:var(--st-s)"><b>147</b><code>NA</code>: computed by formula (cutting metals, PM2.5)</div>
+        </div>
+        <p class="note">Importing these is a reviewed spreadsheet import with a frozen manifest, not engineering work. In the new design that one import is the largest single coverage gain available.</p>
+      </div>
+
+      <h3>Six structural causes</h3>
+      <div class="causes">
+        <div><b>1. Every rule is an eight-layer slice</b><p>Engine module, review service, schemas, resolution kind, digest hooks, routes, DTO, editor. EGU alone is about 7,300 lines.</p>
+          <div class="slice"><span>engine</span><span class="arrow">→</span><span>review</span><span class="arrow">→</span><span>schema</span><span class="arrow">→</span><span>kind</span><span class="arrow">→</span><span>digest</span><span class="arrow">→</span><span>routes</span><span class="arrow">→</span><span>DTO</span><span class="arrow">→</span><span>editor</span></div></div>
+        <div><b>2. Methods are code paths, not data</b><p><code>_build_arc_e310_outputs</code> is 322 lines that run for one method ID. 37 places branch on a method or process ID; 15 hard-code a <code>"Pxx"</code> literal.</p></div>
+        <div><b>3. Each human decision got its own kind</b><p>15 resolution payload kinds, each with a validator, review path, hooks and UI. They are all "a person states something, another accepts it".</p></div>
+        <div><b>4. Rare branches came before common coverage</b><p>EGU, low-hours oil-and-gas benzene and crude-battery branches were built while only E310 had factors.</p></div>
+        <div><b>5. One file absorbed every feature</b><p>Almost every checkpoint edited <code>evaluate_frozen_inputs</code> or <code>service.py</code>. Concurrent agents in god-files predict the repair rate.</p></div>
+        <div><b>6. Generated code is verbose</b><p>Tests often compute expectations by calling production helpers. The v0 plan itself says that "is not validation".</p></div>
+      </div>
+
+      <div class="panel">
+        <h4>Projected size to cover the all-industry scope (488 process slots)</h4>
+        <div class="sub">Application code, both <span class="tag est">estimate</span></div>
+        <div class="bars">
+          <div class="bar"><span>v0 style, no reuse</span><div class="track"><div class="fill" style="width:100%;background:var(--heat)"></div></div><span class="v">~1.9M</span></div>
+          <div class="bar"><span>Pack-based</span><div class="track"><div class="fill" style="width:13.7%;background:var(--accent)"></div></div><span class="v">~260k</span></div>
+        </div>
+        <p class="note">Pack-based = core ~45k + calculators ~20k + 45 shared modules × ~1.2k + 236 sector modules × ~0.6k. Most of that is data and golden cases, not code.</p>
+      </div>
+    </section>
+
+    <!-- ============ LAYERS ============ -->
+    <section id="layers">
+      <div class="eyebrow"><span>02</span><a href="#files">02-architecture-overview.md</a></div>
+      <h2>Seven layers, each with one owner and one reason to change</h2>
+      <p>The engine never touches the database or the network. The API hands it a frozen input bundle plus pinned content, and it returns a run result.</p>
+      <div class="legend" style="margin-top:14px"><span><i style="background:var(--accent)"></i>Code</span><span><i style="background:var(--ok)"></i>Data</span><span><i style="background:var(--st-s)"></i>Existing or mostly kept</span></div>
+      <div class="layers">
+        <div class="layer code"><b>UI</b><span class="what">Form renderer, fact review, open-item queue, results and trace, package screens, 3–5 custom screens. Changes when a new interaction type appears.</span><span class="size">~12–15k<small>vs +28.9k in v0</small></span></div>
+        <div class="layer data"><b>Industry packs</b><span class="what">Modules: questions, entity templates, method bindings, factor tables, output catalogues, coverage entries, golden cases. Changes with every new process or factor.</span><span class="size">data only<small>practitioner + dev</small></span></div>
+        <div class="layer data"><b>Regulation data</b><span class="what">Substances, Part rules, exemptions, stacks, filing fields, annual actions, per notice. Changes each Gazette notice.</span><span class="size">+ ~1.5k<small>rule functions</small></span></div>
+        <div class="layer code"><b>Calculators</b><span class="what">Pure numeric methods. 14 planned across all industries; welding needs 4 plus manual.</span><span class="size">~150–400<small>lines each</small></span></div>
+        <div class="layer code"><b>Engine</b><span class="what">Pipeline, eight stages, open-item model, aggregation, threshold helpers. Changes only when the notice structure changes.</span><span class="size">~3–4k<small>vs ~18.5k</small></span></div>
+        <div class="layer kept"><b>Facts and lifecycle</b><span class="what">Entities, fact model, reviews, runs, revisions, events, digests, export. Mostly kept from v0.</span><span class="size">~6–8k</span></div>
+        <div class="layer kept"><b>Platform</b><span class="what">Auth, tenants, facilities, periods, SDS and purchase matching, evidence storage. Existing JADA code.</span><span class="size">existing</span></div>
+      </div>
+      <p class="note">Target for 100% of the welding pack: about 25–30k application lines, against about 65k in v0 for about 60%. <span class="tag est">estimate</span></p>
+
+      <h3 id="rules">The seven design rules</h3>
+      <div class="rules" id="ruleGrid"></div>
+    </section>
+
+    <!-- ============ PIPELINE ============ -->
+    <section id="pipeline">
+      <div class="eyebrow"><span>04</span><a href="#files">04-engine-pipeline.md</a></div>
+      <h2>The engine: eight pure stages in a fixed order</h2>
+      <p>This replaces the 804-line <code>evaluate_frozen_inputs</code> and its ~40 helpers. Each stage has its own frozen state type, so a stage cannot read something a later stage produces. Select a stage to see what it does.</p>
+      <div class="pipe" id="pipe" role="group" aria-label="Pipeline stages"></div>
+      <div class="pipe-io"><span>InputBundle + PinnedContent →</span><span>bar = target size</span><span>→ RunResult (digested)</span></div>
+      <div class="panel stage-detail" id="stageDetail" aria-live="polite"></div>
+
+      <h3>Why a fixed order works (no dependency graph)</h3>
+      <p>Some thresholds depend on emissions, and some outputs are only needed once a threshold is met. Stage 3 calculates <b>everything</b> it can, eagerly. Stage 7 decides what is <b>required</b>. A missing input for a reporting-only output stays non-blocking until a substance becomes reportable, so clients aren't asked for data that may turn out unnecessary.</p>
+      <div class="tw"><table class="t">
+        <thead><tr><th>Who owns an open item</th><th>Typical kinds</th><th>Where it shows</th></tr></thead>
+        <tbody>
+          <tr><td><code>client</code></td><td>missing fact or evidence, unanswered screen, unknown activity</td><td>"Questions for you"</td></tr>
+          <tr><td><code>jada</code></td><td>review fact, select method, manual result needed, resolve collision, reconcile residual</td><td>JADA queue</td></tr>
+          <tr><td><code>practitioner</code></td><td>interpretation holds (I03, I04), sign golden case</td><td>Practitioner queue</td></tr>
+          <tr><td><code>developer</code></td><td>unsupported branch, calculator missing, content invalid, engine error</td><td>Engineering backlog. Never phrased as a client question.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ FACTS ============ -->
+    <section id="facts">
+      <div class="eyebrow"><span>03</span><a href="#files">03-domain-model-and-facts.md</a></div>
+      <h2>One fact model replaces 15 payload kinds</h2>
+      <p>Every human statement, from a client's electrode mass to JADA's method choice, is a <b>fact</b> keyed by a question ID. It has a typed value, a state, evidence, an author, a review and a dependency digest that makes it stale when its inputs change.</p>
+      <div class="funnel">
+        <div>
+          <div class="note" style="margin-bottom:6px">v0 resolution kinds, each with its own validator, review service, routes and editor</div>
+          <div class="chips">
+            <span>fact</span><span>applicability</span><span>inclusion</span><span>method_assignment</span><span>manual_contribution</span><span>source_inventory</span><span>source_scope</span><span>output_closure</span><span>stack_decision</span><span>reporting_output</span><span>reporting_category_coverage</span><span>reporting_metadata</span><span>prior_report_acceptance</span><span>other_process_mapping</span><span>filing_workflow</span>
+          </div>
+        </div>
+        <div class="arr" aria-hidden="true">→</div>
+        <div class="factcard"><span class="c"># one schema, one review flow</span>
+<span class="k">question</span>: <span class="s">jada.method_eligibility</span>
+<span class="k">subject</span>:  activity/a1
+<span class="k">value</span>:    <span class="s">other_method1_justified</span>
+<span class="k">state</span>:    known
+<span class="k">evidence</span>: [consumable_log.pdf]
+<span class="k">author</span>:   jada:reviewer
+<span class="k">review</span>:   independent → accepted
+<span class="k">depends</span>:  sha256:… <span class="c"># goes stale on change</span></div>
+      </div>
+      <p class="note">Questions use prefixes: <code>G</code>, <code>M</code>, <code>O</code>, <code>Pxx-n</code> for client questions (v0 IDs preserved), <code>jada.*</code> for JADA decisions, <code>F.*</code> for filing fields. Review policies: <code>none</code>, <code>jada</code>, <code>independent</code>, <code>practitioner</code>.</p>
+
+      <h3>10 entity kinds, closed for every industry</h3>
+      <p>A new industry adds facts on these kinds, never a new kind. Quantities, compositions and capture rates are facts on an entity, so they get evidence, ranges and review.</p>
+      <div class="entities">
+        <div><code>facility_year</code>the reporting case</div>
+        <div><code>activity</code>an operation in the year</div>
+        <div><code>equipment</code>welder, booth, boiler</div>
+        <div><code>material</code>purchased or produced</div>
+        <div><code>allocation</code>consumable or fuel split</div>
+        <div><code>material_flow</code>stock batch lineage</div>
+        <div><code>control</code>capture or removal</div>
+        <div><code>outlet</code>stack, vent, fugitive</div>
+        <div><code>stream</code>waste, recycling, water</div>
+        <div><code>incident</code>spill, leak, fire</div>
+      </div>
+
+      <h3>The one review flow</h3>
+<pre class="mermaid">
+stateDiagram-v2
+  [*] --> Proposed: author saves
+  Proposed --> Accepted: reviewer accepts
+  Proposed --> Rejected: reviewer rejects
+  Proposed --> Returned: back to client
+  Accepted --> Stale: dependency changed
+  Stale --> Proposed: re-confirm or edit
+  Accepted --> Superseded: newer version accepted
+  Rejected --> Proposed: author edits
+</pre>
+      <p class="note">Persistence goes from about 25 tables to about 10: entities, entity refs, facts, reviews, evidence, runs, revisions, events, open-item snapshots and the content store. <span class="tag est">estimate</span></p>
+    </section>
+
+    <!-- ============ CALCULATORS ============ -->
+    <section id="calculators">
+      <div class="eyebrow"><span>05</span><a href="#files">05-calculators-and-factors.md</a></div>
+      <h2>Calculators are code; factors are rows; formulas are never evaluated</h2>
+      <p>A calculator is a small, pure, versioned function for one kind of math, usable by any industry. It uses Decimal only, never invents a missing input and records a full trace. A behavior change creates <code>@2</code>, and <code>@1</code> stays registered so old filings replay.</p>
+
+      <div class="tw"><table class="t" id="calcTable">
+        <thead><tr><th>#</th><th>Calculator</th><th>Math</th><th>Welding pack</th><th>First needed</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <p class="note">Highlighted rows are what welding needs. Rule of two: a calculator gets a new mode, or is generalized, only when a second module needs it.</p>
+
+      <h3>Factor selection has exactly four outcomes</h3>
+      <div class="outcomes">
+        <div style="--oc:var(--ok)"><code>applicable</code><p>Exactly one row matches all keys and its conditions hold. The only outcome that supplies a number.</p><span class="who">→ calculator</span></div>
+        <div style="--oc:var(--accent)"><code>needs_input</code><p>A match key's fact is unknown, for example the electrode class.</p><span class="who">→ client open item</span></div>
+        <div style="--oc:var(--st-m)"><code>no_supported_factor</code><p>No row for this key combination, or the row is <code>not_available</code>.</p><span class="who">→ JADA: alternative or manual</span></div>
+        <div style="--oc:var(--bad)"><code>incompatible</code><p>A row exists but a condition fails: control basis, filler, method variant.</p><span class="who">→ JADA, with the failed condition</span></div>
+      </div>
+      <p class="note">A published zero is a real contribution of exactly 0 and closes the slot as <code>evidenced_zero</code>. Workbook "Other" rows are never a silent fallback; they need an accepted <code>jada.method_eligibility</code> fact.</p>
+
+      <h3>Worked example: one stick-welding bay, 1,200 kg of E310</h3>
+      <div class="trace">
+        <div class="panel" style="margin-top:0">
+          <h4>activity_x_factor@1, then composition@1</h4>
+          <div class="sub">Factors from the E310 rows v0 already carries. Exact Decimal, no rounding.</div>
+          <div class="calcrows" style="margin-top:10px">
+            <div><span>Chromium (basis unresolved)</span><span class="f">1,200 × 2.53 g/kg</span><span class="q">3.036 kg</span></div>
+            <div><span>Hexavalent chromium</span><span class="f">1,200 × 1.88</span><span class="q">2.256 kg</span></div>
+            <div><span>Manganese</span><span class="f">1,200 × 2.2</span><span class="q">2.64 kg</span></div>
+            <div><span>Nickel</span><span class="f">1,200 × 0.196</span><span class="q">0.2352 kg</span></div>
+            <div><span>Lead (qualifier unresolved)</span><span class="f">1,200 × 0.024</span><span class="q">0.0288 kg</span></div>
+            <div><span>Cobalt, zinc</span><span class="f">published zero</span><span class="q">0 kg</span></div>
+            <div><span>PM10 and TPM (fume = PM10)</span><span class="f">1,200 × 15.1</span><span class="q">18.12 kg</span></div>
+            <div><span>PM2.5</span><span class="f">0.75 × PM10</span><span class="q">13.59 kg</span></div>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:0">
+          <h4>What the engine concludes</h4>
+          <div class="calcrows" style="margin-top:10px">
+            <div><span>Part 4 PM2.5 vs 0.3 t</span><span class="f">13.59 kg</span><span class="q">not met</span></div>
+            <div><span>Part 1A chromium</span><span class="f">basis open</span><span class="q pend">pending</span></div>
+            <div><span>Practitioner item</span><span class="f">identity</span><span class="q pend">chromium basis</span></div>
+            <div><span>JADA item</span><span class="f">identity</span><span class="q pend">lead qualifier</span></div>
+            <div><span>Can request review</span><span class="f"></span><span class="q">yes</span></div>
+            <div><span>Can approve</span><span class="f"></span><span class="q pend">no</span></div>
+          </div>
+          <p class="note">The chromium result is computed and shown, but the assessment stays pending until a practitioner decides whether the workbook figure is total or non-hexavalent chromium. Pending is the honest state here, not a defect.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PACKS ============ -->
+    <section id="packs">
+      <div class="eyebrow"><span>06</span><a href="#files">06-pack-format-spec.md</a></div>
+      <h2>What a pack looks like on disk</h2>
+      <p>Practitioners author packs in git as YAML, CSV and case files, reviewed by pull request. A module is one process family: its screen, the entity a "yes" creates, typed questions, method bindings and factor table.</p>
+      <div class="two">
+<pre class="tree"><span class="d">content/</span>
+  <span class="d">regulation/notice_2025_2027/</span>
+  <span class="d">packs/</span>
+    <span class="d">shared/</span>             <span class="c"># reusable by any pack</span>
+      <span class="d">welding_arc/</span>
+        module.yaml
+        factors.csv
+        <span class="d">cases/</span>
+          c01-small-shop-e310.yaml
+      <span class="d">thermal_cutting/</span>
+      <span class="d">abrasive_blasting/</span>
+      <span class="d">boilers_heaters/</span>  <span class="c"># …</span>
+    <span class="d">metal_fab/</span>
+      pack.yaml          <span class="c"># P01–P28 in order</span>
+      <span class="d">modules/</span>          <span class="c"># pack-specific only</span>
+      <span class="d">cases/</span>            <span class="c"># f01–f18</span>
+      <span class="d">import/</span>           <span class="c"># workbook manifests</span></pre>
+<pre class="code"><span class="c"># shared/welding_arc/module.yaml (excerpt)</span>
+<span class="k">id</span>: welding_arc
+<span class="k">screen</span>: {id: P01, answers: [yes, no, unknown, other_party]}
+<span class="k">questions</span>:
+  - <span class="k">id</span>: P01-2
+    <span class="k">ask</span>: Electrode or wire used in 2026, by class
+    <span class="k">type</span>: table
+    <span class="k">columns</span>:
+      class: {type: choice,
+              options_from: factors.consumable_class}
+      mass:  {type: quantity, dimension: mass}
+<span class="k">methods</span>:
+  - <span class="k">id</span>: arc-listed-v1
+    <span class="k">calculator</span>: activity_x_factor@1
+    <span class="k">for_each</span>: P01-2
+    <span class="k">activity</span>: P01-2.mass
+    <span class="k">match</span>: {process: P01-2.process,
+            consumable_class: P01-2.class}
+    <span class="k">on_no_factor</span>: next_method</pre>
+      </div>
+
+      <h3>The routing grammar is closed</h3>
+      <p>Question visibility and method eligibility use equality and inclusion over facts. Anything numeric or date-based goes into a named, reviewed derivation, so YAML never turns into a programming language.</p>
+      <div class="ops"><code>eq</code><code>in</code><code>state</code><code>has_entity</code><code>all</code><code>any</code><code>not</code><code class="x">arithmetic</code><code class="x">&gt; &lt;</code><code class="x">formula strings</code><code class="x">free expressions</code></div>
+      <p class="note">Invalid content (bad YAML, unknown calculator, unit mismatch, a factor row with no source, duplicate applicable rows) fails at load time in CI, never during a client run.</p>
+    </section>
+
+    <!-- ============ REGULATION ============ -->
+    <section id="regulation">
+      <div class="eyebrow"><span>07</span><a href="#files">07-regulation-as-data.md</a></div>
+      <h2>Regulation as data: one folder per Gazette notice</h2>
+      <p>Parameters and identities are data. Logic is a small library of named, versioned rule functions such as <code>mpo_threshold@1</code>. The notice folder binds them. The next notice is a new folder, and old notices stay replayable.</p>
+      <div class="two">
+<pre class="tree"><span class="d">notice_2025_2027/</span>
+  notice.yaml         <span class="c"># years, sources, deadline</span>
+  substances.json     <span class="c"># 493 records (from v0)</span>
+  groups.yaml
+  parts.yaml          <span class="c"># gates + rule bindings</span>
+  exemptions.yaml     <span class="c"># §1(1)(a), §1(2), §14, §17</span>
+  facility_cases.yaml <span class="c"># §§11–13, §16</span>
+  stacks.yaml         <span class="c"># Sch. 4 Table 4</span>
+  obligations.yaml    <span class="c"># Sch. 4 categories</span>
+  filing_fields.yaml  <span class="c"># validator IDs, not strings</span>
+  annual_actions.yaml
+  holds.yaml          <span class="c"># I02, I03, I04 …</span>
+  conversions.yaml</pre>
+        <div class="panel" style="margin-top:0">
+          <h4>Substances by Part</h4>
+          <div class="sub">2025–2027 Notice, from <code>substances_2026.json</code> <span class="tag meas">measured</span></div>
+          <div class="bars" id="partBars"></div>
+        </div>
+      </div>
+      <div class="tw"><table class="t">
+        <thead><tr><th>Part 4 ID</th><th>Substance</th><th style="text-align:right">Air threshold</th></tr></thead>
+        <tbody>
+          <tr><td><code>part4:630-08-0</code></td><td>Carbon monoxide</td><td class="num">20 t</td></tr>
+          <tr><td><code>part4:11104-93-1</code></td><td>Nitrogen oxides</td><td class="num">20 t</td></tr>
+          <tr><td><code>part4:7446-09-5</code></td><td>Sulphur dioxide</td><td class="num">20 t</td></tr>
+          <tr><td><code>part4:NA - M08</code></td><td>Total particulate matter</td><td class="num">20 t</td></tr>
+          <tr><td><code>part4:NA - M16</code></td><td>Total VOC</td><td class="num">10 t</td></tr>
+          <tr><td><code>part4:NA - M09</code></td><td>PM10</td><td class="num">0.5 t</td></tr>
+          <tr><td><code>part4:NA - M10</code></td><td>PM2.5</td><td class="num">0.3 t</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Interpretation holds stay explicit. I03 (stack NOx 10 vs 20 t) and I04 (temperature comparator) produce <code>needs_interpretation</code> and a practitioner open item instead of a guess.</p>
+    </section>
+
+    <!-- ============ WELDING PACK ============ -->
+    <section id="welding">
+      <div class="eyebrow"><span>08</span><a href="#files">08-welding-pack-design.md</a></div>
+      <h2>The metal_fab pack: all 28 families, screened from day one</h2>
+      <p>Every family is screened from the first beta. A "yes" on a manual family creates an expected manual result, and the package can't be approved without it. Filter by proposed state, or select a family.</p>
+      <div class="filters" id="famFilters"></div>
+      <div class="fam" id="famGrid"></div>
+      <div class="panel famdetail" id="famDetail" aria-live="polite"></div>
+
+      <h3>Beta A and Beta B</h3>
+      <div class="tw"><table class="t">
+        <thead><tr><th>Beta</th><th>Automatic</th><th>Gate</th></tr></thead>
+        <tbody>
+          <tr><td><b>Beta A</b><br><span class="note">N2, Feb – mid-Mar 2027</span></td><td>P01 listed electrodes (batches 1–2) plus Other Method 1; P02 with filler; P05 listed cutting; P08 dry sand; P09 listed spray; P12 bounded solvent balance; P20 small natural-gas boiler</td><td>The 11 pilot scenarios (f01–f11) signed; every present activity in each pilot shop resolvable</td></tr>
+          <tr><td><b>Beta B</b><br><span class="note">after the filing season</span></td><td>P13 coating; P21 chemicals; P04/P19 fuel portions; more P20 fuels; P06 listed saws; Method 2; remaining electrode batches</td><td>Each promoted branch has ≥2 signed cases; mixed-shop case reconciles</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Electrode review order</h3>
+      <p>Imported rows arrive as <code>published_unreviewed</code> and are promoted in batches by electrode family, so practitioner time goes where clients are.</p>
+      <div class="steps" style="grid-template-columns:repeat(5,minmax(0,1fr))" id="batches">
+        <div><b>SMAW</b>E7018, E6010, E6011, E6013, E308, E309, E316</div>
+        <div><b>GMAW</b>E70S / ER70S, GMAW-E308L</div>
+        <div><b>FCAW</b>E70T / E71T</div>
+        <div><b>SAW</b>EM12K</div>
+        <div><b>The rest</b>as clients appear (47 labels in total)</div>
+      </div>
+    </section>
+
+    <!-- ============ UI ============ -->
+    <section id="ui">
+      <div class="eyebrow"><span>09</span><a href="#files">09-review-workflow-and-generated-ui.md</a></div>
+      <h2>The UI is rendered from the pack</h2>
+      <p>v0's questions all used one of three untyped answer types, so every structure had to be a hand-written editor. With typed questions, one renderer draws any module.</p>
+      <div class="figs" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <div><div class="n">83 → ~25</div><div class="l">API routes</div></div>
+        <div><div class="n">+28.9k → 12–15k</div><div class="l">frontend lines <span class="tag est">estimate</span></div></div>
+        <div><div class="n">10,850</div><div class="l">lines in v0's two workspace route files <span class="tag meas">measured</span></div></div>
+      </div>
+      <div class="qtypes">
+        <div><code>screen</code><span>Yes / No / Not sure / Done by someone else, with no default</span></div>
+        <div><code>choice</code><span>Options can come from the factor table, such as the 47 electrode labels</span></div>
+        <div><code>quantity</code><span>Number + unit for the dimension; known, range, unknown or unavailable</span></div>
+        <div><code>table</code><span>Repeating typed rows: electrode class × mass, fuel by equipment</span></div>
+        <div><code>entity_ref</code><span>Pick an existing material or outlet, or add one</span></div>
+        <div><code>manual_result</code><span>One staff editor for every manual family, with an impact preview</span></div>
+      </div>
+      <h3>The five screens still built by hand</h3>
+      <div class="tw"><table class="t">
+        <thead><tr><th>Screen</th><th>Why it can't be generated</th><th style="text-align:right">Size</th></tr></thead>
+        <tbody>
+          <tr><td>Material reconciliation</td><td>Spreadsheet-like balance across entities with live totals</td><td class="num">~1.5k</td></tr>
+          <tr><td>Source-to-outlet map</td><td>Activities → controls → outlets → streams as a linked diagram</td><td class="num">~1.5k</td></tr>
+          <tr><td>Package and lifecycle</td><td>State machine with server-driven actions, kept from v0</td><td class="num">~1.5k</td></tr>
+          <tr><td>Case signing and factor diff</td><td>Expected vs actual, with a recorded signature</td><td class="num">~1k</td></tr>
+          <tr><td>Facility boundary (optional)</td><td>P28 and multi-site sketch</td><td class="num">~0.8k</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ VERIFY ============ -->
+    <section id="verify">
+      <div class="eyebrow"><span>10</span><a href="#files">10-golden-cases-and-verification.md</a></div>
+      <h2>Golden cases are the specification</h2>
+      <p>v0 has 36.1k lines of agent-written tests that nobody can review. A golden case is a short file with a facility's inputs and the answer a qualified person expects. The practitioner signs the <b>answer</b>, and the engine must reproduce it exactly: exact Decimal values and exact sets of open items.</p>
+      <h3>How a method branch becomes automatic</h3>
+      <div class="steps">
+        <div><b>Import</b>rows land as <code>published_unreviewed</code></div>
+        <div><b>Batch review</b>units, keys, basis, footnotes</div>
+        <div><b>Reviewed</b><code>jada_reviewed</code></div>
+        <div><b>≥2 cases</b>written by hand, independent origin</div>
+        <div><b>Signed</b>digest covers the case</div>
+        <div><b>Automatic</b>in the next pack version</div>
+      </div>
+      <p class="note">If a signed case fails after any change, the branch drops back to manual-supported and the release is blocked. A case whose expected values were pasted from an engine run is rejected.</p>
+      <div class="tw"><table class="t">
+        <thead><tr><th>Kind of case</th><th>Purpose</th><th style="text-align:right">metal_fab</th></tr></thead>
+        <tbody>
+          <tr><td>Module case</td><td>One method path, eligibility branch or failure mode</td><td class="num">~70</td></tr>
+          <tr><td>Whole-facility case</td><td>Cross-process aggregation, destinations, lifecycle</td><td class="num">18</td></tr>
+          <tr><td>Regulation boundary case</td><td>Below, equal, above; ranges; qualifiers; holds</td><td class="num">~60</td></tr>
+          <tr><td>Calculator case</td><td>Dimensions and arithmetic, official examples</td><td class="num">8–15 each</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ LIFECYCLE ============ -->
+    <section id="lifecycle">
+      <div class="eyebrow"><span>11</span><a href="#files">11-lifecycle-freshness-and-replay.md</a></div>
+      <h2>Lifecycle kept; every run pins its content</h2>
+      <p>v0's lifecycle is the best-tested part of v0 and stays as it is. What's new is that each run records the exact notice, pack, factor table and calculator versions it used, by digest.</p>
+<pre class="mermaid">
+stateDiagram-v2
+  direction LR
+  [*] --> Draft
+  Draft --> ClientHandoff: request review
+  ClientHandoff --> Draft: JADA returns items
+  ClientHandoff --> RevisionDraft: revision from fresh run
+  RevisionDraft --> Approved: independent approval
+  Approved --> Certified: authorized certifier
+  Certified --> Completed: annual actions recorded
+  Approved --> Draft: upstream change, stale
+  Completed --> [*]
+</pre>
+      <ul class="plain">
+        <li><b>Re-pinning is explicit.</b> A workspace keeps its pack and notice versions until JADA re-pins it and reviews a diff of what changed. Filed revisions never re-pin.</li>
+        <li><b>Replay works years later.</b> Old calculator and rule versions stay registered, so a 2026 filing reproduces byte-for-byte after the engine moves on.</li>
+        <li><b>Freshness is generic.</b> One dependency-digest check covers every fact, instead of hooks per feature.</li>
+        <li><b>Export adds a content appendix</b> listing every factor row and rule version behind the numbers. An export is still not a filing.</li>
+      </ul>
+    </section>
+
+    <!-- ============ MIGRATION ============ -->
+    <section id="migration">
+      <div class="eyebrow"><span>12</span><a href="#files">12-migration-from-v0.md</a></div>
+      <h2>Migration: build beside v0, prove parity, then switch</h2>
+      <p>No big-bang rewrite. v0 is the oracle: where the new engine differs, a practitioner decides which is right, and the decision becomes a golden case. <b>First step:</b> v0's backend has 178 uncommitted or untracked entries and the frontend 24, with HEAD still at <code>ca29307</code>. That work gets committed before anything moves. <span class="tag meas">measured</span></p>
+      <div class="mig">
+        <div style="--mc:var(--ok)"><h4>Keep</h4><span class="lines">~4.2k lines</span><ul><li><code>digests.py</code> 692</li><li>catalogue snapshot 612</li><li>lifecycle projection 556</li><li>package export 416</li><li><code>thresholds.py</code> 479</li><li>aggregation, rules, identity</li><li>security fixes</li></ul></div>
+        <div style="--mc:var(--accent)"><h4>Convert</h4><span class="lines">behavior kept, shape changes</span><ul><li><code>evaluator.py</code> 5,945 → 8 stages</li><li>method files 2,885 → 4 calculators</li><li>reporting duties ~3.5k → stage 7 + YAML</li><li><code>service.py</code> 3,632 → &lt;1.5k</li><li>review services ~2.9k → one flow</li><li>editors 22k → renderer</li></ul></div>
+        <div style="--mc:var(--st-m)"><h4>Park</h4><span class="lines">behind a flag</span><ul><li>EGU ~7.3k</li><li>Part 4 prior-year comparison ~1.9k</li><li>Part 5 low-hours O&amp;G branches</li><li>Monthly distribution and condensable PM return as filing-field questions</li></ul></div>
+        <div style="--mc:var(--st-s)"><h4>Drop</h4><span class="lines">replaced</span><ul><li>duplicate pure/review module pairs</li><li><code>pending_evaluator.py</code></li><li>2,571 synthetic evidence files</li><li><code>/tmp</code> log references</li></ul></div>
+        <div style="--mc:var(--heat)"><h4>Mine</h4><span class="lines">then delete</span><ul><li>36.1k lines of agent tests → scenarios and boundary values become golden cases</li><li>assertions that only restate code are deleted</li></ul></div>
+      </div>
+      <p class="note">A parked duty is declared <code>parked</code> in <code>obligations.yaml</code>. A facility that triggers it gets a blocking developer item, never a silent skip.</p>
+    </section>
+
+    <!-- ============ CYCLES ============ -->
+    <section id="cycles">
+      <div class="eyebrow"><span>13</span><a href="#files">13-delivery-cycles.md</a></div>
+      <h2>Delivery cycles N0–N9</h2>
+      <p>Assumes 2 developers and a part-time HSE practitioner (about 0.5 FTE). The fixed point is June 1, 2027. Select a cycle to see its work and exit gate. <span class="tag est">dates are estimates</span></p>
+      <div class="tl"><div class="tl-inner" id="tl"></div></div>
+      <div class="panel cyc-detail" id="cycDetail" aria-live="polite"></div>
+      <h3>Rules for every cycle</h3>
+      <ul class="plain">
+        <li>One pack or platform theme per cycle; the next starts only when the gate passes.</li>
+        <li>A gate is practitioner-signed golden cases plus listed checks, never a line or test count.</li>
+        <li>Feature freeze during filing seasons, mid-March to June 1.</li>
+        <li>Each PR or agent task is a reviewable slice of about 1–3k lines, committed before the next starts.</li>
+        <li>Report each cycle: automatic / manual / unsupported branches, factor rows by review state, signed cases, repair share of merged PRs (v0: 39 of 104; target under 15%).</li>
+      </ul>
+    </section>
+
+    <!-- ============ INDUSTRY ============ -->
+    <section id="industry">
+      <div class="eyebrow"><span>14</span><a href="#files">14-adding-an-industry.md</a></div>
+      <h2>The real test: adding pits and quarries</h2>
+      <p>If the architecture works, a new industry is mostly practitioner work. Engineering shows up only for math no calculator does yet. Pits and quarries needs <b>no new calculator</b>. <span class="tag est">illustrative; ECCC sources identified, not yet read in full</span></p>
+      <div class="pq">
+        <div><h4>New, pack-specific</h4><div class="cnt" style="color:var(--heat)">~4</div><div class="mods"><code>pq_overburden</code><code>pq_drilling</code><code>pq_blasting_pm</code><code>PQ-G01 production question</code></div></div>
+        <div><h4>New, shared (reused by mining, cement)</h4><div class="cnt" style="color:var(--accent)">4</div><div class="mods"><code>explosives</code><code>crushing_screening</code><code>aggregate_handling</code><code>stockpiles</code></div></div>
+        <div><h4>Already exist</h4><div class="cnt" style="color:var(--ok)">~5</div><div class="mods"><code>road_dust</code><code>boilers_heaters</code><code>stationary_engines</code><code>storage_tanks</code><code>waste_streams</code><code>water_routes</code></div></div>
+      </div>
+      <ul class="plain">
+        <li>The applicability rules are already data: production ≥ 500,000 t removes the employee-hours gate (§1(1)(a)); a site whose only activity is a pit or quarry below that is excluded (§1(2)). The pack adds one question and one derivation that classifies production.</li>
+        <li>The blasting PM factor is only valid to 21 m depth. That becomes a factor condition, and a deeper blast returns <code>incompatible</code> → manual.</li>
+        <li>Open-pit mines are not pits or quarries. An independent-review JADA question routes them away from this pack.</li>
+        <li>Expected size: ~0.2–0.5k lines of code, ~150–300 factor rows, ~40 questions, ~35 golden cases, ~6 weeks. In v0's style: roughly 12 processes × ~3.9k lines. <span class="tag est">estimate</span></li>
+      </ul>
+    </section>
+
+    <!-- ============ DECISIONS ============ -->
+    <section id="decisions">
+      <div class="eyebrow"><span>15</span><a href="#files">15-decisions-risks-open-questions.md</a></div>
+      <h2>Decisions, risks and open questions</h2>
+      <h3>Risk register</h3>
+      <div class="riskbox">
+        <div class="riskgrid" id="riskGrid"></div>
+        <div class="panel riskdetail" id="riskDetail" style="margin-top:16px" aria-live="polite"></div>
+      </div>
+
+      <h3>Twelve proposed architecture decisions</h3>
+      <div id="adrs"></div>
+
+      <h3>Open questions</h3>
+      <p>Highlighted rows block the start of N1 or Beta A.</p>
+      <div class="tw"><table class="t qlist">
+        <thead><tr><th>#</th><th>Question</th><th>Owner</th><th>Needed by</th></tr></thead>
+        <tbody id="qrows"></tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ FILES ============ -->
+    <section id="files">
+      <h2>The 16 documents behind this page</h2>
+      <p>Each section above links to its source document. The Markdown set is the reference; this page is the visual reading guide.</p>
+      <div class="pathbox"><span id="dirpath">JADA-SOLUTIONS/documents/project-planning/welding-roadmap-2026/new-arch/</span><button type="button" id="copyPath">Copy path</button></div>
+      <div class="files" id="fileList"></div>
+      <footer>
+        <div>Sources used for the measured figures and the worked examples:</div>
+        <ul>
+          <li><a href="https://www.canada.ca/content/dam/eccc/documents/xlsx/inrp-npri/2023/Electric%20Arc%20Welding%2C%20Cutting%20and%20Spraying%20Calculator_2022_10_26.xlsx">ECCC Electric Arc Welding, Cutting and Spraying Calculator (xlsx, 2022-10-26)</a></li>
+          <li><a href="https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/reporting-guide.html">Guide for reporting to the NPRI 2025–2027</a></li>
+          <li><a href="https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/pits-quarries-guide.html">ECCC Pits and quarries reporting guide</a></li>
+          <li><a href="https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/sector-specific-tools-calculate-emissions.html">ECCC Sector-specific tools to calculate emissions</a></li>
+          <li>A read-only inspection of <code>JADA-NPRI-V0</code> on branch <code>codex/welding-npri-v0</code>, 2026-11-09</li>
+        </ul>
+        <div style="margin-top:10px">Companion pages: <a href="03-codex-v0-build-audit.html">Codex v0 audit</a> · <a href="04-codex-v0-architecture-map.html">v0 architecture map</a> · <a href="05-npri-all-industry-scope.html">All-industry scope</a> · <a href="06-pack-based-npri-architecture.html">Pack-based architecture</a></div>
+      </footer>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  function el(tag, attrs, html) { var e = document.createElement(tag); if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
+
+  /* ---------- nav ---------- */
+  var NAV = [["overview","00","Overview"],["why","01","Why change"],["layers","02","Layers and rules"],["pipeline","04","Engine pipeline"],["facts","03","Fact model"],["calculators","05","Calculators"],["packs","06","Pack format"],["regulation","07","Regulation data"],["welding","08","Welding pack"],["ui","09","Generated UI"],["verify","10","Golden cases"],["lifecycle","11","Lifecycle"],["migration","12","Migration"],["cycles","13","Cycles"],["industry","14","New industry"],["decisions","15","Decisions and risks"],["files","md","The documents"]];
+  var nav = $("#nav");
+  NAV.forEach(function (n) { var li = el("li"); li.appendChild(el("a", { href: "#" + n[0], "data-id": n[0] }, "<span>" + n[1] + "</span>" + n[2])); nav.appendChild(li); });
+  if ("IntersectionObserver" in window) {
+    var links = nav.querySelectorAll("a");
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { links.forEach(function (a) { a.classList.toggle("on", a.dataset.id === e.target.id); }); var on = nav.querySelector("a.on"); if (on && window.innerWidth <= 900) { try { on.scrollIntoView({ block: "nearest", inline: "center" }); } catch (x) {} } } });
+    }, { rootMargin: "-30% 0px -65% 0px" });
+    document.querySelectorAll("main section").forEach(function (s) { io.observe(s); });
+  }
+
+  /* ---------- waffle + stack ---------- */
+  var w = $("#waffle"), frag = document.createDocumentFragment();
+  for (var i = 0; i < 733; i++) frag.appendChild(el("i", i < 12 ? { "class": "hit" } : null));
+  w.appendChild(frag);
+  var st = $("#stack");
+  [[319,"var(--accent)"],[178,"var(--ok)"],[89,"var(--st-m)"],[147,"var(--st-s)"]].forEach(function (p) { var d = el("div"); d.style.flex = p[0]; d.style.background = p[1]; st.appendChild(d); });
+
+  /* ---------- rules ---------- */
+  var RULES = [
+    ["Methods are calculators plus data rows","A new electrode, fuel, coating or abrasive is a CSV row bound to a calculator.","Functions named after one material, like _build_arc_e310_outputs; formula strings evaluated from data.","05"],
+    ["Industries are versioned packs built from shared modules","Welding, blasting, coating, combustion and tanks live in packs/shared from day one.","Industry branches in the engine; moving modules later and breaking IDs in filed history.","06, 08"],
+    ["One fact model and one review flow","Every human statement is a fact keyed by question ID, with evidence and a dependency digest.","A new table, review service, route set and editor per regulatory feature.","03"],
+    ["The engine is a list of small, pure stages","Eight stages, each about 200–350 lines, testable with a frozen input alone.","I/O, clocks, random IDs or module, question and substance literals in core/engine (CI check).","04"],
+    ["The UI is generated from the pack","Typed questions render through one form renderer; 3–5 screens stay custom.","A hand-written editor per duty, as with v0's 2,292-line reporting metadata editor.","09"],
+    ["Regulation is data, one folder per notice","Thresholds, exemptions and filing fields are parameters; logic is named rule functions.","Predicate strings in YAML; obligations hard-coded per duty in Python.","07"],
+    ["Golden cases are the specification","A branch is automatic only with ≥2 practitioner-signed cases of independent origin.","Expected values computed by calling the production code they test.","10"]
+  ];
+  var rg = $("#ruleGrid");
+  RULES.forEach(function (r, i) { rg.appendChild(el("div", { "class": "rule" }, '<span class="rn">Rule ' + (i + 1) + '</span><b>' + r[0] + '</b><p>' + r[1] + '</p><div class="no">' + r[2] + '</div><span class="doc">→ doc ' + r[3] + '</span>')); });
+
+  /* ---------- pipeline ---------- */
+  var STAGES = [
+    { n: "Scope", t: 250, v: 700, job: "Decide which regulatory branches can apply to this facility-year, before looking at processes.",
+      does: ["Select the notice from the reporting year (2026 → notice_2025_2027)", "Classify the facility: contiguous, portable, pipeline or offshore", "Apply the 20,000-hour employee gate per Part, never as one boolean", "Record exempt activities under Schedule 3 §1(1)(a) and §1(2)", "Select the Part 4/5 facility case (§§11–13, §16)"],
+      open: "Unknown facility category, unresolved hours, unknown exceptional activity, ambiguous contractor hours", from: "facility_cases.py, rules.py, _part123_eligibility, _part45_facts" },
+    { n: "Discover", t: 350, v: 1400, job: "Build the complete source inventory and the minimum outputs that must be accounted for, so omission can never look like absence.",
+      does: ["Read every process screen; a 'yes' requires at least one activity", "Every candidate (purchase line, SDS, inventory row) needs a source disposition", "Collapse activities sharing a physical operation into one source", "Build the candidate floor: composition, method outputs, screening domains", "Derive output slots deterministically"],
+      open: "Unanswered screen, 'yes' without an activity, unassigned entity, unknown composition, G17 or P28 unresolved", from: "coverage.py, _derive_source_closure (~450 lines), derive_source_scope_preview" },
+    { n: "Calculate", t: 250, v: 4500, calc: true, job: "Turn accepted facts into contributions through calculators. The only stage that produces quantities.",
+      does: ["Check method eligibility from accepted facts and the routing grammar", "Resolve activity quantities, applying allocation shares", "Select factor rows: applicable, needs_input, no_supported_factor or incompatible", "Call calculators by id@version; never name one in code", "Add Part 1 material contributions from composition, and manual results"],
+      open: "Missing activity quantity (client), missing factor (JADA method task), ineligible method (developer), manual result expected (JADA)", from: "methods.py, process_methods.py, organic_methods.py, combustion_adapter.py, _build_arc_e310_outputs, _build_abrasive_blasting_outputs" },
+    { n: "Reconcile", t: 350, v: 1800, job: "Make quantities physically consistent and count each physical amount once.",
+      does: ["Allocations sum to accepted annual use; remainders are reported", "Lineage: cutting, grinding and welding one batch is one MPO origin", "Apply controls per pollutant; route captured mass to the residue stream", "Bind each contribution to exactly one output slot and close every slot", "Run module-declared reconcilers with method-specific tolerance"],
+      open: "Quantity collisions, unexplained residuals, automatic and manual results on one slot", from: "balances.py, reconciliation.py, material_lineage.py, _bind_contributions_to_slots" },
+    { n: "Aggregate", t: 200, v: 600, job: "Total contributions by the keys each rule needs.",
+      does: ["Group by facility × substance × Part × basis × kind × medium", "Apply group membership from the notice; Part 1C PFAS stay individual", "Apply Part-specific source sets (§13/§16 combustion-only, §12 road dust)", "TPM, PM10 and PM2.5 are separate assessments, never summed", "Completeness is derived from slot states, never hard-coded"],
+      open: "Inherited from earlier stages", from: "aggregation.py, _aggregate_current_threshold_candidates" },
+    { n: "Assess", t: 250, v: 1100, job: "Apply each Part's criteria to the aggregates, using rule functions parameterized by notice data.",
+      does: ["Part 1A/1B/1C MPO thresholds on unrounded Decimal", "Part 2 PAH, Part 3 activity branch, Part 4 CAC with §14, Part 5 with §17", "Stack criteria per outlet, with I03/I04 holds → needs_interpretation", "Below the threshold counts as not met only when the set is complete", "A lower bound at or above an inclusive threshold is met even with pending parts"],
+      open: "Interpretation holds (practitioner), pending identities", from: "thresholds.py, _derive_threshold_completeness, stack_reporting.py" },
+    { n: "Obligations", t: 300, v: 4500, job: "Derive what must be reported and filed, and check it's present.",
+      does: ["For each met assessment, derive reporting slots per Schedule 4 category", "Required zeros are included", "Validate filing fields with named validator functions, never predicate strings", "Build the annual action plan: report, DNMC, sale or closure, voluntary, no-filing"],
+      open: "Missing reporting outputs, invalid filing fields, parked duties (developer)", from: "reporting_obligations.py (1,031), reporting_metadata.py (961), reporting_duties.py, part1_reporting_completion.py, filing_fields.py" },
+    { n: "Readiness", t: 200, v: 1200, job: "Decide what can happen next, and say exactly why not.",
+      does: ["Collect open items by owner with stable, deduplicated IDs", "can_request_review: no blocking client items", "can_approve: every slot closed, every assessment resolved, every fact fresh", "An unsupported branch that is reached always blocks", "Pure evaluation never authorizes filing; the service adds actor checks"],
+      open: "Summarizes all owners' items", from: "readiness.py, method_obligation_closure.py, _close_*_coverage" }
+  ];
+  var pipe = $("#pipe"), sd = $("#stageDetail");
+  function showStage(i) {
+    var s = STAGES[i];
+    pipe.querySelectorAll("button").forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+    sd.innerHTML = '<div><div class="eyebrow">Stage ' + (i + 1) + ' of 8' + (s.calc ? ' · the only stage that produces quantities' : '') + '</div><h4>' + s.n + '</h4><div class="job">' + s.job + '</div><ul>' + s.does.map(function (d) { return "<li>" + d + "</li>"; }).join("") + '</ul></div>' +
+      '<dl class="kv"><div><dt>Size</dt><dd class="cmp"><span class="from">~' + s.v.toLocaleString() + '</span><span class="to">~' + s.t + '</span><span class="note">lines, estimate</span></dd></div><div><dt>Open items it raises</dt><dd>' + s.open + '</dd></div><div><dt>Ported from v0</dt><dd class="mono" style="font-size:12px;overflow-wrap:anywhere">' + s.from + '</dd></div></dl>';
+  }
+  STAGES.forEach(function (s, i) {
+    var b = el("button", { type: "button", "aria-pressed": "false", "class": s.calc ? "calc" : "" }, '<span class="sn">' + (i + 1) + '</span><span class="st">' + s.n + '</span><span class="sz"><i style="width:' + (s.t / 350 * 100) + '%"></i></span>');
+    b.addEventListener("click", function () { showStage(i); });
+    pipe.appendChild(b);
+  });
+  showStage(2);
+
+  /* ---------- calculators ---------- */
+  var CALCS = [
+    ["activity_x_factor","activity × factor (× optional fraction)","Arc welding listed and Other M1; cutting g/min; spray; blasting kg/t","N1",1],
+    ["composition","quantity × mass fraction; 3 modes","Part 1 MPO from SDS; cutting metals = fraction × TPM; PM2.5 = 0.75 × PM10","N1",1],
+    ["mass_balance","inputs − stock change − outputs = residual","Solvent cleaning, liquid coating, powder flows, product chemicals","N1",1],
+    ["fuel_combustion","fuel × (site HHV ÷ ref HHV) × factor","Heaters, boilers, ovens; fuel parts of brazing and heat treatment","N1",1],
+    ["tank_losses","standing + working losses","P22 (manual first)","N5",0],
+    ["flaring","volume × composition × (1 − DE)","—","N5",0],
+    ["equipment_leaks","component counts × factors, or LDAR","—","N5",0],
+    ["fugitive_dust","road, handling and pile dust","P25 road segments","N5",0],
+    ["sour_gas_so2","sulfur balance → SO2","—","N5",0],
+    ["measured_continuous","integrate CEMS / PEMS series","—","Later",0],
+    ["measured_concentration","concentration × flow × time","P23 / P24 with measured data","N4",0],
+    ["tailings_waste_rock","composition × mass, clean/inert rules","—","Wave 4",0],
+    ["wastewater_fate","influent load × removal and fate","—","Wave 3",0],
+    ["landfill_gas","first-order decay × collection","—","Wave 3",0],
+    ["manual (built-in)","wraps an accepted jada.manual_result","Every family without an automatic method","N1",1]
+  ];
+  var cb = $("#calcTable tbody");
+  CALCS.forEach(function (c, i) { var tr = el("tr", c[4] ? { "class": "hl" } : null, '<td class="num">' + (i < 14 ? i + 1 : "—") + '</td><td><code>' + c[0] + '</code></td><td>' + c[1] + '</td><td>' + c[2] + '</td><td>' + c[3] + '</td>'); cb.appendChild(tr); });
+
+  /* ---------- part bars ---------- */
+  var PARTS = [["Part 1A",177],["Part 1B",33],["Part 1C (PFAS)",163],["Part 2 (PAH)",32],["Part 3",19],["Part 4 (CAC)",7],["Part 5 (VOC)",62]];
+  var pb = $("#partBars");
+  PARTS.forEach(function (p) { pb.appendChild(el("div", { "class": "bar", style: "grid-template-columns:110px minmax(0,1fr) 40px" }, '<span>' + p[0] + '</span><div class="track"><div class="fill" style="width:' + (p[1] / 177 * 100) + '%;background:var(--accent)"></div></div><span class="v">' + p[1] + '</span>')); });
+
+  /* ---------- families ---------- */
+  var STC = { A: "var(--st-a)", B: "var(--st-b)", M: "var(--st-m)", S: "var(--st-s)" };
+  var STN = { A: "Automatic in Beta A", B: "Automatic in Beta B", M: "Manual-supported", S: "Screen + specialist manual" };
+  var FAM = [
+    ["P01","Consumable arc welding","welding_arc","activity_x_factor; composition (PM2.5, Method 2)","A","A for listed SMAW/GMAW/FCAW/SAW and Other Method 1; Method 2 manual → B","E310 only (9 rows)"],
+    ["P02","TIG / plasma","welding_tig_plasma","activity_x_factor with filler condition","A","A with filler; autogenous M","Screen only"],
+    ["P03","Other joining","metal_fab/other_joining","—","M","M","Screen only"],
+    ["P04","Oxy-fuel, brazing, soldering","brazing_soldering","fuel_combustion (fuel part)","B","Fuel B; filler and flux M","Screen only"],
+    ["P05","Thermal cutting, gouging","thermal_cutting","activity_x_factor (g/min); composition speciate_output","A","A for listed subtypes","Oxy PM10 (1 row)"],
+    ["P06","Mechanical cutting, waterjet","mechanical_cutting","activity_x_factor for listed saws","B","Listed B; shears, punching, waterjet M","Screen only"],
+    ["P07","Grinding, finishing","mechanical_finishing","— (overlap check with P05)","M","M","Screen only"],
+    ["P08","Abrasive blasting","abrasive_blasting","activity_x_factor with wind class","A","Dry sand A; cabinet, wet, shot M","Dry sand (5 rows)"],
+    ["P09","Thermal spraying","thermal_spray","activity_x_factor (g/kg feedstock)","A","A for listed processes","Plasma (2 rows)"],
+    ["P10","Machining, fluids","machining_fluids","mass_balance (waste only)","M","M","Screen only"],
+    ["P11","Forming, forging","metal_fab/forming","links to P20 and P21","M","M","Screen only"],
+    ["P12","Cleaning, degreasing","degreasing","mass_balance (bounded solvent)","A","A bounded balance; vapour and aqueous M","solvent-balance-v1"],
+    ["P13","Liquid coatings","surface_coating","composition; mass_balance","B","B","liquid-coating-balance-v1"],
+    ["P14","Powder coating","powder_coating","mass_balance; curing manual","M","M → B","Screen only"],
+    ["P15","Coating removal","coating_removal","routes to P07/P08 once; mass_balance","M","M","Screen only"],
+    ["P16","Chemical surface prep","metal_fab/specialist_surface","—","S","S","Screen only"],
+    ["P17","Plating, anodizing","metal_fab/specialist_surface","— (Cr(VI) override screen)","S","S","Screen only"],
+    ["P18","Hot-dip coating","metal_fab/specialist_surface","—","S","S","Screen only"],
+    ["P19","Heat treatment, quenching","heat_treatment","fuel_combustion","B","Fuel B; chemistry M","Screen only"],
+    ["P20","Combustion equipment","boilers_heaters, stationary_engines","fuel_combustion","A","Small NG boiler A; others B / M","NG small boiler (2 rows)"],
+    ["P21","Assembly, inspection chemicals","process_chemicals","composition + mass_balance","B","B","Screen only"],
+    ["P22","Storage and transfer","storage_tanks","tank_losses (N5)","M","M","Screen only"],
+    ["P23","Waste, recycling, residues","waste_streams","composition; measured_concentration later","M","M, ledger required from Beta A","Partial"],
+    ["P24","Water and wastewater","water_routes","measured_concentration (later)","M","M","Partial"],
+    ["P25","Yard traffic, outdoor dust","road_dust","fugitive_dust (N5)","M","M → B","Screen only"],
+    ["P26","Melting, casting, incineration","metal_fab/specialist_thermal","— (Part 3 and §1(1)(a) screen)","S","S","Screen only"],
+    ["P27","Maintenance, incidents","maintenance_incidents","manual","M","M","Screen only"],
+    ["P28","Outsourced, contractor, mobile","core boundary questions","— (boundary decisions)","M","M, always JADA","Partial"]
+  ];
+  var grid = $("#famGrid"), fd = $("#famDetail"), filt = $("#famFilters"), curFilter = "all", curFam = 0;
+  function showFam(i) {
+    curFam = i; var f = FAM[i];
+    grid.querySelectorAll("button").forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+    fd.style.setProperty("--sc", STC[f[4]]);
+    fd.innerHTML = '<div class="big">' + f[0] + '</div><div><h4>' + f[1] + '</h4><div class="sub">' + STN[f[4]] + '</div><dl><dt>Module</dt><dd><code>' + f[2] + '</code></dd><dt>Calculators</dt><dd>' + f[3] + '</dd><dt>Proposed state</dt><dd>' + f[5] + '</dd><dt>v0 today</dt><dd>' + f[6] + '</dd></dl></div>';
+  }
+  FAM.forEach(function (f, i) {
+    var b = el("button", { type: "button", "aria-pressed": "false", "data-st": f[4] }, '<span class="id">' + f[0] + '<b>' + f[4] + '</b></span><span class="nm">' + f[1] + '</span>');
+    b.style.setProperty("--sc", STC[f[4]]);
+    b.addEventListener("click", function () { showFam(i); });
+    grid.appendChild(b);
+  });
+  var counts = { all: FAM.length }; FAM.forEach(function (f) { counts[f[4]] = (counts[f[4]] || 0) + 1; });
+  [["all","All families",null],["A",STN.A,STC.A],["B",STN.B,STC.B],["M",STN.M,STC.M],["S",STN.S,STC.S]].forEach(function (o) {
+    var b = el("button", { type: "button", "aria-pressed": o[0] === "all" ? "true" : "false" }, (o[2] ? '<i style="background:' + o[2] + '"></i>' : '') + o[1] + ' · ' + counts[o[0]]);
+    b.addEventListener("click", function () {
+      curFilter = o[0];
+      filt.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      grid.querySelectorAll("button").forEach(function (x) { x.classList.toggle("dim", curFilter !== "all" && x.dataset.st !== curFilter); });
+    });
+    filt.appendChild(b);
+  });
+  showFam(0);
+
+  /* ---------- timeline ---------- */
+  var CYC = [
+    { id: "N0", n: "Stabilize v0", s: "2026-11-16", e: "2026-12-04", work: ["Commit the uncommitted v0 work (178 backend, 24 frontend entries) in logical commits", "Fix failing backend tests and TypeScript errors, including the admin workspace crash", "Freeze v0 features; list v0-supported paths for the parity harness", "Export synthetic parity bundles; practitioner picks pilot shops"], gate: ["Clean test run with commands recorded", "Reviewed commit history", "Parity bundle set exported", "No new features added"] },
+    { id: "N1", n: "Data-driven core", s: "2026-12-07", e: "2027-01-29", work: ["core/ skeleton, content loader, pack and notice validators", "Fact model, entities, reviews, generic authorization", "Regulation folder and rule functions; 4 calculators plus manual", "Stages 1–8 ported one at a time; metal_fab@2026.0 for v0's paths; renderer behind a flag"], gate: ["Parity harness: zero unexplained differences", "E310, blasting and natural gas give v0's numbers from data rows", "No engine file over ~400 lines; boundary check passes", "Renderer journeys work for P01, P08 and P20"] },
+    { id: "N2", n: "Welding Beta A", s: "2027-02-01", e: "2027-03-12", work: ["Full workbook import; manifest counts frozen; substance map reviewed", "Electrode batches 1–2 promoted; Method 1 Other binding; PM2.5 derivation", "All 28 screens with typed questions; golden cases f01–f11 signed", "Custom screens; park EGU, prior comparison, low-hours O&G; staging rehearsal"], gate: ["Practitioner signs the 11 pilot scenarios", "Every present activity in each pilot shop resolvable", "C1–C12 evidence recorded for the Beta A scope", "New UI is the default for staff"] },
+    { id: "N3", n: "Pilot filing season", s: "2027-03-15", e: "2027-06-01", freeze: true, work: ["3–5 welding and fabrication shops file 2026 data, onboarded in two waves", "Content fixes only: factor corrections, help text, rows for electrodes a pilot actually uses", "Code changes limited to bug fixes, each with a case", "Every override or manual result logged with a reason"], gate: ["Reports filed, or no-filing / DNMC recorded, by June 1, 2027", "Override log complete"] },
+    { id: "N4", n: "General mfg + food packs", s: "2027-06-07", e: "2027-08-27", work: ["Turn the override log into cases and content first", "Welding Beta B: coating, chemicals, more fuels, Method 2, remaining electrodes", "general_mfg pack: printing, coating lines, plastics, adhesives", "food pack: fryers and ovens, ammonia refrigeration, fermentation VOC"], gate: ["Golden cases signed and coverage registers closed for both packs", "Beta B branches signed"] },
+    { id: "N5", n: "New calculators", s: "2027-09-06", e: "2027-10-29", work: ["tank_losses, flaring, equipment_leaks, fugitive_dust, sour_gas_so2", "measured_concentration if N4 demand justified it", "Each with acceptance fixtures from the official example it implements"], gate: ["Every calculator matches its official worked example", "Reviewed by a second developer; meaning confirmed by a practitioner"] },
+    { id: "N6", n: "Pits & quarries + pipelines", s: "2027-11-01", e: "2027-12-17", work: ["Mostly N5 calculators and shared modules", "Production-based applicability (§1(1)(a) ≥ 500,000 t; §1(2) exclusion)", "Terminal operations"], gate: ["Golden cases and the pits-and-quarries applicability rule cases signed"] },
+    { id: "N7–8", n: "Upstream oil and gas", s: "2028-01-04", e: "2028-03-24", work: ["Dehydrators, sweetening, compressors, produced water", "Bulk import for multi-site operators; consultant accounts", "Part 4 §11(2) and Part 5 low-hours branches, already in rule functions"], gate: ["One operator or consultant runs a 20+ facility portfolio in staging"] },
+    { id: "N9", n: "Filing season 2028", s: "2028-04-03", e: "2028-06-01", freeze: true, work: ["Welding, Wave 1 and early oil-and-gas clients file 2027 data", "Freeze as in N3", "Monitor for the next notice from Q4 2027; 2025–2027 covers reporting year 2027 only"], gate: ["Filings recorded by June 1, 2028"] }
+  ];
+  var T0 = Date.parse("2026-11-01"), T1 = Date.parse("2028-06-15"), span = T1 - T0;
+  function pct(d) { return ((Date.parse(d) - T0) / span * 100); }
+  var tl = $("#tl"), ax = el("div", { "class": "tl-axis" });
+  ["2026-11-01","2027-01-01","2027-03-01","2027-05-01","2027-07-01","2027-09-01","2027-11-01","2028-01-01","2028-03-01","2028-05-01"].forEach(function (d) {
+    var dt = new Date(d + "T12:00:00Z"); var lbl = dt.toLocaleString("en", { month: "short", timeZone: "UTC" }) + (dt.getUTCMonth() === 0 || d === "2026-11-01" ? " " + dt.getUTCFullYear() : "");
+    var s = el("span", null, lbl); s.style.left = Math.max(pct(d), 2) + "%"; ax.appendChild(s);
+  });
+  tl.appendChild(ax);
+  var rows = el("div", { "class": "tl-rows" });
+  var cd = $("#cycDetail");
+  function fmt(d) { return new Date(d + "T12:00:00Z").toLocaleDateString("en-CA", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); }
+  function showCyc(i) {
+    var c = CYC[i];
+    rows.querySelectorAll("button").forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+    cd.innerHTML = '<div class="eyebrow">' + c.id + (c.freeze ? ' · feature freeze' : '') + '</div><h4>' + c.n + '</h4><div class="when">' + fmt(c.s) + ' – ' + fmt(c.e) + '</div><div class="cols"><div><h5>Work</h5><ul>' + c.work.map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul></div><div><h5>Exit gate</h5><ul>' + c.gate.map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul></div></div>';
+  }
+  CYC.forEach(function (c, i) {
+    var r = el("div", { "class": "tl-row" });
+    var b = el("button", { type: "button", "aria-pressed": "false", "class": (c.freeze ? "freeze" : "") + (i === 0 ? " now" : ""), title: c.id + " " + c.n }, c.id + " · " + c.n);
+    var l = pct(c.s), wdt = pct(c.e) - l;
+    b.style.left = l + "%"; b.style.width = Math.max(wdt, 7) + "%";
+    if (l + Math.max(wdt, 7) > 100) { b.style.left = "auto"; b.style.right = "0"; }
+    b.addEventListener("click", function () { showCyc(i); });
+    r.appendChild(b); rows.appendChild(r);
+  });
+  var mk = el("div", { "class": "tl-mark" }, "<span>June 1, 2027 deadline</span>"); mk.style.left = pct("2027-06-01") + "%"; rows.appendChild(mk);
+  tl.appendChild(rows);
+  showCyc(1);
+
+  /* ---------- risks ---------- */
+  var RISK = {
+    R1: ["N1 runs past 6 weeks and squeezes Beta A","M","H","Keep lifecycle code; port stages one at a time behind a flag; the parity harness shows progress. If N1 slips past mid-February, run the pilot on v0 for E310, blasting and natural gas and finish after June 1.","Tech lead"],
+    R2: ["YAML grows conditions and turns into a language","M","H","Closed grammar; schema rejects unknown keys; derivations are reviewed code.","Tech lead"],
+    R3: ["Practitioner time is the bottleneck","H","H","Prioritize electrode batches by pilot demand; schedule practitioner time per cycle; a branch stays manual until signed.","JADA lead"],
+    R4: ["Parity triage copies v0 bugs","M","M","A practitioner decides every regulatory difference; triage log.","Tech lead + HSE"],
+    R5: ["Generic review feels less guided than v0's editors","M","M","Rich value schemas, impact preview, help text; five custom screens; usability test with a nontechnical client in N2.","Frontend dev"],
+    R6: ["Chromium basis and lead qualifier stay unresolved","H","M","Explicit practitioner open items from N1; decide before Beta A; pending is honest, not a defect.","HSE"],
+    R7: ["Imported rows carry old assumptions (fume = PM10, PM2.5 = 75%)","H","M","Each assumption is a reviewable row in the import manifest.","HSE"],
+    R8: ["A Gazette amendment lands during the pilot","L","H","Amendment-audit freshness gate in CI; holds and notice versioning.","JADA lead"],
+    R9: ["Over-generalizing for industries nobody bought","M","M","Rule of two; Wave 4 only with an anchor client.","Tech lead"],
+    R10: ["Uncommitted v0 work is lost before N0","L","VH","N0 week 1: commit everything on the existing branch; never reset or clean.","Dev A"],
+    R11: ["Replay breaks after engine changes","L","H","Calculator and rule versions retained; replay test with broken loaders on every release.","Tech lead"],
+    R12: ["Agents produce large unreviewed diffs again","M","H","1–3k-line slices committed and reviewed per slice; boundary CI check; budgets reported per cycle.","Tech lead"]
+  };
+  var LIK = ["H","M","L"], IMP = ["M","H","VH"], LN = { H: "High", M: "Medium", L: "Low" }, IN = { M: "Medium", H: "High", VH: "Very high" };
+  var rgd = $("#riskGrid"), rd = $("#riskDetail");
+  rgd.appendChild(el("div", { "class": "h" }, "Likelihood ↓<br>Impact →"));
+  IMP.forEach(function (im) { rgd.appendChild(el("div", { "class": "h" }, IN[im])); });
+  function showRisk(id) {
+    var r = RISK[id];
+    rgd.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.r === id ? "true" : "false"); });
+    rd.innerHTML = '<div class="eyebrow">' + id + ' · likelihood ' + LN[r[1]] + ' · impact ' + IN[r[2]] + '</div><b style="margin-top:4px">' + r[0] + '</b><p><b style="display:inline;font-family:var(--f-body);font-size:13.8px">Mitigation.</b> ' + r[3] + '</p><p class="note">Owner: ' + r[4] + '</p>';
+  }
+  LIK.forEach(function (lk, li) {
+    rgd.appendChild(el("div", { "class": "h vh" }, LN[lk]));
+    IMP.forEach(function (im, ii) {
+      var score = (2 - li) + ii; var c = el("div", { "class": "cell" + (score >= 3 ? " hot" : score === 2 ? " warm" : "") });
+      Object.keys(RISK).forEach(function (k) { if (RISK[k][1] === lk && RISK[k][2] === im) { var b = el("button", { type: "button", "data-r": k, "aria-pressed": "false", title: RISK[k][0] }, k); b.addEventListener("click", function () { showRisk(k); }); c.appendChild(b); } });
+      rgd.appendChild(c);
+    });
+  });
+  showRisk("R3");
+
+  /* ---------- ADRs ---------- */
+  var ADR = [
+    ["Split the product into engine, packs and regulation data","Costs about 6 weeks of foundation work (N1) before new coverage ships; afterwards coverage is mostly data and practitioner review. Rejected: continuing v0's style, one engine per industry. Buying an EHS platform deserves a separate commercial check."],
+    ["One fact model with a fixed set of typed entity kinds","Every human statement is a fact keyed by question ID with one review flow. Rejected: per-feature tables (the vertical-slice cause) and full EAV (loses referential integrity)."],
+    ["Calculators are code; factors and bindings are data; formula strings are never evaluated","About 14 calculators for all industries. Rejected: a safe formula evaluator (an untestable language in data) and per-method code."],
+    ["A closed routing grammar with no arithmetic","Equality and inclusion over facts plus all/any/not; numeric logic in named derivations. Rejected: JSONLogic or CEL."],
+    ["Regulation logic as named rule functions, parameters per notice","A new notice is a new folder; a logic change creates @N+1 and old notices stay replayable."],
+    ["Fixed stage order with eager calculation; no dependency graph","Calculate everything computable in stage 3; decide what is required in stage 7. Slightly more computation, much simpler testing."],
+    ["Golden cases signed by practitioners are the specification","A branch is automatic only with ≥2 signed cases of independent origin. Practitioner time becomes the pacing resource, about a third of each process estimate."],
+    ["Keep v0's lifecycle, digests and export","Reuse digests.py, the snapshot, lifecycle projection and package export, and add content pinning. Less risk in N1."],
+    ["Park rare branches; don't delete them","EGU, prior-year comparison and low-hours O&G UI go behind flags with a blocking parked obligation."],
+    ["Shared modules live under packs/shared/ from day one","Stable module IDs in filed history, at the cost of some naming care in N1–N2."],
+    ["Content is pinned per workspace; re-pinning is explicit and diffed","Workspaces pin notice and pack versions; filed revisions never re-pin."],
+    ["Long-format CSV for factor tables, produced by reviewed importers","One row per key combination × output, from official workbooks with frozen manifests. Practitioners can open it in a spreadsheet and PR diffs show exact row changes."]
+  ];
+  var ad = $("#adrs");
+  ADR.forEach(function (a, i) { ad.appendChild(el("details", { "class": "adr" }, '<summary><span>ADR-' + String(i + 1).padStart(3, "0") + '</span><b>' + a[0] + '</b></summary><div><p>' + a[1] + '</p></div>')); });
+
+  /* ---------- questions ---------- */
+  var Q = [
+    ["Q1","Accept this architecture direction (ADR-001)?","JADA leadership","Before N1 (7 Dec 2026)",1],
+    ["Q2","Chromium factor basis: is the workbook figure total or non-hexavalent chromium?","HSE practitioner","Before Beta A",1],
+    ["Q3","Lead qualifier: how does the stainless/brass/bronze exclusion apply to welding fume?","HSE practitioner","Before Beta A",1],
+    ["Q4","Method 2 arithmetic: transcribe and check against a recalculated workbook","Developer + HSE","Beta B",0],
+    ["Q5","I03 and I04 stack holds: ask ECCC for clarification?","JADA lead","Before any client with a ≥25 m stack",0],
+    ["Q6","I05 oil heater unit-scale issue","Developer + HSE","Beta B",0],
+    ["Q7","The =0.001/2 convention in five Part 1 welding cells","HSE practitioner","Before their electrode batch",0],
+    ["Q8","Who may sign golden cases? Is one signer enough for Beta A?","JADA leadership","N1",1],
+    ["Q9","Which 3–5 pilot shops, and what is their real process mix?","JADA sales + HSE","N0",1],
+    ["Q10","Are CSV/YAML pull requests acceptable to practitioners, or is a content UI needed?","JADA lead","N2 retrospective",0],
+    ["Q11","Content store hosting for replay: database table or object storage?","Tech lead","N1",0],
+    ["Q12","When to build multi-site and consultant accounts?","JADA leadership","Before N7",0],
+    ["Q13","Evaluate a commercial EHS or NPRI tool before committing to the build?","JADA leadership","Before N1",1]
+  ];
+  var qr = $("#qrows");
+  Q.forEach(function (q) { qr.appendChild(el("tr", q[4] ? { "class": "you" } : null, "<td>" + q[0] + "</td><td>" + q[1] + "</td><td>" + q[2] + "</td><td>" + q[3] + "</td>")); });
+
+  /* ---------- files ---------- */
+  var FILES = [["—","README.md","The proposal in brief and reading order"],["01","01-why-change-v0-diagnosis.md","What v0 got right; where the size came from"],["02","02-architecture-overview.md","Layers, seven rules, boundaries"],["03","03-domain-model-and-facts.md","Entities, facts, reviews, persistence"],["04","04-engine-pipeline.md","The eight stages and their contracts"],["05","05-calculators-and-factors.md","Calculator registry, factor selection, units"],["06","06-pack-format-spec.md","pack.yaml, module.yaml, routing grammar"],["07","07-regulation-as-data.md","Notice folder, rules, holds"],["08","08-welding-pack-design.md","P01–P28, workbook import, golden cases"],["09","09-review-workflow-and-generated-ui.md","Renderer, review flow, custom screens"],["10","10-golden-cases-and-verification.md","Case format, promotion, C1–C12"],["11","11-lifecycle-freshness-and-replay.md","Pinning, freshness, replay, export"],["12","12-migration-from-v0.md","Keep, convert, park, drop, mine; parity harness"],["13","13-delivery-cycles.md","N0–N9 with weekly plans and gates"],["14","14-adding-an-industry.md","Playbook and pits-and-quarries example"],["15","15-decisions-risks-open-questions.md","ADRs, risks, open questions"]];
+  var fl = $("#fileList");
+  FILES.forEach(function (f) { fl.appendChild(el("div", null, "<span>" + f[0] + "</span><div><code>" + f[1] + "</code>" + f[2] + "</div>")); });
+  $("#copyPath").addEventListener("click", function () {
+    var btn = this, txt = $("#dirpath").textContent;
+    function sel() { var r = document.createRange(); r.selectNodeContents($("#dirpath")); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected"; }
+    try { navigator.clipboard.writeText(txt).then(function () { btn.textContent = "Copied"; }, sel); } catch (e) { sel(); }
+  });
+})();
+</script>
+
+<!--claude-mermaid-runtime-begin:3477-->
+<style>.mermaid-diagram{margin-block:4px}.mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}</style>
+<script src="vendor/mermaid.min.js"></script>
+<script>(function(){
+var CFG={"palettes":{"light":{"surface":"#f4efe4","text":"#42392e","line":"#8a7f6d","border":"#7a6c52","bg":"#fffdf8"},"dark":{"surface":"#262b34","text":"#f2f3f5","line":"#a8adb8","border":"#9aa4b8","bg":"#1f232b"}}};
+if(typeof mermaid==='undefined')return;
+var pres=Array.prototype.slice.call(document.querySelectorAll('pre.mermaid')).filter(function(p){if(p.hasAttribute('data-claude-mermaid-claimed'))return false;p.setAttribute('data-claude-mermaid-claimed','1');return true;});
+if(!pres.length)return;
+var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var root=document.documentElement;
+var items=pres.map(function(pre){
+var mount=document.createElement('div');mount.className='mermaid-diagram';
+return {pre:pre,mount:mount,src:pre.textContent||''};
+});
+var seq=0;
+var renderGen=0;
+var lastKey='';
+function pageBg(fallback){
+var els=[document.body,document.documentElement];
+for(var i=0;i<els.length;i++){
+var c=els[i]&&getComputedStyle(els[i]).backgroundColor;
+if(c&&c!=='transparent'&&c!=='rgba(0, 0, 0, 0)')return c;
+}
+return fallback;
+}
+function render(){
+var theme=root.getAttribute('data-theme');
+var dark=theme==='dark'||(!!(mq&&mq.matches)&&theme!=='light');
+var pal=dark?CFG.palettes.dark:CFG.palettes.light;
+var bg=pageBg(pal.bg);
+var key=(dark?'d':'l')+'|'+bg;
+if(key===lastKey)return;
+lastKey=key;
+var gen=++renderGen;
+var font=getComputedStyle(document.body).fontFamily||'sans-serif';
+var nat={useMaxWidth:false};
+mermaid.initialize({
+startOnLoad:false,securityLevel:'strict',theme:'base',
+flowchart:nat,sequence:nat,er:nat,state:nat,class:nat,pie:nat,
+gantt:nat,journey:nat,timeline:nat,gitGraph:nat,mindmap:nat,xyChart:nat,
+quadrantChart:nat,sankey:nat,c4:nat,requirement:nat,block:nat,
+packet:nat,kanban:nat,architecture:nat,radar:nat,
+themeVariables:{background:bg,mainBkg:pal.surface,primaryColor:pal.surface,
+primaryTextColor:pal.text,lineColor:pal.line,primaryBorderColor:pal.border,
+nodeBorder:pal.border,clusterBorder:pal.border,edgeLabelBackground:bg,
+clusterBkg:'rgba(127,127,127,0.07)',titleColor:pal.text,
+darkMode:dark,rowOdd:bg,rowEven:'rgba(127,127,127,0.07)',
+attributeBackgroundColorOdd:bg,attributeBackgroundColorEven:'rgba(127,127,127,0.07)',
+fontSize:'16px',fontFamily:font},
+themeCSS:'.node rect, .node circle, .node polygon, .node path, .cluster rect { stroke-width: 2px; }'
+});
+items.forEach(function(it){
+var id='claude-mermaid-'+seq++;
+mermaid.render(id,it.src).then(function(r){
+if(gen!==renderGen)return;
+var prev=it.pre.previousElementSibling;
+if(prev&&prev.className==='mermaid-diagram'&&prev!==it.mount)return;
+it.mount.innerHTML=r.svg;
+if(!it.mount.parentNode)it.pre.parentNode.insertBefore(it.mount,it.pre);
+it.pre.style.display='none';
+},function(){
+var scratch=document.getElementById(id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+scratch=document.getElementById('d'+id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+if(gen!==renderGen)return;
+if(it.mount.parentNode)it.mount.parentNode.removeChild(it.mount);
+it.pre.style.display='';
+});
+});
+}
+render();
+if(mq&&mq.addEventListener)mq.addEventListener('change',render);
+if(typeof MutationObserver!=='undefined')new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();</script>
+<!--claude-mermaid-runtime-end-->
+
+</body></html>

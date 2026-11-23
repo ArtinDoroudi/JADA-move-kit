@@ -1,0 +1,505 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>NPRI All-Industry Scope</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; a four-layer stack diagram, then a sector × shared-process reuse matrix with a detail panel, then effort ranges and a wave plan */
+:root{
+  --bg:#f2f4f5; --surface:#ffffff; --ink:#1b2226; --muted:#5a666d; --rule:#d6dce0;
+  --core:#2b5aa8; --engine:#0f8b8d; --lib:#c98a12; --sector:#c2413b; --dot:#2b5aa8; --dotOff:#e4e8eb;
+  --low:#2f8a4e; --med:#c98a12; --high:#c2413b; --chipText:#ffffff;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171a; --surface:#1a2125; --ink:#e4eaed; --muted:#97a3aa; --rule:#2c363b;
+  --core:#6f97e0; --engine:#2fb3b5; --lib:#e0a637; --sector:#e7625b; --dot:#6f97e0; --dotOff:#253036;
+  --low:#55b874; --med:#e0a637; --high:#e7625b; --chipText:#0f1416; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#12171a; --surface:#1a2125; --ink:#e4eaed; --muted:#97a3aa; --rule:#2c363b;
+  --core:#6f97e0; --engine:#2fb3b5; --lib:#e0a637; --sector:#e7625b; --dot:#6f97e0; --dotOff:#253036;
+  --low:#55b874; --med:#e0a637; --high:#e7625b; --chipText:#0f1416; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700}
+h2{font-size:26px;font-weight:700}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:70ch}
+code,.mono{font-family:var(--mono);font-size:.88em}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+section{display:flex;flex-direction:column;gap:18px}
+.lede{font-size:18px}
+.note{font-size:13px;color:var(--muted);max-width:84ch}
+.answer{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.answer div{border-top:3px solid var(--ink);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.answer b{font-family:var(--display);font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.answer span{color:var(--muted);font-size:14px}
+
+/* layer stack */
+.stackd{display:flex;flex-direction:column;gap:6px}
+.lyr{display:grid;grid-template-columns:minmax(0,1fr) 170px;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--rule);border-left:6px solid var(--c);border-radius:4px;padding:14px 16px}
+.lyr h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.lyr h3 small{font-family:var(--mono);font-size:12px;font-weight:400;color:var(--muted)}
+.lyr p{font-size:14px;margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.chips span{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:3px;background:var(--c);color:var(--chipText)}
+.lyr .side{text-align:right;display:flex;flex-direction:column;gap:2px}
+.lyr .side b{font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.lyr .side span{font-size:12px;color:var(--muted)}
+.lyr .reuse{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+/* matrix */
+.mx-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px}
+table.mx{border-collapse:separate;border-spacing:0;font-size:12px;min-width:820px;width:100%}
+.mx th,.mx td{padding:0}
+.mx thead th{height:128px;vertical-align:bottom;font-family:var(--mono);font-weight:400;color:var(--muted)}
+.mx thead th span{display:inline-block;transform:rotate(-55deg);transform-origin:left bottom;white-space:nowrap;translate:12px -4px;font-size:11px}
+.mx tbody tr{cursor:pointer}
+.mx tbody tr:hover td,.mx tbody tr.on td{background:var(--bg)}
+.mx tbody tr:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.mx td.nm{padding:6px 10px 6px 4px;white-space:nowrap;font-weight:500;text-align:left}
+.mx td.d{text-align:center;width:34px}
+.mx td.d i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--dotOff)}
+.mx td.d i.y{background:var(--dot)}
+.mx td.cx{padding:0 8px;text-align:left;white-space:nowrap}
+.mx td.r{font-family:var(--mono);text-align:right;padding:0 8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{font-family:var(--mono);font-size:11px;padding:1px 7px;border-radius:10px;color:var(--chipText);background:var(--c)}
+.mx tfoot td{padding-top:8px;font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center}
+.mx tfoot td.nm{text-align:left}
+
+.detail{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px}
+.detail h3{font-size:22px}
+.detail .meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.detail .meta div{border-top:2px solid var(--rule);padding-top:6px;display:flex;flex-direction:column}
+.detail .meta b{font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums}
+.detail .meta span{font-size:12px;color:var(--muted)}
+.detail ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.detail .hard{background:var(--bg);border-radius:4px;padding:12px 14px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.split{display:flex;height:12px;border-radius:2px;overflow:hidden;margin-top:12px}
+.split div{height:100%}
+
+/* effort range */
+.ranges{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.rg{display:grid;grid-template-columns:230px minmax(0,1fr) 90px;gap:12px;align-items:center;font-size:14px}
+.rg .track{position:relative;height:18px;background:linear-gradient(to right,var(--rule) 1px,transparent 1px) 0 0/10% 100%;border-bottom:1px solid var(--rule)}
+.rg .bar{position:absolute;top:3px;height:12px;border-radius:2px;background:var(--c)}
+.rg .bar::before{content:"";position:absolute;inset:0 auto 0 0;width:var(--lowpct);background:var(--c);filter:brightness(.82)}
+.rg .v{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.rg.total{border-top:1px solid var(--rule);padding-top:10px;font-weight:600}
+.axis{display:grid;grid-template-columns:230px minmax(0,1fr) 90px;gap:12px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.axis div:nth-child(2){display:flex;justify-content:space-between}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.col{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.col .big{font-family:var(--display);font-size:38px;font-weight:700;font-variant-numeric:tabular-nums}
+.col .lines{height:14px;border-radius:2px;background:var(--c)}
+.col ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:3px}
+
+.waves{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.wave{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.wave .when{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.wave ul{margin:0;padding-left:16px;font-size:14px;display:flex;flex-direction:column;gap:3px}
+.wave .pm{font-family:var(--mono);font-size:12px;border-top:1px solid var(--rule);padding-top:6px;margin-top:auto}
+
+details.asm{background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+details.asm summary{cursor:pointer;padding:14px 16px;font-family:var(--display);font-weight:600;font-size:17px}
+details.asm summary:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+details.asm .in{padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;font-size:14px}
+details.asm ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+a{color:var(--core)}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px;display:flex;flex-direction:column;gap:6px}
+
+/* priority */
+.callouts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.callouts div{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.callouts b{font-family:var(--display);font-size:24px;font-variant-numeric:tabular-nums}
+.prio-wrap{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px;overflow-x:auto}
+.prio-wrap svg{display:block;width:100%;min-width:640px;height:auto}
+.pl{fill:var(--ink);font:500 12px var(--body)}
+.axl{fill:var(--muted);font:11px var(--mono)}
+.axt{fill:var(--muted);font:12px var(--body)}
+.quad{fill:var(--muted);font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.gl{stroke:var(--rule);stroke-width:1}
+.qd{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.wkey{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px}
+.wkey span{display:inline-flex;gap:6px;align-items:center}
+.wkey i{width:12px;height:12px;border-radius:50%;background:var(--c);display:inline-block}
+.tblwrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+table.rank{border-collapse:collapse;width:100%;font-size:13px;min-width:780px}
+.rank th,.rank td{padding:8px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:middle}
+.rank tr:last-child td{border-bottom:0}
+.rank th{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.rank td.r,.rank th.r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.rank td.why{color:var(--muted);font-size:12px;max-width:260px}
+.sb{display:inline-block;height:8px;background:var(--c);border-radius:2px;vertical-align:middle;margin-right:6px}
+
+/* cycles */
+.cycles{display:flex;flex-direction:column;border-left:2px solid var(--rule);margin-left:6px}
+.cy{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:0 0 20px 20px;position:relative}
+.cy::before{content:"";position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--c);border:2px solid var(--bg)}
+.cy .when{font-family:var(--mono);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.cy .when b{font-size:13px;color:var(--ink);font-weight:500}
+.cy .bd{display:flex;flex-direction:column;gap:6px;min-width:0}
+.cy h3{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.cy p{font-size:14px}
+.cy .gate{font-size:13px;border-left:3px solid var(--c);padding:2px 0 2px 10px;background:var(--surface);border-radius:0 3px 3px 0}
+.cy .gate b{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.rules{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 18px}
+.rules ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+
+@media (max-width:760px){
+  .callouts{grid-template-columns:1fr}
+  .cy{grid-template-columns:1fr;gap:6px}
+  .lyr{grid-template-columns:1fr}
+  .lyr .side{text-align:left}
+  .detail{grid-template-columns:1fr}
+  .detail .meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rg,.axis{grid-template-columns:120px minmax(0,1fr) 70px}
+  .compare{grid-template-columns:1fr}
+  .waves{grid-template-columns:1fr 1fr}
+}
+@media (max-width:460px){.waves{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:14px">
+  <div class="eyebrow">Rough scope estimate · NPRI, all reporting industries · Nov 2026</div>
+  <h1>Covering every NPRI industry</h1>
+  <p class="lede">Covering all of NPRI is roughly 10× the welding pilot in process count. If the platform is built once and calculation methods live in data, it isn't 10× the code. Most industries reuse the same core, the same handful of calculators, and a shared library of everyday processes like boilers, tanks, painting and dust. The real cost is in about 240 sector-specific processes, each of which needs a practitioner to check it.</p>
+  <div class="answer">
+    <div><b>~16</b><span>sector packs cover 7,419 of the 7,738 facilities that reported for 2024</span></div>
+    <div><b>~280</b><span>distinct process families. That's 488 process slots before sharing, so sharing saves ~42%.</span></div>
+    <div><b>115–161</b><span>person-months total. That's 10–13 person-years, or about 2 years with a team of 7.</span></div>
+    <div><b>~260k vs ~1.9M</b><span>lines of app code: data-driven design vs. continuing the current per-case style</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="eyebrow">1 · The shape of the system</div>
+  <h2>Four layers. The lower a layer sits, the less of it is shared.</h2>
+  <div class="stackd">
+    <div class="lyr" style="--c:var(--core)">
+      <div><h3>Regulatory core <small>shared by every industry</small></h3>
+        <p>The rules themselves: who must report, the substance list and thresholds, Parts 1–5, the annual lifecycle, review, versioning and the filing export. Codex's v0 already has most of this.</p>
+        <div class="chips"><span>Schedule 3 gates</span><span>Substance registry (300+)</span><span>Thresholds</span><span>Parts 1–5</span><span>Freeze → review → version</span><span>Filing export</span><span>Audit trail</span></div></div>
+      <div class="side"><b>4–6 PM</b><span>person-months</span><span class="reuse">100% reuse · ~80% exists in v0</span></div>
+    </div>
+    <div class="lyr" style="--c:var(--engine)">
+      <div><h3>Method engine <small>14 generic calculators</small></h3>
+        <p>Every emission number comes out of one of these. Each calculator is written once and fed by data rows, so it isn't hand-coded per electrode or per fuel.</p>
+        <div class="chips"><span>Activity × factor</span><span>Composition / SDS</span><span>Mass balance</span><span>Fuel combustion</span><span>CEMS / measured</span><span>Stack test</span><span>Storage tanks</span><span>Flares</span><span>Equipment leaks</span><span>Fugitive dust</span><span>Sour gas SO₂</span><span>Tailings & waste rock</span><span>Wastewater fate</span><span>Landfill gas</span></div></div>
+      <div class="side"><b>10–14 PM</b><span>person-months</span><span class="reuse">~90% reuse · 4 of 14 partly in v0</span></div>
+    </div>
+    <div class="lyr" style="--c:var(--lib)">
+      <div><h3>Shared process library <small>~45 modules</small></h3>
+        <p>Everyday operations that appear in many industries. Each module has its questions, which calculator it uses, its factor rows and golden test cases.</p>
+        <div class="chips"><span>Boilers & heaters</span><span>Engines & generators</span><span>Tanks</span><span>Loading</span><span>Flares</span><span>Leaks</span><span>Coating</span><span>Degreasing</span><span>Welding</span><span>Blasting</span><span>Stockpiles</span><span>Haul roads</span><span>Crushing</span><span>Cooling towers</span><span>Wastewater</span><span>+30 more</span></div></div>
+      <div class="side"><b>12–18 PM</b><span>person-months</span><span class="reuse">used 252 times across 16 sectors</span></div>
+    </div>
+    <div class="lyr" style="--c:var(--sector)">
+      <div><h3>Sector packs <small>16 packs · ~236 specific processes</small></h3>
+        <p>What only that industry does: glycol dehydrators, kraft recovery boilers, potlines, tailings ponds. It also covers the industry's special NPRI rules, such as a production-based threshold for pits and quarries or no hours threshold for wood preservation.</p>
+        <div class="chips"><span>Oil & gas</span><span>Oil sands</span><span>Refining</span><span>Mining</span><span>Pulp & paper</span><span>Chemicals</span><span>Primary metals</span><span>Cement</span><span>Power</span><span>Waste</span><span>Food</span><span>Wood</span><span>Pits & quarries</span><span>Pipelines</span><span>General mfg</span><span>Welding ✓</span></div></div>
+      <div class="side"><b>89–123 PM</b><span>person-months</span><span class="reuse">0% reuse · this is the real cost</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">2 · Reuse matrix</div>
+  <h2>Which industries share which processes</h2>
+  <p>Each row is a sector pack, and a filled dot means the sector uses that shared module. Click a row to see its own processes, its hard parts and its estimate.</p>
+  <div class="mx-wrap"><table class="mx" id="mx"><thead></thead><tbody></tbody><tfoot></tfoot></table></div>
+  <div class="detail" id="detail" aria-live="polite"></div>
+</section>
+
+<section id="priority">
+  <div class="eyebrow">3 · Priority</div>
+  <h2>Which industry to cover next</h2>
+  <p>Every industry is scored on two things: how many likely clients it has (real 2024 NPRI facility counts, weighted toward small owners who don't have an in-house environmental team), and how much it costs to build. The best picks sit top-left: lots of clients for little effort.</p>
+  <div class="callouts">
+    <div><b>3,503 · 171</b><span><b style="font-size:14px">Oil and gas is 45% of all facilities, but only 171 companies.</b> 97% of those facilities belong to multi-site operators, about 20 each. That's an enterprise or consultant sale, not one shop at a time.</span></div>
+    <div><b>580 · 430</b><span><b style="font-size:14px">Welding and metal fabrication is the right first market.</b> 430 separate companies, 86% of them small owners, about 5 substances per facility. The pilot choice holds up.</span></div>
+    <div><b>25–33</b><span><b style="font-size:14px">Substances per facility in refining, oil sands and pulp mills.</b> Few facilities, heavy speciation, and buyers who already use consultants. Build these only when a client pays for the pack.</span></div>
+  </div>
+  <div class="wkey">
+    <span style="--c:var(--low)"><i></i>Wave 1 · now → 2027</span>
+    <span style="--c:var(--core)"><i></i>Wave 2 · late 2027 – early 2028</span>
+    <span style="--c:var(--lib)"><i></i>Wave 3 · 2028</span>
+    <span style="--c:var(--sector)"><i></i>Wave 4 · only with an anchor client</span>
+    <span style="color:var(--muted)">Bubble size = number of companies</span>
+  </div>
+  <div class="prio-wrap"><svg id="prio" viewBox="0 0 1000 500" role="img" aria-label="Priority chart: return index against build effort for 16 industries"></svg></div>
+  <div class="tblwrap"><table class="rank" id="rank"></table></div>
+  <p class="note">Return index = facilities × (0.4 + 0.6 × share of facilities owned by companies with three or fewer sites). Small owners rarely have in-house environmental staff, so they're the likeliest buyers. Facilities of large multi-site operators still count, at 40%. Score = return index ÷ midpoint effort, scaled so the best industry is 100. Upstream oil and gas scores second but goes in Wave 2: it needs four new calculators and an enterprise sales motion first. The data covers only facilities that already report. Facilities that should report but don't aren't counted.</p>
+</section>
+
+<section>
+  <div class="eyebrow">4 · Effort</div>
+  <h2>Where the person-months go</h2>
+  <p>Each bar covers the low-to-high range. The darker part is the low estimate and the lighter tail runs to the high estimate. Person-months include practitioner verification, which AI can't speed up.</p>
+  <div class="ranges" id="ranges"></div>
+  <p class="note">Ongoing cost after the build: about 3–5 person-months a year to track the next Gazette notice (the current one runs 2025–2027), substance-list changes and factor updates. AI help could cut the developer share by roughly 30–40%. It doesn't shorten the practitioner review, which is about a third of each process estimate.</p>
+</section>
+
+<section>
+  <div class="eyebrow">5 · Why the architecture decides the size</div>
+  <h2>Same coverage, about 7× less code</h2>
+  <div class="compare">
+    <div class="col" style="--c:var(--sector)">
+      <h3>Continue the current style</h3>
+      <div class="big">~1.9M lines</div>
+      <div class="lines" style="width:100%"></div>
+      <ul>
+        <li>v0 is ~65k lines of app code for ~60% of 28 families, or ~3.9k lines per finished family</li>
+        <li>× 488 process slots, because without shared modules nothing is reused</li>
+        <li>No team can review this, and every new notice means touching all of it</li>
+      </ul>
+    </div>
+    <div class="col" style="--c:var(--engine)">
+      <h3>Data-driven core</h3>
+      <div class="big">~260k lines</div>
+      <div class="lines" style="width:13.7%"></div>
+      <ul>
+        <li>Core ~45k + method engine ~20k</li>
+        <li>45 shared modules × ~1.2k (questions, config, tests)</li>
+        <li>236 sector processes × ~0.6k, mostly data rows and golden cases</li>
+        <li>New industries add data, not engine code</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Both figures are order-of-magnitude estimates. The point is the ratio, not the exact count.</p>
+</section>
+
+<section>
+  <div class="eyebrow">6 · Next cycles</div>
+  <h2>Plan the next cycles around the June 1 filing deadline</h2>
+  <p>The 2026 reporting year is due on June 1, 2027. That date fixes the first four cycles: stabilize, make methods data-driven, finish welding Beta A, then support the pilot shops through filing. New industries start only after that. Dates assume 2 developers and a part-time HSE practitioner. Stretch them if the team is smaller.</p>
+  <div class="cycles">
+    <div class="cy" style="--c:var(--muted)"><div class="when"><b>N0 · 3 weeks</b>16 Nov – 4 Dec 2026</div><div class="bd">
+      <h3>Stabilize v0</h3>
+      <p>Commit the Codex work to its branch. Fix the 3 failing backend tests, the 6 TypeScript errors (including the admin screen crash) and the lint errors. Freeze the feature list.</p>
+      <div class="gate"><b>Gate</b>Clean test run and a commit history someone has reviewed.</div></div></div>
+    <div class="cy" style="--c:var(--engine)"><div class="when"><b>N1 · 6 weeks</b>Dec 2026 – Jan 2027</div><div class="bd">
+      <h3>Make methods data-driven</h3>
+      <p>Build the first four calculators: activity × factor, composition, mass balance and fuel combustion. Split <code>evaluator.py</code> into one file per stage. Replace the per-feature review screens with one generic fact review.</p>
+      <div class="gate"><b>Gate</b>The E310, blasting and natural-gas golden cases give the same numbers from data rows as v0 gives from code.</div></div></div>
+    <div class="cy" style="--c:var(--low)"><div class="when"><b>N2 · 6 weeks</b>Feb – mid-Mar 2027</div><div class="bd">
+      <h3>Welding Beta A <span class="pill" style="--c:var(--low)">Wave 1</span></h3>
+      <p>Add factor rows for common electrodes and processes: SMAW, GMAW and FCAW, and E7018, E6010 and E308/316. Also cover coating, degreasing and blasting. Park generators, monthly split and prior-year comparison behind a flag.</p>
+      <div class="gate"><b>Gate</b>The HSE co-workers sign off the 11 pilot scenarios.</div></div></div>
+    <div class="cy" style="--c:var(--high)"><div class="when"><b>N3 · filing season</b>mid-Mar – 1 Jun 2027</div><div class="bd">
+      <h3>Pilot filing season</h3>
+      <p>Onboard 3–5 welding and fabrication shops and file their 2026 data. Bug fixes only.</p>
+      <div class="gate"><b>Gate</b>Pilot reports submitted by June 1, with every manual override logged as a future test case.</div></div></div>
+    <div class="cy" style="--c:var(--low)"><div class="when"><b>N4 · 10 weeks</b>Jun – Aug 2027</div><div class="bd">
+      <h3>General manufacturing + food <span class="pill" style="--c:var(--low)">Wave 1</span></h3>
+      <p>Printing, coating lines, plastics molding, plating, fryers, ammonia refrigeration and fermentation. Most of this comes from shared-library modules. Together these two packs add 815 facilities and 469 companies.</p>
+      <div class="gate"><b>Gate</b>Golden cases signed off and the coverage register closed for both packs.</div></div></div>
+    <div class="cy" style="--c:var(--engine)"><div class="when"><b>N5 · 8 weeks</b>Sep – Oct 2027</div><div class="bd">
+      <h3>New calculators</h3>
+      <p>Storage tanks, flares, equipment leaks, fugitive dust and sour gas SO₂. Wave 2 needs all of them.</p>
+      <div class="gate"><b>Gate</b>Each matches the ECCC calculator or AP-42 worked example it's based on.</div></div></div>
+    <div class="cy" style="--c:var(--core)"><div class="when"><b>N6 · 6 weeks</b>Nov – Dec 2027</div><div class="bd">
+      <h3>Pits & quarries + pipelines & terminals <span class="pill" style="--c:var(--core)">Wave 2</span></h3>
+      <p>Few new processes; mostly the new calculators plus the production-based threshold for pits and quarries.</p>
+      <div class="gate"><b>Gate</b>Golden cases and the pits-and-quarries threshold rule signed off.</div></div></div>
+    <div class="cy" style="--c:var(--core)"><div class="when"><b>N7–N8 · 12 weeks</b>Jan – Mar 2028</div><div class="bd">
+      <h3>Upstream oil & gas <span class="pill" style="--c:var(--core)">Wave 2</span></h3>
+      <p>Dehydrators, sweetening, compressors and produced water. Add bulk import for multi-site operators and accounts for consultants, because the buyers here manage about 20 facilities each.</p>
+      <div class="gate"><b>Gate</b>One operator or consultant runs a 20+ facility portfolio before the 2028 filing season.</div></div></div>
+    <div class="cy" style="--c:var(--high)"><div class="when"><b>N9 · filing season</b>Apr – 1 Jun 2028</div><div class="bd">
+      <h3>Second filing season</h3>
+      <p>Welding, Wave 1 and early oil and gas clients file. Bug fixes only.</p></div></div>
+    <div class="cy" style="--c:var(--lib)"><div class="when"><b>After</b>H2 2028 →</div><div class="bd">
+      <h3>Wave 3, then Wave 4 on demand</h3>
+      <p>Wave 3 is waste and wastewater, wood, electricity and chemicals. Wave 4 (cement, primary metals, mining, pulp, oil sands and refining) happens only when an anchor client pays for the pack.</p></div></div>
+  </div>
+  <div class="rules">
+    <h3>Rules for every cycle</h3>
+    <ol>
+      <li>One industry pack per cycle. Don't start the next pack until the current gate passes.</li>
+      <li>A gate means practitioner-signed golden cases, not lines of code or test counts.</li>
+      <li>No new features during filing season (mid-March to June 1).</li>
+      <li>Give Codex or any other agent one cycle-sized task at a time and commit each slice. A person then reviews 1–3k lines per cycle instead of 100k at the end.</li>
+      <li>Re-score the priority table each summer with the new NPRI data and pilot feedback.</li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <details class="asm">
+    <summary>Assumptions, method and what to verify</summary>
+    <div class="in">
+      <ul>
+        <li><b>Client counts:</b> from ECCC's 2024 single-year facility file (7,738 facilities, 2,301 companies), grouped by NAICS code into the 16 packs. 319 facilities (airports, defence, services, wholesale) fall outside the packs. "Small owner" means a company with three or fewer reporting facilities. Company names were counted as written, so a few spelling variants of the same company may be counted separately.</li>
+        <li><b>Sectors and processes:</b> the 16 packs and their process counts are my estimates. They draw on NAICS sector structure, ECCC's sector tools (sour gas SO₂, storage tanks, pits and quarries, tailings and waste rock, wood products, potash) and its general fugitive guidance (abrasive blasting, aggregate handling, wet cooling towers).</li>
+        <li><b>Effort per process:</b> about 1.5 person-weeks per sector-specific process in a data-driven design (~1 week developer + ~0.5 week practitioner). Shared modules cost more (~1.5–2 weeks) because they must work across sectors.</li>
+        <li><b>Calibration:</b> the welding pilot has 28 families. v0 reached ~60% of its contract with ~65k app lines. The remaining 8–13 weeks from the earlier audit is the anchor for "welding (finish)".</li>
+        <li><b>Not included:</b> GHG reporting (a separate federal program), provincial programs, sales and support, hosting, and a regulatory-change buffer.</li>
+        <li><b>Special NPRI rules per sector</b> (pits and quarries production threshold, no hours threshold for wood preservation, terminal operations, incineration and large wastewater systems) are in the regulatory core. They're cheap to code but need practitioner sign-off.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<footer>
+  <div>Sources: <a href="https://open.canada.ca/data/en/dataset/40e01423-7728-429c-ac9d-2954385ccdfb" target="_blank" rel="noopener">ECCC · NPRI single-year data tables by facility (2024)</a> · <a href="https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/using-interpreting-data.html" target="_blank" rel="noopener">ECCC · Using and interpreting NPRI data</a> ·<a href="https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/sector-specific-tools-calculate-emissions.html" target="_blank" rel="noopener">ECCC · Sector-specific tools to calculate emissions</a> · <a href="https://www.canada.ca/en/environment-climate-change/services/national-pollutant-release-inventory/report/tools-calculating-emissions.html" target="_blank" rel="noopener">ECCC · Tools for calculating and reporting emissions</a> · v0 line counts measured from <span class="mono">JADA-NPRI-V0</span> on 9 Nov 2026.</div>
+  <div>All effort and line figures are rough planning estimates, not quotes.</div>
+</footer>
+</div>
+
+<script>
+(function(){
+  var COLS = ["Fuel combustion","Engines & turbines","Storage tanks","Loading & transfer","Flares","Equipment leaks","Coating & painting","Degreasing","Welding & cutting","Abrasive blasting","Material handling","Roads & dust","Crushing & screening","Cooling towers","Wastewater"];
+  // name, usage bits, total families, shared, specific, complexity, PM low, PM high, specific processes, hard parts
+  var S = [
+    ["Welding & metal fab","110000111100000",28,18,10,"Low",2,3,["Welding fume by electrode class","Thermal and plasma spray","Plasma and oxy-fuel cutting","Powder-coat curing","Galvanizing and plating"],"Already ~60% built. The gap is factor data for common electrodes and practitioner review, not new architecture."],
+    ["Upstream oil & gas","111111000001001",45,20,25,"High",10,14,["Glycol dehydrators (benzene)","Amine sweetening & sulphur recovery","Sour gas flaring & incineration (SO₂)","Compressor engines","Produced-water tanks","Pneumatic devices","Well testing & completions"],"Facility boundaries across many small sites, sour gas chemistry, and benzene from dehydrators. It needs four new calculators: flares, leaks, tanks and sour gas."],
+    ["Oil sands","111111000011111",40,18,22,"High",9,12,["Open-pit mine fleet","Tailings pond fugitives","Bitumen extraction","Upgrader cokers & hydrotreaters","SAGD steam generators"],"Area sources such as ponds and mine faces, Part 1B tailings, and very large speciated VOC lists."],
+    ["Petroleum refining","111111111111011",50,20,30,"Very high",12,16,["Fluid catalytic cracking","Cokers","Sulphur recovery","Catalytic reformers","API separators","Blending & product loading"],"Hundreds of speciated organics (Part 5), dense CEMS data, and many flares and tanks per site."],
+    ["Pipelines & terminals","111111100100000",20,15,5,"Med",2,3,["Compressor & pump stations","Tank farms","Truck & rail loading","Pigging & blowdowns"],"Mostly the shared library. Terminal operations have their own NPRI criteria."],
+    ["Mining & smelting","111100011111111",40,15,25,"High",9,12,["Explosive blasting","Roasting & smelting","Acid plants","Tailings & waste rock (Part 1B)","Heap leach"],"Part 1B disposal is a mass balance by metal content in tailings and waste rock, which is a whole reporting stream of its own."],
+    ["Pits & quarries","111100000011100",15,12,3,"Low",1,2,["Rock blasting","Asphalt plants","Wash plants"],"A production-based threshold replaces the employee-hours test. Nearly everything else is shared dust, crushing and engine modules."],
+    ["Cement, lime & minerals","111100001011110",25,12,13,"Med-High",5,7,["Cement kiln","Clinker cooler","Raw & finish mills","Lime kiln","Alternative fuels"],"CEMS integration, and mercury and metals from the fuel and raw-material mix."],
+    ["Pulp & paper","111101001011011",35,15,20,"High",8,10,["Kraft recovery boiler","Lime kiln","Digesters","Chlorine dioxide bleaching","Hog-fuel boilers"],"TRS compounds, dioxins and furans, and releases to water from effluent."],
+    ["Wood products","110000100011000",20,12,8,"Med",3,4,["Lumber & veneer dryers","Panel presses (formaldehyde)","Sanding & sawing","Wood preservation (CCA, creosote)"],"Wood preservation has no employee-hours threshold, and formaldehyde from presses is factor-sensitive."],
+    ["Chemicals & plastics","111111111010011",40,20,20,"High",8,11,["Batch reactors","Distillation","Polymerization","Solvent recovery","Compounding & extrusion"],"Many substances per site, and batch-by-batch mass balance. Here the SDS and composition engine does the heavy lifting."],
+    ["Primary metals","111100111111111",35,15,20,"High",7,10,["Electric arc furnaces","Coke ovens","Aluminum potlines","Foundry casting","Pickling lines"],"Speciated metals, PAHs and dioxins. Often several stacks with stack tests."],
+    ["Electricity generation","111100001011111",20,14,6,"Med",3,4,["Coal & gas units","Flue-gas desulphurization","Ash handling"],"Mostly CEMS ingestion and mercury. The processes are few, but the data volume is high."],
+    ["Waste & wastewater","111111000011001",25,10,15,"Med-High",5,7,["Landfills (landfill gas)","Incinerators","Wastewater treatment plants","Composting"],"No hours threshold for incineration and large wastewater systems, and fate modelling for releases to water."],
+    ["Food & beverage","111100011101011",20,14,6,"Low-Med",2,3,["Fryers & roasters","Rendering","Ammonia refrigeration","Fermentation (ethanol)"],"Ammonia releases and fermentation VOCs. Otherwise it's mostly combustion and wastewater."],
+    ["General manufacturing","111000111100010",30,22,8,"Med",3,5,["Printing","Surface-coating lines","Electronics assembly","Plastics molding","Plating"],"Many materials per site, so it depends on SDS composition at scale. That's the same engine welding needs."]
+  ];
+  var cxColor = {"Low":"--low","Low-Med":"--low","Med":"--med","Med-High":"--med","High":"--high","Very high":"--high"};
+  var mx = document.getElementById("mx");
+  var th = '<tr><th></th>' + COLS.map(function(c){return '<th><span>'+c+'</span></th>'}).join('') + '<th style="text-align:left;padding-left:8px"><span style="transform:none;translate:0">Complexity</span></th><th style="text-align:right;padding-right:8px"><span style="transform:none;translate:0">PM</span></th></tr>';
+  mx.tHead.innerHTML = th;
+  var counts = COLS.map(function(){return 0});
+  var tb = mx.tBodies[0];
+  S.forEach(function(s, i){
+    var tr = document.createElement("tr"); tr.tabIndex = 0;
+    var h = '<td class="nm">'+s[0]+'</td>';
+    for (var j=0;j<COLS.length;j++){ var y = s[1][j]==="1"; if(y) counts[j]++; h += '<td class="d"><i class="'+(y?'y':'')+'" title="'+COLS[j]+(y?' · used':' · not used')+'"></i></td>'; }
+    h += '<td class="cx"><span class="pill" style="--c:var('+cxColor[s[5]]+')">'+s[5]+'</span></td><td class="r">'+s[6]+'–'+s[7]+'</td>';
+    tr.innerHTML = h;
+    tr.addEventListener("click", function(){ show(i, tr); });
+    tr.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); show(i, tr);} });
+    tb.appendChild(tr);
+  });
+  mx.tFoot.innerHTML = '<tr><td class="nm">sectors using it</td>' + counts.map(function(c){return '<td>'+c+'</td>'}).join('') + '<td></td><td></td></tr>';
+
+  var det = document.getElementById("detail");
+  function show(i, tr){
+    tb.querySelectorAll("tr.on").forEach(function(x){x.classList.remove("on")});
+    tr.classList.add("on");
+    var s = S[i]; var used = COLS.filter(function(_,j){return s[1][j]==="1"});
+    var shPct = Math.round(s[3]/s[2]*100);
+    det.innerHTML =
+      '<div><div class="eyebrow">Sector pack</div><h3>'+s[0]+'</h3>'+
+      '<div class="meta"><div><b>'+s[2]+'</b><span>process families</span></div><div><b>'+s[3]+'</b><span>from shared library</span></div><div><b>'+s[4]+'</b><span>sector-specific</span></div><div><b>'+s[6]+'–'+s[7]+'</b><span>person-months</span></div></div>'+
+      '<div class="split" role="img" aria-label="'+shPct+'% shared"><div style="flex:'+s[3]+';background:var(--lib)"></div><div style="flex:'+s[4]+';background:var(--sector)"></div></div>'+
+      '<p class="note" style="margin-top:6px">'+shPct+'% of its processes come from the shared library. Shared modules used here: '+used.join(", ")+'.</p></div>'+
+      '<div class="hard"><div class="eyebrow">Its own processes</div><ul>'+s[8].map(function(p){return '<li>'+p+'</li>'}).join('')+'</ul><div class="eyebrow" style="margin-top:6px">Hard part</div><p>'+s[9]+'</p></div>';
+  }
+  show(1, tb.rows[1]);
+
+  // ---- priority: 2024 NPRI facilities mapped to packs ----
+  // name, facilities, companies, small-owner %, avg substances, PM low, PM high, wave, label side
+  var PR = [
+    ["Welding & metal fab",580,430,86,5.4,2,3,1,"r"],
+    ["Upstream oil & gas",3503,171,3,8.4,10,14,2,"r"],
+    ["Food & beverage",453,175,41,3.4,2,3,1,"l"],
+    ["General manufacturing",362,294,88,5.2,3,5,1,"r"],
+    ["Pipelines & terminals",395,78,17,6.0,2,3,2,"l"],
+    ["Pits & quarries",164,56,30,3.6,1,2,2,"r"],
+    ["Wood products",259,128,51,9.7,3,4,3,"r"],
+    ["Waste & wastewater",417,203,56,6.6,5,7,3,"r"],
+    ["Electricity generation",265,83,27,6.2,3,4,3,"l"],
+    ["Chemicals",382,288,77,8.1,8,11,3,"r"],
+    ["Cement, lime & minerals",163,68,47,5.6,5,7,4,"r"],
+    ["Primary metals",163,132,85,11.3,7,10,4,"l"],
+    ["Mining & smelting",164,105,72,14.3,9,12,4,"r"],
+    ["Pulp & paper",76,59,83,26.6,8,10,4,"r"],
+    ["Oil sands",39,20,54,32.6,9,12,4,"r"],
+    ["Petroleum refining",34,28,56,30.9,12,16,4,"l"]
+  ];
+  var WC = {1:"--low",2:"--core",3:"--lib",4:"--sector"};
+  PR.forEach(function(p){ p.ret = p[1]*(0.4+0.6*p[3]/100); p.mid=(p[5]+p[6])/2; p.raw=p.ret/p.mid; });
+  var mxRaw = Math.max.apply(null, PR.map(function(p){return p.raw}));
+  PR.forEach(function(p){ p.score = Math.round(p.raw/mxRaw*100); });
+  var svg = document.getElementById("prio"), NS="http://www.w3.org/2000/svg";
+  var X0=70,X1=960,Y0=440,Y1=30, xmax=15, lmin=Math.log10(15), lmax=Math.log10(2000);
+  function xs(v){return X0+(v/xmax)*(X1-X0)}
+  function ys(v){return Y0-(Math.log10(v)-lmin)/(lmax-lmin)*(Y0-Y1)}
+  function el(t,a,txt){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e}
+  [0,3,6,9,12,15].forEach(function(v){el("line",{x1:xs(v),x2:xs(v),y1:Y1,y2:Y0,"class":"gl"});el("text",{x:xs(v),y:Y0+18,"text-anchor":"middle","class":"axl"},v)});
+  [25,50,100,250,500,1000].forEach(function(v){el("line",{x1:X0,x2:X1,y1:ys(v),y2:ys(v),"class":"gl"});el("text",{x:X0-8,y:ys(v)+4,"text-anchor":"end","class":"axl"},v)});
+  el("line",{x1:xs(6),x2:xs(6),y1:Y1,y2:Y0,"class":"qd"});
+  el("line",{x1:X0,x2:X1,y1:ys(150),y2:ys(150),"class":"qd"});
+  el("text",{x:X0+8,y:Y1+14,"class":"quad"},"Do first");
+  el("text",{x:X1-8,y:Y1+14,"text-anchor":"end","class":"quad"},"Strategic bet");
+  el("text",{x:X0+8,y:Y0-10,"class":"quad"},"Cheap fill-in");
+  el("text",{x:X1-8,y:Y0-10,"text-anchor":"end","class":"quad"},"Only with an anchor client");
+  el("text",{x:(X0+X1)/2,y:Y0+40,"text-anchor":"middle","class":"axt"},"Effort to build the pack → (person-months, midpoint)");
+  var yt=el("text",{x:18,y:(Y0+Y1)/2,"text-anchor":"middle","class":"axt",transform:"rotate(-90 18 "+((Y0+Y1)/2)+")"},"Return index (log scale) →");
+  PR.slice().sort(function(a,b){return b[2]-a[2]}).forEach(function(p){
+    var cx=xs(p.mid), cy=ys(p.ret), r=3+Math.sqrt(p[2])*0.8;
+    var c=el("circle",{cx:cx,cy:cy,r:r});
+    c.style.fill="var("+WC[p[7]]+")"; c.style.fillOpacity=".78"; c.style.stroke="var(--surface)"; c.style.strokeWidth="1.5";
+    var t=document.createElementNS(NS,"title"); t.textContent=p[0]+" · "+p[1].toLocaleString()+" facilities · "+p[2]+" companies · score "+p.score; c.appendChild(t);
+  });
+  PR.forEach(function(p){
+    var cx=xs(p.mid), cy=ys(p.ret), r=3+Math.sqrt(p[2])*0.8, L=p[8]==="l";
+    el("text",{x:L?cx-r-5:cx+r+5,y:cy+4,"text-anchor":L?"end":"start","class":"pl"},p[0]);
+  });
+  var rows = PR.slice().sort(function(a,b){return b.score-a.score});
+  var why = {
+    "Welding & metal fab":"Pilot already ~60% built; most small owners",
+    "Upstream oil & gas":"Huge facility count, few buyers; needs 4 new calculators",
+    "Food & beverage":"Low substance count; mostly shared modules",
+    "General manufacturing":"Reuses welding's coating and SDS engine",
+    "Pipelines & terminals":"Tanks and loading only; follows oil and gas buyers",
+    "Pits & quarries":"Cheapest pack; dust and crushing calculators",
+    "Wood products":"Wood preservation has no hours threshold",
+    "Waste & wastewater":"Many municipal buyers; fate modelling needed",
+    "Electricity generation":"CEMS ingestion; utility buyers",
+    "Chemicals":"Many substances per site; batch mass balance",
+    "Cement, lime & minerals":"Few owners; CEMS and mercury",
+    "Primary metals":"Speciated metals and PAHs",
+    "Mining & smelting":"Part 1B tailings is a reporting stream of its own",
+    "Pulp & paper":"27 substances per mill; dioxins and furans",
+    "Oil sands":"39 sites run by majors with in-house teams",
+    "Petroleum refining":"34 sites, 31 substances each; consultant-served"
+  };
+  var html='<thead><tr><th class="r">#</th><th>Industry</th><th class="r">Facilities</th><th class="r">Companies</th><th class="r">Small owners</th><th class="r">Subst./site</th><th class="r">Effort PM</th><th>Score</th><th>Wave</th><th>Why</th></tr></thead><tbody>';
+  rows.forEach(function(p,i){
+    html+='<tr><td class="r">'+(i+1)+'</td><td><b>'+p[0]+'</b></td><td class="r">'+p[1].toLocaleString()+'</td><td class="r">'+p[2]+'</td><td class="r">'+p[3]+'%</td><td class="r">'+p[4]+'</td><td class="r">'+p[5]+'–'+p[6]+'</td><td style="white-space:nowrap;--c:var('+WC[p[7]]+')"><span class="sb" style="width:'+Math.max(2,p.score*0.7)+'px"></span><span class="mono">'+p.score+'</span></td><td><span class="pill" style="--c:var('+WC[p[7]]+')">'+p[7]+'</span></td><td class="why">'+why[p[0]]+'</td></tr>';
+  });
+  document.getElementById("rank").innerHTML=html+'</tbody>';
+
+  var R = [
+    ["Regulatory core","--core",4,6],
+    ["Method engine (14 calculators)","--engine",10,14],
+    ["Shared process library (~45)","--lib",12,18],
+    ["Sector packs (16)","--sector",89,123]
+  ];
+  var max = 170, rg = document.getElementById("ranges");
+  var ax = '<div class="axis"><div></div><div><span>0</span><span>40</span><span>85</span><span>125</span><span>170 PM</span></div><div></div></div>';
+  var html = '';
+  R.forEach(function(r){
+    var l = r[2]/max*100, w = r[3]/max*100;
+    html += '<div class="rg" style="--c:var('+r[1]+')"><span>'+r[0]+'</span><div class="track"><div class="bar" style="left:0;width:'+w+'%;opacity:.55;--lowpct:'+(r[2]/r[3]*100)+'%"></div></div><span class="v">'+r[2]+'–'+r[3]+' PM</span></div>';
+  });
+  html += '<div class="rg total" style="--c:var(--ink)"><span>Total build</span><div class="track"><div class="bar" style="left:0;width:'+(161/max*100)+'%;opacity:.55;--lowpct:'+(115/161*100)+'%"></div></div><span class="v">115–161 PM</span></div>';
+  rg.innerHTML = html + ax;
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,302 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>NPRI Core Progress</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column like a shop job traveler — status header, timeline, milestone stations, then asks and limits. */
+:root {
+  --bg: #f5f7f9;
+  --surface: #ffffff;
+  --ink: #17212b;
+  --muted: #56636f;
+  --line: #d9e0e6;
+  --accent: #1d5c86;
+  --accent-soft: #e3eef6;
+  --done: #2f7a4f;
+  --done-soft: #e2f1e7;
+  --active: #a8650a;
+  --active-soft: #fbefdc;
+  --later: #7b8792;
+  --later-soft: #eceff2;
+  --ship: #b3261e;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171d; --surface: #182129; --ink: #e6ecf1; --muted: #9aa8b4; --line: #2b3742;
+    --accent: #6fb0dc; --accent-soft: #1c3142;
+    --done: #6cc492; --done-soft: #183326; --active: #e7a64a; --active-soft: #3a2a12;
+    --later: #8794a0; --later-soft: #222c35; --ship: #f08a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171d; --surface: #182129; --ink: #e6ecf1; --muted: #9aa8b4; --line: #2b3742;
+  --accent: #6fb0dc; --accent-soft: #1c3142;
+  --done: #6cc492; --done-soft: #183326; --active: #e7a64a; --active-soft: #3a2a12;
+  --later: #8794a0; --later-soft: #222c35; --ship: #f08a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 56px;
+}
+.wrap { max-width: 900px; margin: 0 auto; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 22px; font-weight: 600; }
+h3 { font-size: 17px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); font-size: 16px; }
+header { display: grid; gap: 12px; }
+section { display: grid; gap: 16px; }
+.num { font-variant-numeric: tabular-nums; }
+
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.fig b { font-family: var(--f-display); font-size: 28px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.fig.target { border-color: var(--ship); }
+.fig.target b { color: var(--ship); }
+.fig span { color: var(--muted); font-size: 13px; line-height: 1.4; }
+@media (max-width: 720px) { .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.overall { display: grid; gap: 8px; }
+.bar { height: 14px; border-radius: 3px; background: var(--later-soft); display: flex; overflow: hidden; border: 1px solid var(--line); }
+.bar i { display: block; height: 100%; }
+.bar .d { background: var(--done); }
+.bar .a { background: var(--active); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+.tl-scroll { overflow-x: auto; }
+.tl { min-width: 640px; display: grid; gap: 8px; padding-top: 4px; }
+.tl-row { display: grid; grid-template-columns: 170px 1fr; align-items: center; gap: 12px; }
+.tl-label { font-size: 13px; color: var(--muted); }
+.tl-label strong { color: var(--ink); font-weight: 600; }
+.track { position: relative; height: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 3px; }
+.seg { position: absolute; top: 3px; bottom: 3px; border-radius: 2px; background: var(--accent-soft); border: 1px solid var(--accent); }
+.seg.pilot { background: var(--active-soft); border-color: var(--active); }
+.seg.built { background: var(--done); border-color: var(--done); }
+.seg.shipseg { background: var(--ship); border-color: var(--ship); }
+.today { position: absolute; top: -6px; bottom: -6px; width: 2px; background: var(--ink); }
+.shipline { position: absolute; top: -6px; bottom: -6px; width: 2px; background: var(--ship); }
+.months { position: relative; height: 18px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.months span { position: absolute; white-space: nowrap; }
+.months span.end { transform: translateX(-100%); }
+.months span.shipm { color: var(--ship); font-weight: 500; }
+.tl-note { font-size: 13px; color: var(--muted); }
+
+.stations { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.st { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; }
+.st .rail { display: flex; flex-direction: column; align-items: center; }
+.st .dot { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-family: var(--f-mono); font-size: 11px; font-weight: 500; border: 2px solid var(--later); color: var(--later); background: var(--bg); flex: none; }
+.st .stem { width: 2px; flex: 1; background: var(--line); min-height: 14px; }
+.st:last-child .stem { display: none; }
+.st.done .dot { background: var(--done); border-color: var(--done); color: var(--surface); }
+.st.active .dot { background: var(--active-soft); border-color: var(--active); color: var(--active); }
+.st.next .dot { border-color: var(--accent); color: var(--accent); }
+.st.ship .dot { border-color: var(--ship); color: var(--ship); }
+.st .body { padding-bottom: 22px; display: grid; gap: 6px; min-width: 0; }
+.st .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.pill { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+.pill.done { background: var(--done-soft); color: var(--done); }
+.pill.active { background: var(--active-soft); color: var(--active); }
+.pill.next { background: var(--accent-soft); color: var(--accent); }
+.pill.later { background: var(--later-soft); color: var(--later); }
+.pill.ship { background: var(--ship); color: var(--surface); }
+.when { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.st p { color: var(--ink); }
+.st .meta { font-size: 13px; color: var(--muted); }
+
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 720px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; display: grid; gap: 12px; align-content: start; }
+.panel.ask { border-color: var(--accent); }
+.panel ol, .panel ul { margin: 0; padding-left: 20px; display: grid; gap: 10px; }
+.panel li { max-width: 62ch; }
+.panel li b { font-weight: 600; }
+.due { font-family: var(--f-mono); font-size: 12px; color: var(--ship); white-space: nowrap; }
+
+.tbl-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+th, td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+td.slices { font-family: var(--f-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+td.dt { font-family: var(--f-mono); font-size: 12px; white-space: nowrap; }
+.mini { width: 90px; height: 8px; border-radius: 2px; background: var(--later-soft); overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; border: 1px solid var(--line); }
+.mini i { display: block; height: 100%; background: var(--done); }
+.mini i.a { background: var(--active); }
+footer { font-size: 13px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .4s ease; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">JADA · NPRI automation for welding shops · status as of 17 Nov 2026</div>
+  <h1>NPRI Core progress</h1>
+  <p class="lede">We are building the official ECCC welding calculator into the app. Client documents fill in its inputs automatically, the app decides every NPRI threshold, and a JADA admin reviews one summary page with the reasoning behind each decision. The calculation engine is built and runs end to end. The target is a fully working release for welding shops by <strong>31 March 2027</strong>, two months before the 1 June filing deadline.</p>
+</header>
+
+<section aria-label="Key figures">
+  <div class="figures">
+    <div class="fig target"><b>31 Mar 2027</b><span>full release for welding shops, 2 months before the 1 June deadline</span></div>
+    <div class="fig"><b class="num">14 / 29</b><span>build slices done (about half, by count and by planned size)</span></div>
+    <div class="fig"><b class="num">393 / 393</b><span>test scenarios give the same result as the official Excel (536,446 cell comparisons)</span></div>
+    <div class="fig"><b class="num">583</b><span>automated tests passing (527 backend, 56 screens)</span></div>
+  </div>
+  <div class="overall">
+    <div class="bar" role="img" aria-label="14 slices done, 15 remaining of 29"><i class="d" style="width:48.3%"></i></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--done)"></i>Done: 14 slices</span>
+      <span><i class="sw" style="background:var(--later-soft);border:1px solid var(--line)"></i>Left: 15 slices, plus a real-data rehearsal</span>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="tl-h">
+  <h2 id="tl-h">Schedule to 31 March</h2>
+  <div class="tl-scroll">
+    <div class="tl">
+      <div class="tl-row"><div></div>
+        <div class="months">
+          <span style="left:0%">Nov</span><span style="left:14.15%">Dec</span><span style="left:28.77%">Jan</span><span style="left:43.4%">Feb</span><span style="left:56.6%">Mar</span><span class="shipm" style="left:70.75%">Mar 31</span><span style="left:85.38%">May</span><span class="end" style="left:100%">Jun 1</span>
+        </div>
+      </div>
+      <div class="tl-row"><div class="tl-label"><strong>Built so far</strong></div>
+        <div class="track"><div class="seg built" style="left:5.19%;width:2.36%"></div><div class="today" style="left:7.55%" title="Today, 17 Nov"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>1–4</strong> engine + Excel proof</div>
+        <div class="track"><div class="seg" style="left:5.19%;width:3.77%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>5–6</strong> smart filling + package</div>
+        <div class="track"><div class="seg" style="left:10.38%;width:11.79%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>7</strong> document reading</div>
+        <div class="track"><div class="seg" style="left:30.19%;width:15.09%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>8</strong> client + admin screens</div>
+        <div class="track"><div class="seg" style="left:30.19%;width:21.7%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>9</strong> rest of the shop</div>
+        <div class="track"><div class="seg" style="left:43.4%;width:11.79%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>10</strong> real-data rehearsal</div>
+        <div class="track"><div class="seg" style="left:56.6%;width:5.19%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>11</strong> fixes + release</div>
+        <div class="track"><div class="seg shipseg" style="left:63.21%;width:7.55%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+      <div class="tl-row"><div class="tl-label"><strong>Filing season</strong></div>
+        <div class="track"><div class="seg pilot" style="left:71.23%;width:28.77%"></div><div class="today" style="left:7.55%"></div><div class="shipline" style="left:70.75%"></div></div></div>
+    </div>
+  </div>
+  <p class="tl-note">The black line is today and the red line is the 31 March release. Document reading and screens start after the holidays, and the second half of March is kept for rehearsal fixes. What decides the date is getting the team inputs listed below on time. The 2026 reports are due 1 June 2027.</p>
+</section>
+
+<section aria-labelledby="ms-h">
+  <h2 id="ms-h">Milestones</h2>
+  <ol class="stations">
+    <li class="st done"><div class="rail"><span class="dot">1</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Safe workspace</h3><span class="pill done">Done</span><span class="when">12 Nov</span></div>
+      <p>A separate copy of the code and a separate test database. The live platform has not been touched; this is checked after every step.</p>
+    </div></li>
+    <li class="st done"><div class="rail"><span class="dot">2</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>The official workbook inside the app</h3><span class="pill done">Done</span><span class="when">13 Nov</span></div>
+      <p>All 733 ECCC welding, cutting and spraying factors are imported cell by cell, each one traceable to its workbook cell, along with the same formulas, including spraying and Method 2.</p>
+    </div></li>
+    <li class="st done"><div class="rail"><span class="dot">3</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Decision engine, end to end</h3><span class="pill done">Done</span><span class="when">17 Nov</span></div>
+      <p>Eight steps turn the inputs into a full NPRI answer, covering totals, the robustness check on thresholds, reporting duties, the PFAS and dioxin rules, 35 filing-field checks and a readiness list for the admin. Runs are saved and can be replayed exactly for audit. A test welding shop ran through all eight steps, and its numbers matched a hand calculation (PM10 95.64 kg).</p>
+      <p class="meta">Also done: the first client screen, which shows the 18 core questions on desktop and mobile.</p>
+      <p class="meta"><strong>Demo ready (17 Nov):</strong> the admin case summary, with every decision, its reason and a click-through to the calculation, and the Excel-style workbook. Change the wire used from 1,200 to 2,000 kg and PM10 updates at once from 95.64 to 98.2 kg. The change is logged and needs a second staff check before approval.</p>
+    </div></li>
+    <li class="st done"><div class="rail"><span class="dot">4</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Proven equal to the official Excel</h3><span class="pill done">Done</span><span class="when">17 Nov</span></div>
+      <p>393 of 393 scenarios match the government workbook: all 74 welding, cutting and spraying categories at five quantity sizes, plus the guide's worked examples and edge cases. That is 536,446 cell comparisons in 7 seconds, with the largest difference at the level of computer rounding (4 × 10<sup>-16</sup>). The check also caught and fixed one nickel routing error the engine had.</p>
+    </div></li>
+    <li class="st active"><div class="rail"><span class="dot">5</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Smart filling</h3><span class="pill active">Starting</span><span class="when">by 18 Dec</span></div>
+      <p>Defaults are approved once by HSE. Inputs clients don't know are derived from purchases, for example grinding hours from discs bought, cutting hours from plasma tips, or electrode kg from boxes. The app only asks a question when the answer could change a threshold decision.</p>
+      <p class="meta">The test shop's 71 open items break down as 31 answered by the client questionnaire, 15 filing details, 6 from documents, 13 software gaps still to build, 3 defaults to approve and 3 practitioner decisions. Most are things the client fills in, not exceptions for HSE. The target is 5 or fewer HSE exceptions per report.</p>
+    </div></li>
+    <li class="st"><div class="rail"><span class="dot">6</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Report package</h3><span class="pill later">Later</span><span class="when">by 18 Dec</span></div>
+      <p>The filing package export with an assumptions appendix. Saving and replaying runs is already done.</p>
+    </div></li>
+    <li class="st"><div class="rail"><span class="dot">7</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Reads client documents</h3><span class="pill later">Later</span><span class="when">4 Jan – 5 Feb</span></div>
+      <p>Classifies invoice lines (electrodes, wire, discs, gases, steel grades), reads fuel bills and prefills the answers. Accuracy is measured on real past documents.</p>
+    </div></li>
+    <li class="st"><div class="rail"><span class="dot">8</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Client and admin screens</h3><span class="pill later">Later</span><span class="when">4 Jan – 19 Feb</span></div>
+      <p>The client flow goes from upload to "here's what we found", then a few questions, a confirmation and submit. The admin summary shows every decision and why it was made, the assumptions, about 5 exceptions and click-through to the source invoice line.</p>
+      <p class="meta">Already working locally: the admin summary and the workbook-style editor, which is prefilled, editable and recalculates live. Still to build: the client upload flow and the approval screens.</p>
+    </div></li>
+    <li class="st"><div class="rail"><span class="dot">9</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>The rest of a fabrication shop</h3><span class="pill later">Later</span><span class="when">1–26 Feb</span></div>
+      <p>Abrasive blasting, natural gas, and paint and solvent VOCs, plus 12 test cases signed off by the HSE practitioner.</p>
+    </div></li>
+    <li class="st"><div class="rail"><span class="dot">10</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Rehearsal with real past clients</h3><span class="pill later">Later</span><span class="when">1–12 Mar</span></div>
+      <p>We run 2–3 past clients' real documents through the app, and the HSE practitioner works the same cases in the Excel by hand. To pass, the results must match, HSE review must take 30 minutes or less, and the client must take 45 minutes or less.</p>
+    </div></li>
+    <li class="st ship"><div class="rail"><span class="dot">11</span><span class="stem"></span></div><div class="body">
+      <div class="head"><h3>Full release for welding shops</h3><span class="pill ship">Target</span><span class="when">31 Mar 2027</span></div>
+      <p>15–31 March is for fixes from the rehearsal and release prep. From 1 April, clients upload documents, the app calculates, and the admin approves the package. The 2026 reports are due 1 June 2027.</p>
+    </div></li>
+  </ol>
+</section>
+
+<section aria-labelledby="area-h">
+  <h2 id="area-h">Progress by area</h2>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Area</th><th>Progress</th><th>Slices</th><th>Due</th></tr></thead>
+      <tbody>
+        <tr><td>Calculation engine and rules</td><td><span class="mini"><i style="width:100%"></i></span>Done</td><td class="slices">S01–S11, S06b</td><td class="dt">17 Nov ✓</td></tr>
+        <tr><td>Accuracy proof against the Excel</td><td><span class="mini"><i style="width:100%"></i></span>Done, 393/393</td><td class="slices">S12</td><td class="dt">17 Nov ✓</td></tr>
+        <tr><td>Smart filling and defaults</td><td><span class="mini"><i style="width:0%"></i></span>Not started</td><td class="slices">S13, S13b, S14</td><td class="dt">18 Dec</td></tr>
+        <tr><td>Report package</td><td><span class="mini"><i style="width:35%"></i></span>Partly done</td><td class="slices">S15</td><td class="dt">18 Dec</td></tr>
+        <tr><td>Document reading</td><td><span class="mini"><i style="width:0%"></i></span>Not started</td><td class="slices">S16–S20</td><td class="dt">5 Feb</td></tr>
+        <tr><td>Screens</td><td><span class="mini"><i style="width:50%"></i></span>3 of 6 done</td><td class="slices">S21 ✓, summary ✓, workbook ✓, S22, S26, S27</td><td class="dt">19 Feb</td></tr>
+        <tr><td>Other fabrication activities</td><td><span class="mini"><i style="width:0%"></i></span>Not started</td><td class="slices">S24, S25</td><td class="dt">26 Feb</td></tr>
+        <tr><td>Real-data rehearsal</td><td><span class="mini"><i style="width:0%"></i></span>Not started</td><td class="slices">A3</td><td class="dt">12 Mar</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-label="Needs and limits">
+  <div class="cols">
+    <div class="panel ask">
+      <h2>What we need from the team, and by when</h2>
+      <ol>
+        <li><b>Documents from 2–3 past clients</b>, with consent: roughly 100+ invoice lines, 20 SDS sheets, and some utility bills and payroll. <span class="due">by 18 Dec</span></li>
+        <li><b>HSE practitioner approves the defaults list</b>, which smart filling depends on. <span class="due">by 11 Dec</span></li>
+        <li><b>HSE practitioner decides four questions:</b> how Cr(VI) from welding fume counts toward the manufacturing threshold; the Method 1 vs Method 2 policy; the stack NOx threshold (the Guide says 20 t, the Notice says 10 t); and whether to keep 8 workbook cells that read a neighbouring electrode's input. <span class="due">by 15 Jan</span></li>
+        <li><b>HSE practitioner signs 12 test cases</b> and keeps two weeks free for the rehearsal. <span class="due">26 Feb · 1–12 Mar</span></li>
+        <li><b>Enough AI coding capacity.</b> The coding agent's weekly limits are the main pacing factor for the build.</li>
+      </ol>
+    </div>
+    <div class="panel">
+      <h2>Limits and risks</h2>
+      <ul>
+        <li>The schedule keeps 15–31 March for rehearsal fixes. If the documents or decisions arrive more than two weeks late, the release moves into April.</li>
+        <li>A 31 March release leaves pilot clients April and May to file. Clients who want to file early can start once the rehearsal passes in mid-March.</li>
+        <li>The app produces the filing package. Entering it in ECCC's online reporting system stays a human step.</li>
+        <li>PAHs (Part 2) and individual VOCs (Part 5) are flagged for manual handling at release. Typical welding shops rarely reach them.</li>
+        <li>When an input is unknown, the app marks the result as not robust and never assumes zero. Early runs will look strict until smart filling lands.</li>
+        <li>Each build step has come in 25–40% larger than estimated. Files are still kept small and reviewable.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>Source: verified results from the npri-core branch, 12–17 Nov 2026, and the automation-first plan (new-arch/00, §16 slices), with dates rescheduled to a 31 March 2027 release. Dates after today are targets that depend on the team inputs above.</div>
+</footer>
+
+</div>
+
+</body></html>
